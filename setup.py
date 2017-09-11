@@ -35,6 +35,18 @@ ext_modules = [Extension("_StrumpackSparseSolver",
                          include_dirs = include_dirs,
                          extra_compile_args = ['-std=gnu++0x'],
                          library_dirs = library_dirs,                         
+                         libraries = sp_libraries),
+               Extension("_StrumpackSparseSolverMPI",
+                        [path.join(base,"StrumpackSparseSolverMPI_wrap.cxx"), ],
+                         include_dirs = include_dirs,
+                         extra_compile_args = ['-std=gnu++0x'],
+                         library_dirs = library_dirs,                         
+                         libraries = sp_libraries),
+               Extension("_StrumpackSparseSolverMPIDist",
+                        [path.join(base,"StrumpackSparseSolverMPIDist_wrap.cxx"), ],
+                         include_dirs = include_dirs,
+                         extra_compile_args = ['-std=gnu++0x'],
+                         library_dirs = library_dirs,                         
                          libraries = sp_libraries)]
 
 

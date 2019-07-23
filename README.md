@@ -1,8 +1,8 @@
 # PySTRUMPACK
+   UnderConstruction. Please visit us a few days later. 
 
-UnderConstruction. Please visit us a few days later. (2019/07/20)
-
-
+# News
+  2019/07/23: C-interface SWIG wrapper works in serial mode (tested with Python3.7)
      
 # Installation:
 ##  Prerequisite:

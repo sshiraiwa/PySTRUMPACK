@@ -1,21 +1,17 @@
 %module(package="STRUMPACK") StrumpackSparseSolver
 %{
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h> 
+#include <cmath>    
+#include <complex> 
 #include "numpy/arrayobject.h"
 #include "StrumpackSparseSolver.h"
+#include "StrumpackConfig.hpp"
 %}
 
 %init %{
 import_array();
 %}
-
-/*
-%import "common_interface/int_scalar_t.i"
-%import "common_interface/argc_argv.i"
-%import "StrumpackParameters.i"
-%ignore strumpack::StrumpackSparseSolver::solve(const DenseM_t& b, DenseM_t& x, bool use_initial_guess=false);
-*/
 
 /* these two methods are declared but not implemented anywhere in STRUMPACK??? */
 %ignore  STRUMPACK_get_gmres_restart;
@@ -72,30 +68,37 @@ class StrumpackSolverBase
   long get_factor_nonzeros(void){return STRUMPACK_factor_nonzeros(spss);}
   long get_factor_memory(void){return STRUMPACK_factor_memory(spss);}
 };
+%}
 
-class SStrumpackSolver : public StrumpackSolverBase
+%import "common_interface/pointer_array.i"
+
+%define MakeSolver(PREFIX, TYPE, TYPE_C)
+%inline %{
+class PREFIX##StrumpackSolver : public StrumpackSolverBase
 {
  public:
-    SStrumpackSolver(){
+    PREFIX##StrumpackSolver(){
        char *argv[] = {NULL};
-       STRUMPACK_init_mt(&spss, STRUMPACK_FLOAT, STRUMPACK_MT, 1, argv, 0);
+       STRUMPACK_init_mt(&spss, TYPE, STRUMPACK_MT, 1, argv, 0);
     }
-    #if defined(STRUMPACK_USE_MPI)
-    SStrumpackSolver(MPI_Comm comm){
+    
+    #ifdef STRUMPACK_USE_MPI
+    PREFIX##StrumpackSolver(MPI_Comm comm){
        char *argv[] = {NULL};      
-       STRUMPACK_init(&spss, comm, STRUMPACK_FLOAT, STRUMPACK_MPI_DIST, 0, argv, 0);
+       STRUMPACK_init(&spss, comm, TYPE, STRUMPACK_MPI_DIST, 0, argv, 0);
     }
     #endif
-    ~SStrumpackSolver(){
+
+    ~PREFIX##StrumpackSolver(){
        STRUMPACK_destroy(&spss);
     }
-    void set_csr_matrix(int N, int *row_ptr, int *col_ind, float *values, int symmetric_pattern){
+    void set_csr_matrix0(int N, int *row_ptr, int *col_ind, TYPE_C *values, int symmetric_pattern){
        STRUMPACK_set_csr_matrix(spss,  &N, (void*) row_ptr,(void*) col_ind,
 				(void*) values, symmetric_pattern);
     }
-   #if defined(STRUMPACK_USE_MPI)
-     void set_distributed_csr_matrix(int local_rows, const int* row_ptr,
-                                     const int* col_ind, const float* values,
+    #ifdef STRUMPACK_USE_MPI
+    void set_distributed_csr_matrix0(int local_rows, const int* row_ptr,
+                                     const int* col_ind, const TYPE_C *values,
 				     const void* dist,   int symmetric_pattern){
 
           STRUMPACK_set_distributed_csr_matrix(spss,
@@ -103,13 +106,43 @@ class SStrumpackSolver : public StrumpackSolverBase
 					       (const void*) col_ind, (const void*) values,
 						dist, symmetric_pattern);
      }
-   #endif
+    #endif
     
-    STRUMPACK_RETURN_CODE solve(float *b, float *x, int use_initial_guess){
+    STRUMPACK_RETURN_CODE solve(TYPE_C *b, TYPE_C *x, int use_initial_guess){
        return STRUMPACK_solve(spss, (const void*) b, (void*) x, use_initial_guess);
-    }
+    }  
+  
    };
 %}
-%include "StrumpackSparseSolver.h"
+%enddef
 
+MakeSolver(S, STRUMPACK_FLOAT, float)
+MakeSolver(D, STRUMPACK_DOUBLE, double)
+MakeSolver(C, STRUMPACK_FLOATCOMPLEX, std::complex<float>)
+MakeSolver(Z, STRUMPACK_DOUBLECOMPLEX, std::complex<double>)
 
+%pythoncode %{
+import numpy as np
+def make_set_csr_matrix(mat_type):
+ def set_csr_matrix(self, A, mat_type=mat_type):
+  if A.dtype != mat_type:
+    assert False, ("input data type is not correct "+str(mat_type) +
+                   " is expected. " + str(A.dtype) + " is given")
+  
+  N = A.shape[0]
+  values = A.data
+  row_ptr = A.indptr
+  col_ind = A.indices
+	      
+  return self.set_csr_matrix0(N, row_ptr, col_ind, values, 0)
+ return set_csr_matrix
+
+SStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float32)
+DStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float64)
+CStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex64)      
+ZStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex128)
+%}
+
+//%include "StrumpackSparseSolver.h"
+
+  

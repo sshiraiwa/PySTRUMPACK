@@ -256,317 +256,119 @@ class SStrumpackSolver(StrumpackSolverBase):
     __swig_destroy__ = _StrumpackSparseSolver.delete_SStrumpackSolver
     __del__ = lambda self: None
 
-    def set_csr_matrix(self, N, row_ptr, col_ind, values, symmetric_pattern):
-        return _StrumpackSparseSolver.SStrumpackSolver_set_csr_matrix(self, N, row_ptr, col_ind, values, symmetric_pattern)
+    def set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern):
+        return _StrumpackSparseSolver.SStrumpackSolver_set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern)
 
     def solve(self, b, x, use_initial_guess):
         return _StrumpackSparseSolver.SStrumpackSolver_solve(self, b, x, use_initial_guess)
 SStrumpackSolver_swigregister = _StrumpackSparseSolver.SStrumpackSolver_swigregister
 SStrumpackSolver_swigregister(SStrumpackSolver)
 
-STRUMPACK_FLOAT = _StrumpackSparseSolver.STRUMPACK_FLOAT
-STRUMPACK_DOUBLE = _StrumpackSparseSolver.STRUMPACK_DOUBLE
-STRUMPACK_FLOATCOMPLEX = _StrumpackSparseSolver.STRUMPACK_FLOATCOMPLEX
-STRUMPACK_DOUBLECOMPLEX = _StrumpackSparseSolver.STRUMPACK_DOUBLECOMPLEX
-STRUMPACK_FLOAT_64 = _StrumpackSparseSolver.STRUMPACK_FLOAT_64
-STRUMPACK_DOUBLE_64 = _StrumpackSparseSolver.STRUMPACK_DOUBLE_64
-STRUMPACK_FLOATCOMPLEX_64 = _StrumpackSparseSolver.STRUMPACK_FLOATCOMPLEX_64
-STRUMPACK_DOUBLECOMPLEX_64 = _StrumpackSparseSolver.STRUMPACK_DOUBLECOMPLEX_64
-STRUMPACK_MT = _StrumpackSparseSolver.STRUMPACK_MT
-STRUMPACK_MPI_DIST = _StrumpackSparseSolver.STRUMPACK_MPI_DIST
-class STRUMPACK_SparseSolver(_object):
+class DStrumpackSolver(StrumpackSolverBase):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, STRUMPACK_SparseSolver, name, value)
+    for _s in [StrumpackSolverBase]:
+        __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, DStrumpackSolver, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, STRUMPACK_SparseSolver, name)
+    for _s in [StrumpackSolverBase]:
+        __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
+    __getattr__ = lambda self, name: _swig_getattr(self, DStrumpackSolver, name)
     __repr__ = _swig_repr
-    __swig_setmethods__["solver"] = _StrumpackSparseSolver.STRUMPACK_SparseSolver_solver_set
-    __swig_getmethods__["solver"] = _StrumpackSparseSolver.STRUMPACK_SparseSolver_solver_get
-    if _newclass:
-        solver = _swig_property(_StrumpackSparseSolver.STRUMPACK_SparseSolver_solver_get, _StrumpackSparseSolver.STRUMPACK_SparseSolver_solver_set)
-    __swig_setmethods__["precision"] = _StrumpackSparseSolver.STRUMPACK_SparseSolver_precision_set
-    __swig_getmethods__["precision"] = _StrumpackSparseSolver.STRUMPACK_SparseSolver_precision_get
-    if _newclass:
-        precision = _swig_property(_StrumpackSparseSolver.STRUMPACK_SparseSolver_precision_get, _StrumpackSparseSolver.STRUMPACK_SparseSolver_precision_set)
-    __swig_setmethods__["interface"] = _StrumpackSparseSolver.STRUMPACK_SparseSolver_interface_set
-    __swig_getmethods__["interface"] = _StrumpackSparseSolver.STRUMPACK_SparseSolver_interface_get
-    if _newclass:
-        interface = _swig_property(_StrumpackSparseSolver.STRUMPACK_SparseSolver_interface_get, _StrumpackSparseSolver.STRUMPACK_SparseSolver_interface_set)
 
     def __init__(self):
-        this = _StrumpackSparseSolver.new_STRUMPACK_SparseSolver()
+        this = _StrumpackSparseSolver.new_DStrumpackSolver()
         try:
             self.this.append(this)
         except __builtin__.Exception:
             self.this = this
-    __swig_destroy__ = _StrumpackSparseSolver.delete_STRUMPACK_SparseSolver
+    __swig_destroy__ = _StrumpackSparseSolver.delete_DStrumpackSolver
     __del__ = lambda self: None
-STRUMPACK_SparseSolver_swigregister = _StrumpackSparseSolver.STRUMPACK_SparseSolver_swigregister
-STRUMPACK_SparseSolver_swigregister(STRUMPACK_SparseSolver)
 
-class floatcomplex(_object):
+    def set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern):
+        return _StrumpackSparseSolver.DStrumpackSolver_set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern)
+
+    def solve(self, b, x, use_initial_guess):
+        return _StrumpackSparseSolver.DStrumpackSolver_solve(self, b, x, use_initial_guess)
+DStrumpackSolver_swigregister = _StrumpackSparseSolver.DStrumpackSolver_swigregister
+DStrumpackSolver_swigregister(DStrumpackSolver)
+
+class CStrumpackSolver(StrumpackSolverBase):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, floatcomplex, name, value)
+    for _s in [StrumpackSolverBase]:
+        __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, CStrumpackSolver, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, floatcomplex, name)
+    for _s in [StrumpackSolverBase]:
+        __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
+    __getattr__ = lambda self, name: _swig_getattr(self, CStrumpackSolver, name)
     __repr__ = _swig_repr
-    __swig_setmethods__["r"] = _StrumpackSparseSolver.floatcomplex_r_set
-    __swig_getmethods__["r"] = _StrumpackSparseSolver.floatcomplex_r_get
-    if _newclass:
-        r = _swig_property(_StrumpackSparseSolver.floatcomplex_r_get, _StrumpackSparseSolver.floatcomplex_r_set)
-    __swig_setmethods__["i"] = _StrumpackSparseSolver.floatcomplex_i_set
-    __swig_getmethods__["i"] = _StrumpackSparseSolver.floatcomplex_i_get
-    if _newclass:
-        i = _swig_property(_StrumpackSparseSolver.floatcomplex_i_get, _StrumpackSparseSolver.floatcomplex_i_set)
 
     def __init__(self):
-        this = _StrumpackSparseSolver.new_floatcomplex()
+        this = _StrumpackSparseSolver.new_CStrumpackSolver()
         try:
             self.this.append(this)
         except __builtin__.Exception:
             self.this = this
-    __swig_destroy__ = _StrumpackSparseSolver.delete_floatcomplex
+    __swig_destroy__ = _StrumpackSparseSolver.delete_CStrumpackSolver
     __del__ = lambda self: None
-floatcomplex_swigregister = _StrumpackSparseSolver.floatcomplex_swigregister
-floatcomplex_swigregister(floatcomplex)
 
-class doublecomplex(_object):
+    def set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern):
+        return _StrumpackSparseSolver.CStrumpackSolver_set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern)
+
+    def solve(self, b, x, use_initial_guess):
+        return _StrumpackSparseSolver.CStrumpackSolver_solve(self, b, x, use_initial_guess)
+CStrumpackSolver_swigregister = _StrumpackSparseSolver.CStrumpackSolver_swigregister
+CStrumpackSolver_swigregister(CStrumpackSolver)
+
+class ZStrumpackSolver(StrumpackSolverBase):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, doublecomplex, name, value)
+    for _s in [StrumpackSolverBase]:
+        __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, ZStrumpackSolver, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, doublecomplex, name)
+    for _s in [StrumpackSolverBase]:
+        __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
+    __getattr__ = lambda self, name: _swig_getattr(self, ZStrumpackSolver, name)
     __repr__ = _swig_repr
-    __swig_setmethods__["r"] = _StrumpackSparseSolver.doublecomplex_r_set
-    __swig_getmethods__["r"] = _StrumpackSparseSolver.doublecomplex_r_get
-    if _newclass:
-        r = _swig_property(_StrumpackSparseSolver.doublecomplex_r_get, _StrumpackSparseSolver.doublecomplex_r_set)
-    __swig_setmethods__["i"] = _StrumpackSparseSolver.doublecomplex_i_set
-    __swig_getmethods__["i"] = _StrumpackSparseSolver.doublecomplex_i_get
-    if _newclass:
-        i = _swig_property(_StrumpackSparseSolver.doublecomplex_i_get, _StrumpackSparseSolver.doublecomplex_i_set)
 
     def __init__(self):
-        this = _StrumpackSparseSolver.new_doublecomplex()
+        this = _StrumpackSparseSolver.new_ZStrumpackSolver()
         try:
             self.this.append(this)
         except __builtin__.Exception:
             self.this = this
-    __swig_destroy__ = _StrumpackSparseSolver.delete_doublecomplex
+    __swig_destroy__ = _StrumpackSparseSolver.delete_ZStrumpackSolver
     __del__ = lambda self: None
-doublecomplex_swigregister = _StrumpackSparseSolver.doublecomplex_swigregister
-doublecomplex_swigregister(doublecomplex)
 
-STRUMPACK_NATURAL = _StrumpackSparseSolver.STRUMPACK_NATURAL
-STRUMPACK_METIS = _StrumpackSparseSolver.STRUMPACK_METIS
-STRUMPACK_PARMETIS = _StrumpackSparseSolver.STRUMPACK_PARMETIS
-STRUMPACK_SCOTCH = _StrumpackSparseSolver.STRUMPACK_SCOTCH
-STRUMPACK_PTSCOTCH = _StrumpackSparseSolver.STRUMPACK_PTSCOTCH
-STRUMPACK_RCM = _StrumpackSparseSolver.STRUMPACK_RCM
-STRUMPACK_GEOMETRIC = _StrumpackSparseSolver.STRUMPACK_GEOMETRIC
-STRUMPACK_CLASSICAL = _StrumpackSparseSolver.STRUMPACK_CLASSICAL
-STRUMPACK_MODIFIED = _StrumpackSparseSolver.STRUMPACK_MODIFIED
-STRUMPACK_NORMAL = _StrumpackSparseSolver.STRUMPACK_NORMAL
-STRUMPACK_UNIFORM = _StrumpackSparseSolver.STRUMPACK_UNIFORM
-STRUMPACK_LINEAR = _StrumpackSparseSolver.STRUMPACK_LINEAR
-STRUMPACK_MERSENNE = _StrumpackSparseSolver.STRUMPACK_MERSENNE
-STRUMPACK_AUTO = _StrumpackSparseSolver.STRUMPACK_AUTO
-STRUMPACK_DIRECT = _StrumpackSparseSolver.STRUMPACK_DIRECT
-STRUMPACK_REFINE = _StrumpackSparseSolver.STRUMPACK_REFINE
-STRUMPACK_PREC_GMRES = _StrumpackSparseSolver.STRUMPACK_PREC_GMRES
-STRUMPACK_GMRES = _StrumpackSparseSolver.STRUMPACK_GMRES
-STRUMPACK_PREC_BICGSTAB = _StrumpackSparseSolver.STRUMPACK_PREC_BICGSTAB
-STRUMPACK_BICGSTAB = _StrumpackSparseSolver.STRUMPACK_BICGSTAB
-STRUMPACK_SUCCESS = _StrumpackSparseSolver.STRUMPACK_SUCCESS
-STRUMPACK_MATRIX_NOT_SET = _StrumpackSparseSolver.STRUMPACK_MATRIX_NOT_SET
-STRUMPACK_REORDERING_ERROR = _StrumpackSparseSolver.STRUMPACK_REORDERING_ERROR
+    def set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern):
+        return _StrumpackSparseSolver.ZStrumpackSolver_set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern)
 
-def STRUMPACK_init_mt(S, precision, interface, argc, argv, verbose):
-    return _StrumpackSparseSolver.STRUMPACK_init_mt(S, precision, interface, argc, argv, verbose)
-STRUMPACK_init_mt = _StrumpackSparseSolver.STRUMPACK_init_mt
+    def solve(self, b, x, use_initial_guess):
+        return _StrumpackSparseSolver.ZStrumpackSolver_solve(self, b, x, use_initial_guess)
+ZStrumpackSolver_swigregister = _StrumpackSparseSolver.ZStrumpackSolver_swigregister
+ZStrumpackSolver_swigregister(ZStrumpackSolver)
 
-def STRUMPACK_destroy(S):
-    return _StrumpackSparseSolver.STRUMPACK_destroy(S)
-STRUMPACK_destroy = _StrumpackSparseSolver.STRUMPACK_destroy
 
-def STRUMPACK_set_csr_matrix(S, N, row_ptr, col_ind, values, symmetric_pattern):
-    return _StrumpackSparseSolver.STRUMPACK_set_csr_matrix(S, N, row_ptr, col_ind, values, symmetric_pattern)
-STRUMPACK_set_csr_matrix = _StrumpackSparseSolver.STRUMPACK_set_csr_matrix
+import numpy as np
+def make_set_csr_matrix(mat_type):
+ def set_csr_matrix(self, A, mat_type=mat_type):
+  if A.dtype != mat_type:
+    assert False, ("input data type is not correct "+str(mat_type) +
+                   " is expected. " + str(A.dtype) + " is given")
 
-def STRUMPACK_solve(S, b, x, use_initial_guess):
-    return _StrumpackSparseSolver.STRUMPACK_solve(S, b, x, use_initial_guess)
-STRUMPACK_solve = _StrumpackSparseSolver.STRUMPACK_solve
+  N = A.shape[0]
+  values = A.data
+  row_ptr = A.indptr
+  col_ind = A.indices
 
-def STRUMPACK_set_from_options(S):
-    return _StrumpackSparseSolver.STRUMPACK_set_from_options(S)
-STRUMPACK_set_from_options = _StrumpackSparseSolver.STRUMPACK_set_from_options
+  return self.set_csr_matrix0(N, row_ptr, col_ind, values, 0)
+ return set_csr_matrix
 
-def STRUMPACK_reorder(S):
-    return _StrumpackSparseSolver.STRUMPACK_reorder(S)
-STRUMPACK_reorder = _StrumpackSparseSolver.STRUMPACK_reorder
+SStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float32)
+DStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float64)
+CStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex64)      
+ZStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex128)
 
-def STRUMPACK_reorder_regular(S, nx, ny, nz):
-    return _StrumpackSparseSolver.STRUMPACK_reorder_regular(S, nx, ny, nz)
-STRUMPACK_reorder_regular = _StrumpackSparseSolver.STRUMPACK_reorder_regular
-
-def STRUMPACK_factor(S):
-    return _StrumpackSparseSolver.STRUMPACK_factor(S)
-STRUMPACK_factor = _StrumpackSparseSolver.STRUMPACK_factor
-
-def STRUMPACK_set_verbose(S, v):
-    return _StrumpackSparseSolver.STRUMPACK_set_verbose(S, v)
-STRUMPACK_set_verbose = _StrumpackSparseSolver.STRUMPACK_set_verbose
-
-def STRUMPACK_set_maxit(S, maxit):
-    return _StrumpackSparseSolver.STRUMPACK_set_maxit(S, maxit)
-STRUMPACK_set_maxit = _StrumpackSparseSolver.STRUMPACK_set_maxit
-
-def STRUMPACK_set_gmres_restart(S, m):
-    return _StrumpackSparseSolver.STRUMPACK_set_gmres_restart(S, m)
-STRUMPACK_set_gmres_restart = _StrumpackSparseSolver.STRUMPACK_set_gmres_restart
-
-def STRUMPACK_set_rel_tol(S, tol):
-    return _StrumpackSparseSolver.STRUMPACK_set_rel_tol(S, tol)
-STRUMPACK_set_rel_tol = _StrumpackSparseSolver.STRUMPACK_set_rel_tol
-
-def STRUMPACK_set_abs_tol(S, tol):
-    return _StrumpackSparseSolver.STRUMPACK_set_abs_tol(S, tol)
-STRUMPACK_set_abs_tol = _StrumpackSparseSolver.STRUMPACK_set_abs_tol
-
-def STRUMPACK_set_nd_param(S, nd_param):
-    return _StrumpackSparseSolver.STRUMPACK_set_nd_param(S, nd_param)
-STRUMPACK_set_nd_param = _StrumpackSparseSolver.STRUMPACK_set_nd_param
-
-def STRUMPACK_set_reordering_method(S, m):
-    return _StrumpackSparseSolver.STRUMPACK_set_reordering_method(S, m)
-STRUMPACK_set_reordering_method = _StrumpackSparseSolver.STRUMPACK_set_reordering_method
-
-def STRUMPACK_set_GramSchmidt_type(S, t):
-    return _StrumpackSparseSolver.STRUMPACK_set_GramSchmidt_type(S, t)
-STRUMPACK_set_GramSchmidt_type = _StrumpackSparseSolver.STRUMPACK_set_GramSchmidt_type
-
-def STRUMPACK_set_mc64job(S, job):
-    return _StrumpackSparseSolver.STRUMPACK_set_mc64job(S, job)
-STRUMPACK_set_mc64job = _StrumpackSparseSolver.STRUMPACK_set_mc64job
-
-def STRUMPACK_set_matching(S, job):
-    return _StrumpackSparseSolver.STRUMPACK_set_matching(S, job)
-STRUMPACK_set_matching = _StrumpackSparseSolver.STRUMPACK_set_matching
-
-def STRUMPACK_set_Krylov_solver(S, solver_type):
-    return _StrumpackSparseSolver.STRUMPACK_set_Krylov_solver(S, solver_type)
-STRUMPACK_set_Krylov_solver = _StrumpackSparseSolver.STRUMPACK_set_Krylov_solver
-
-def STRUMPACK_enable_HSS(S):
-    return _StrumpackSparseSolver.STRUMPACK_enable_HSS(S)
-STRUMPACK_enable_HSS = _StrumpackSparseSolver.STRUMPACK_enable_HSS
-
-def STRUMPACK_disable_HSS(S):
-    return _StrumpackSparseSolver.STRUMPACK_disable_HSS(S)
-STRUMPACK_disable_HSS = _StrumpackSparseSolver.STRUMPACK_disable_HSS
-
-def STRUMPACK_set_HSS_min_front_size(S, size):
-    return _StrumpackSparseSolver.STRUMPACK_set_HSS_min_front_size(S, size)
-STRUMPACK_set_HSS_min_front_size = _StrumpackSparseSolver.STRUMPACK_set_HSS_min_front_size
-
-def STRUMPACK_set_HSS_min_sep_size(S, size):
-    return _StrumpackSparseSolver.STRUMPACK_set_HSS_min_sep_size(S, size)
-STRUMPACK_set_HSS_min_sep_size = _StrumpackSparseSolver.STRUMPACK_set_HSS_min_sep_size
-
-def STRUMPACK_set_HSS_max_rank(S, max_rank):
-    return _StrumpackSparseSolver.STRUMPACK_set_HSS_max_rank(S, max_rank)
-STRUMPACK_set_HSS_max_rank = _StrumpackSparseSolver.STRUMPACK_set_HSS_max_rank
-
-def STRUMPACK_set_HSS_leaf_size(S, leaf_size):
-    return _StrumpackSparseSolver.STRUMPACK_set_HSS_leaf_size(S, leaf_size)
-STRUMPACK_set_HSS_leaf_size = _StrumpackSparseSolver.STRUMPACK_set_HSS_leaf_size
-
-def STRUMPACK_set_HSS_rel_tol(S, rctol):
-    return _StrumpackSparseSolver.STRUMPACK_set_HSS_rel_tol(S, rctol)
-STRUMPACK_set_HSS_rel_tol = _StrumpackSparseSolver.STRUMPACK_set_HSS_rel_tol
-
-def STRUMPACK_set_HSS_abs_tol(S, actol):
-    return _StrumpackSparseSolver.STRUMPACK_set_HSS_abs_tol(S, actol)
-STRUMPACK_set_HSS_abs_tol = _StrumpackSparseSolver.STRUMPACK_set_HSS_abs_tol
-
-def STRUMPACK_verbose(S):
-    return _StrumpackSparseSolver.STRUMPACK_verbose(S)
-STRUMPACK_verbose = _StrumpackSparseSolver.STRUMPACK_verbose
-
-def STRUMPACK_maxit(S):
-    return _StrumpackSparseSolver.STRUMPACK_maxit(S)
-STRUMPACK_maxit = _StrumpackSparseSolver.STRUMPACK_maxit
-
-def STRUMPACK_rel_tol(S):
-    return _StrumpackSparseSolver.STRUMPACK_rel_tol(S)
-STRUMPACK_rel_tol = _StrumpackSparseSolver.STRUMPACK_rel_tol
-
-def STRUMPACK_abs_tol(S):
-    return _StrumpackSparseSolver.STRUMPACK_abs_tol(S)
-STRUMPACK_abs_tol = _StrumpackSparseSolver.STRUMPACK_abs_tol
-
-def STRUMPACK_nd_param(S):
-    return _StrumpackSparseSolver.STRUMPACK_nd_param(S)
-STRUMPACK_nd_param = _StrumpackSparseSolver.STRUMPACK_nd_param
-
-def STRUMPACK_reordering_method(S):
-    return _StrumpackSparseSolver.STRUMPACK_reordering_method(S)
-STRUMPACK_reordering_method = _StrumpackSparseSolver.STRUMPACK_reordering_method
-
-def STRUMPACK_GramSchmidt_type(S):
-    return _StrumpackSparseSolver.STRUMPACK_GramSchmidt_type(S)
-STRUMPACK_GramSchmidt_type = _StrumpackSparseSolver.STRUMPACK_GramSchmidt_type
-
-def STRUMPACK_mc64job(S):
-    return _StrumpackSparseSolver.STRUMPACK_mc64job(S)
-STRUMPACK_mc64job = _StrumpackSparseSolver.STRUMPACK_mc64job
-
-def STRUMPACK_matching(S):
-    return _StrumpackSparseSolver.STRUMPACK_matching(S)
-STRUMPACK_matching = _StrumpackSparseSolver.STRUMPACK_matching
-
-def STRUMPACK_Krylov_solver(S):
-    return _StrumpackSparseSolver.STRUMPACK_Krylov_solver(S)
-STRUMPACK_Krylov_solver = _StrumpackSparseSolver.STRUMPACK_Krylov_solver
-
-def STRUMPACK_HSS_min_front_size(S):
-    return _StrumpackSparseSolver.STRUMPACK_HSS_min_front_size(S)
-STRUMPACK_HSS_min_front_size = _StrumpackSparseSolver.STRUMPACK_HSS_min_front_size
-
-def STRUMPACK_HSS_min_sep_size(S):
-    return _StrumpackSparseSolver.STRUMPACK_HSS_min_sep_size(S)
-STRUMPACK_HSS_min_sep_size = _StrumpackSparseSolver.STRUMPACK_HSS_min_sep_size
-
-def STRUMPACK_HSS_max_rank(S):
-    return _StrumpackSparseSolver.STRUMPACK_HSS_max_rank(S)
-STRUMPACK_HSS_max_rank = _StrumpackSparseSolver.STRUMPACK_HSS_max_rank
-
-def STRUMPACK_HSS_leaf_size(S):
-    return _StrumpackSparseSolver.STRUMPACK_HSS_leaf_size(S)
-STRUMPACK_HSS_leaf_size = _StrumpackSparseSolver.STRUMPACK_HSS_leaf_size
-
-def STRUMPACK_HSS_rel_tol(S):
-    return _StrumpackSparseSolver.STRUMPACK_HSS_rel_tol(S)
-STRUMPACK_HSS_rel_tol = _StrumpackSparseSolver.STRUMPACK_HSS_rel_tol
-
-def STRUMPACK_HSS_abs_tol(S):
-    return _StrumpackSparseSolver.STRUMPACK_HSS_abs_tol(S)
-STRUMPACK_HSS_abs_tol = _StrumpackSparseSolver.STRUMPACK_HSS_abs_tol
-
-def STRUMPACK_its(S):
-    return _StrumpackSparseSolver.STRUMPACK_its(S)
-STRUMPACK_its = _StrumpackSparseSolver.STRUMPACK_its
-
-def STRUMPACK_rank(S):
-    return _StrumpackSparseSolver.STRUMPACK_rank(S)
-STRUMPACK_rank = _StrumpackSparseSolver.STRUMPACK_rank
-
-def STRUMPACK_factor_nonzeros(S):
-    return _StrumpackSparseSolver.STRUMPACK_factor_nonzeros(S)
-STRUMPACK_factor_nonzeros = _StrumpackSparseSolver.STRUMPACK_factor_nonzeros
-
-def STRUMPACK_factor_memory(S):
-    return _StrumpackSparseSolver.STRUMPACK_factor_memory(S)
-STRUMPACK_factor_memory = _StrumpackSparseSolver.STRUMPACK_factor_memory
 # This file is compatible with both classic and new-style classes.
 
 

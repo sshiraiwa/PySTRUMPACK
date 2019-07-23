@@ -136,11 +136,31 @@ def make_set_csr_matrix(mat_type):
 	      
   return self.set_csr_matrix0(N, row_ptr, col_ind, values, 0)
  return set_csr_matrix
+def make_set_distributed_csr_matrix(mat_type):
+ def set_distributed_csr_matrix(self, A, mat_type=mat_type):
+  if A.dtype != mat_type:
+    assert False, ("input data type is not correct "+str(mat_type) +
+                   " is expected. " + str(A.dtype) + " is given")
+  
+  local_rows = A.shape[0]
+  values = A.data
+  row_ptr = A.indptr
+  col_ind = A.indices
+
+  assert False, "dist is not defined"
+  return self.set_distributed_csr_matrix0(local_rows, row_ptr, col_ind, values, dist, 0)
+ return set_csr_matrix
 
 SStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float32)
 DStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float64)
 CStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex64)      
 ZStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex128)
+      
+SStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float32)
+DStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float64)
+CStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex64)      
+ZStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex128)
+
 %}
 
 //%include "StrumpackSparseSolver.h"

@@ -3007,14 +3007,21 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 #define SWIGTYPE_p_DStrumpackSolver swig_types[1]
 #define SWIGTYPE_p_SStrumpackSolver swig_types[2]
 #define SWIGTYPE_p_STRUMPACK_GRAM_SCHMIDT_TYPE swig_types[3]
-#define SWIGTYPE_p_STRUMPACK_KRYLOV_SOLVER swig_types[4]
-#define SWIGTYPE_p_STRUMPACK_REORDERING_STRATEGY swig_types[5]
-#define SWIGTYPE_p_STRUMPACK_RETURN_CODE swig_types[6]
-#define SWIGTYPE_p_StrumpackSolverBase swig_types[7]
-#define SWIGTYPE_p_ZStrumpackSolver swig_types[8]
-#define SWIGTYPE_p_char swig_types[9]
-static swig_type_info *swig_types[11];
-static swig_module_info swig_module = {swig_types, 10, 0, 0, 0, 0};
+#define SWIGTYPE_p_STRUMPACK_INTERFACE swig_types[4]
+#define SWIGTYPE_p_STRUMPACK_KRYLOV_SOLVER swig_types[5]
+#define SWIGTYPE_p_STRUMPACK_PRECISION swig_types[6]
+#define SWIGTYPE_p_STRUMPACK_RANDOM_DISTRIBUTION swig_types[7]
+#define SWIGTYPE_p_STRUMPACK_RANDOM_ENGINE swig_types[8]
+#define SWIGTYPE_p_STRUMPACK_REORDERING_STRATEGY swig_types[9]
+#define SWIGTYPE_p_STRUMPACK_RETURN_CODE swig_types[10]
+#define SWIGTYPE_p_STRUMPACK_SparseSolver swig_types[11]
+#define SWIGTYPE_p_StrumpackSolverBase swig_types[12]
+#define SWIGTYPE_p_ZStrumpackSolver swig_types[13]
+#define SWIGTYPE_p_char swig_types[14]
+#define SWIGTYPE_p_doublecomplex swig_types[15]
+#define SWIGTYPE_p_floatcomplex swig_types[16]
+static swig_type_info *swig_types[18];
+static swig_module_info swig_module = {swig_types, 17, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3180,6 +3187,13 @@ class StrumpackSolverBase
 };
 
 
+SWIGINTERNINLINE PyObject*
+  SWIG_From_int  (int value)
+{
+  return PyInt_FromLong((long) value);
+}
+
+
 #include <limits.h>
 #if !defined(SWIG_NO_LLONG_MAX)
 # if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
@@ -3328,13 +3342,6 @@ SWIG_AsVal_int (PyObject * obj, int *val)
     }
   }  
   return res;
-}
-
-
-SWIGINTERNINLINE PyObject*
-  SWIG_From_int  (int value)
-{
-  return PyInt_FromLong((long) value);
 }
 
 
@@ -3524,8 +3531,8 @@ SWIGINTERN PyObject *_wrap_StrumpackSolverBase_factor(PyObject *SWIGUNUSEDPARM(s
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_factor" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
   }
   arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
-  result = (arg1)->factor();
-  resultobj = SWIG_NewPointerObj((new STRUMPACK_RETURN_CODE(static_cast< const STRUMPACK_RETURN_CODE& >(result))), SWIGTYPE_p_STRUMPACK_RETURN_CODE, SWIG_POINTER_OWN |  0 );
+  result = (STRUMPACK_RETURN_CODE)(arg1)->factor();
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -3546,8 +3553,8 @@ SWIGINTERN PyObject *_wrap_StrumpackSolverBase_reorder(PyObject *SWIGUNUSEDPARM(
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_reorder" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
   }
   arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
-  result = (arg1)->reorder();
-  resultobj = SWIG_NewPointerObj((new STRUMPACK_RETURN_CODE(static_cast< const STRUMPACK_RETURN_CODE& >(result))), SWIGTYPE_p_STRUMPACK_RETURN_CODE, SWIG_POINTER_OWN |  0 );
+  result = (STRUMPACK_RETURN_CODE)(arg1)->reorder();
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -3595,8 +3602,8 @@ SWIGINTERN PyObject *_wrap_StrumpackSolverBase_reorder_regular(PyObject *SWIGUNU
     SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "StrumpackSolverBase_reorder_regular" "', argument " "4"" of type '" "int""'");
   } 
   arg4 = static_cast< int >(val4);
-  result = (arg1)->reorder_regular(arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj((new STRUMPACK_RETURN_CODE(static_cast< const STRUMPACK_RETURN_CODE& >(result))), SWIGTYPE_p_STRUMPACK_RETURN_CODE, SWIG_POINTER_OWN |  0 );
+  result = (STRUMPACK_RETURN_CODE)(arg1)->reorder_regular(arg2,arg3,arg4);
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -3789,8 +3796,8 @@ SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_reordering_method(PyObject *S
   STRUMPACK_REORDERING_STRATEGY arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   
@@ -3800,19 +3807,11 @@ SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_reordering_method(PyObject *S
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_reordering_method" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
   }
   arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_STRUMPACK_REORDERING_STRATEGY,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "StrumpackSolverBase_set_reordering_method" "', argument " "2"" of type '" "STRUMPACK_REORDERING_STRATEGY""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "StrumpackSolverBase_set_reordering_method" "', argument " "2"" of type '" "STRUMPACK_REORDERING_STRATEGY""'");
-    } else {
-      STRUMPACK_REORDERING_STRATEGY * temp = reinterpret_cast< STRUMPACK_REORDERING_STRATEGY * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_reordering_method" "', argument " "2"" of type '" "STRUMPACK_REORDERING_STRATEGY""'");
+  } 
+  arg2 = static_cast< STRUMPACK_REORDERING_STRATEGY >(val2);
   (arg1)->set_reordering_method(arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -3827,8 +3826,8 @@ SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_GramSchmidt_type(PyObject *SW
   STRUMPACK_GRAM_SCHMIDT_TYPE arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   
@@ -3838,19 +3837,11 @@ SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_GramSchmidt_type(PyObject *SW
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_GramSchmidt_type" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
   }
   arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_STRUMPACK_GRAM_SCHMIDT_TYPE,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "StrumpackSolverBase_set_GramSchmidt_type" "', argument " "2"" of type '" "STRUMPACK_GRAM_SCHMIDT_TYPE""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "StrumpackSolverBase_set_GramSchmidt_type" "', argument " "2"" of type '" "STRUMPACK_GRAM_SCHMIDT_TYPE""'");
-    } else {
-      STRUMPACK_GRAM_SCHMIDT_TYPE * temp = reinterpret_cast< STRUMPACK_GRAM_SCHMIDT_TYPE * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_GramSchmidt_type" "', argument " "2"" of type '" "STRUMPACK_GRAM_SCHMIDT_TYPE""'");
+  } 
+  arg2 = static_cast< STRUMPACK_GRAM_SCHMIDT_TYPE >(val2);
   (arg1)->set_GramSchmidt_type(arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -3925,8 +3916,8 @@ SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_Krylov_solver(PyObject *SWIGU
   STRUMPACK_KRYLOV_SOLVER arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   
@@ -3936,19 +3927,11 @@ SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_Krylov_solver(PyObject *SWIGU
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_Krylov_solver" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
   }
   arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_STRUMPACK_KRYLOV_SOLVER,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "StrumpackSolverBase_set_Krylov_solver" "', argument " "2"" of type '" "STRUMPACK_KRYLOV_SOLVER""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "StrumpackSolverBase_set_Krylov_solver" "', argument " "2"" of type '" "STRUMPACK_KRYLOV_SOLVER""'");
-    } else {
-      STRUMPACK_KRYLOV_SOLVER * temp = reinterpret_cast< STRUMPACK_KRYLOV_SOLVER * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_Krylov_solver" "', argument " "2"" of type '" "STRUMPACK_KRYLOV_SOLVER""'");
+  } 
+  arg2 = static_cast< STRUMPACK_KRYLOV_SOLVER >(val2);
   (arg1)->set_Krylov_solver(arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -4303,8 +4286,8 @@ SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_reordering_method(PyObject *S
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_reordering_method" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
   }
   arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
-  result = (arg1)->get_reordering_method();
-  resultobj = SWIG_NewPointerObj((new STRUMPACK_REORDERING_STRATEGY(static_cast< const STRUMPACK_REORDERING_STRATEGY& >(result))), SWIGTYPE_p_STRUMPACK_REORDERING_STRATEGY, SWIG_POINTER_OWN |  0 );
+  result = (STRUMPACK_REORDERING_STRATEGY)(arg1)->get_reordering_method();
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -4369,8 +4352,8 @@ SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_Krylov_solver(PyObject *SWIGU
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_Krylov_solver" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
   }
   arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
-  result = (arg1)->get_Krylov_solver();
-  resultobj = SWIG_NewPointerObj((new STRUMPACK_KRYLOV_SOLVER(static_cast< const STRUMPACK_KRYLOV_SOLVER& >(result))), SWIGTYPE_p_STRUMPACK_KRYLOV_SOLVER, SWIG_POINTER_OWN |  0 );
+  result = (STRUMPACK_KRYLOV_SOLVER)(arg1)->get_Krylov_solver();
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -4824,8 +4807,8 @@ SWIGINTERN PyObject *_wrap_SStrumpackSolver_solve(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "SStrumpackSolver_solve" "', argument " "4"" of type '" "int""'");
   } 
   arg4 = static_cast< int >(val4);
-  result = (arg1)->solve(arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj((new STRUMPACK_RETURN_CODE(static_cast< const STRUMPACK_RETURN_CODE& >(result))), SWIGTYPE_p_STRUMPACK_RETURN_CODE, SWIG_POINTER_OWN |  0 );
+  result = (STRUMPACK_RETURN_CODE)(arg1)->solve(arg2,arg3,arg4);
+  resultobj = SWIG_From_int(static_cast< int >(result));
   {
     if (tempobj2){
       Py_DECREF(tempobj2);
@@ -5045,8 +5028,8 @@ SWIGINTERN PyObject *_wrap_DStrumpackSolver_solve(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "DStrumpackSolver_solve" "', argument " "4"" of type '" "int""'");
   } 
   arg4 = static_cast< int >(val4);
-  result = (arg1)->solve(arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj((new STRUMPACK_RETURN_CODE(static_cast< const STRUMPACK_RETURN_CODE& >(result))), SWIGTYPE_p_STRUMPACK_RETURN_CODE, SWIG_POINTER_OWN |  0 );
+  result = (STRUMPACK_RETURN_CODE)(arg1)->solve(arg2,arg3,arg4);
+  resultobj = SWIG_From_int(static_cast< int >(result));
   {
     if (tempobj2){
       Py_DECREF(tempobj2);
@@ -5266,8 +5249,8 @@ SWIGINTERN PyObject *_wrap_CStrumpackSolver_solve(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "CStrumpackSolver_solve" "', argument " "4"" of type '" "int""'");
   } 
   arg4 = static_cast< int >(val4);
-  result = (arg1)->solve(arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj((new STRUMPACK_RETURN_CODE(static_cast< const STRUMPACK_RETURN_CODE& >(result))), SWIGTYPE_p_STRUMPACK_RETURN_CODE, SWIG_POINTER_OWN |  0 );
+  result = (STRUMPACK_RETURN_CODE)(arg1)->solve(arg2,arg3,arg4);
+  resultobj = SWIG_From_int(static_cast< int >(result));
   {
     if (tempobj2){
       Py_DECREF(tempobj2);
@@ -5487,8 +5470,8 @@ SWIGINTERN PyObject *_wrap_ZStrumpackSolver_solve(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ZStrumpackSolver_solve" "', argument " "4"" of type '" "int""'");
   } 
   arg4 = static_cast< int >(val4);
-  result = (arg1)->solve(arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj((new STRUMPACK_RETURN_CODE(static_cast< const STRUMPACK_RETURN_CODE& >(result))), SWIGTYPE_p_STRUMPACK_RETURN_CODE, SWIG_POINTER_OWN |  0 );
+  result = (STRUMPACK_RETURN_CODE)(arg1)->solve(arg2,arg3,arg4);
+  resultobj = SWIG_From_int(static_cast< int >(result));
   {
     if (tempobj2){
       Py_DECREF(tempobj2);
@@ -5609,49 +5592,77 @@ static void *_p_ZStrumpackSolverTo_p_StrumpackSolverBase(void *x, int *SWIGUNUSE
 static swig_type_info _swigt__p_CStrumpackSolver = {"_p_CStrumpackSolver", "CStrumpackSolver *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DStrumpackSolver = {"_p_DStrumpackSolver", "DStrumpackSolver *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SStrumpackSolver = {"_p_SStrumpackSolver", "SStrumpackSolver *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_STRUMPACK_GRAM_SCHMIDT_TYPE = {"_p_STRUMPACK_GRAM_SCHMIDT_TYPE", "STRUMPACK_GRAM_SCHMIDT_TYPE *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_STRUMPACK_KRYLOV_SOLVER = {"_p_STRUMPACK_KRYLOV_SOLVER", "STRUMPACK_KRYLOV_SOLVER *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_STRUMPACK_REORDERING_STRATEGY = {"_p_STRUMPACK_REORDERING_STRATEGY", "STRUMPACK_REORDERING_STRATEGY *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_STRUMPACK_RETURN_CODE = {"_p_STRUMPACK_RETURN_CODE", "STRUMPACK_RETURN_CODE *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_GRAM_SCHMIDT_TYPE = {"_p_STRUMPACK_GRAM_SCHMIDT_TYPE", "enum STRUMPACK_GRAM_SCHMIDT_TYPE *|STRUMPACK_GRAM_SCHMIDT_TYPE *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_INTERFACE = {"_p_STRUMPACK_INTERFACE", "enum STRUMPACK_INTERFACE *|STRUMPACK_INTERFACE *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_KRYLOV_SOLVER = {"_p_STRUMPACK_KRYLOV_SOLVER", "enum STRUMPACK_KRYLOV_SOLVER *|STRUMPACK_KRYLOV_SOLVER *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_PRECISION = {"_p_STRUMPACK_PRECISION", "enum STRUMPACK_PRECISION *|STRUMPACK_PRECISION *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_RANDOM_DISTRIBUTION = {"_p_STRUMPACK_RANDOM_DISTRIBUTION", "enum STRUMPACK_RANDOM_DISTRIBUTION *|STRUMPACK_RANDOM_DISTRIBUTION *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_RANDOM_ENGINE = {"_p_STRUMPACK_RANDOM_ENGINE", "enum STRUMPACK_RANDOM_ENGINE *|STRUMPACK_RANDOM_ENGINE *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_REORDERING_STRATEGY = {"_p_STRUMPACK_REORDERING_STRATEGY", "enum STRUMPACK_REORDERING_STRATEGY *|STRUMPACK_REORDERING_STRATEGY *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_RETURN_CODE = {"_p_STRUMPACK_RETURN_CODE", "enum STRUMPACK_RETURN_CODE *|STRUMPACK_RETURN_CODE *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_SparseSolver = {"_p_STRUMPACK_SparseSolver", "STRUMPACK_SparseSolver *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_StrumpackSolverBase = {"_p_StrumpackSolverBase", "StrumpackSolverBase *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ZStrumpackSolver = {"_p_ZStrumpackSolver", "ZStrumpackSolver *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_doublecomplex = {"_p_doublecomplex", "doublecomplex *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_floatcomplex = {"_p_floatcomplex", "floatcomplex *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_CStrumpackSolver,
   &_swigt__p_DStrumpackSolver,
   &_swigt__p_SStrumpackSolver,
   &_swigt__p_STRUMPACK_GRAM_SCHMIDT_TYPE,
+  &_swigt__p_STRUMPACK_INTERFACE,
   &_swigt__p_STRUMPACK_KRYLOV_SOLVER,
+  &_swigt__p_STRUMPACK_PRECISION,
+  &_swigt__p_STRUMPACK_RANDOM_DISTRIBUTION,
+  &_swigt__p_STRUMPACK_RANDOM_ENGINE,
   &_swigt__p_STRUMPACK_REORDERING_STRATEGY,
   &_swigt__p_STRUMPACK_RETURN_CODE,
+  &_swigt__p_STRUMPACK_SparseSolver,
   &_swigt__p_StrumpackSolverBase,
   &_swigt__p_ZStrumpackSolver,
   &_swigt__p_char,
+  &_swigt__p_doublecomplex,
+  &_swigt__p_floatcomplex,
 };
 
 static swig_cast_info _swigc__p_CStrumpackSolver[] = {  {&_swigt__p_CStrumpackSolver, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DStrumpackSolver[] = {  {&_swigt__p_DStrumpackSolver, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SStrumpackSolver[] = {  {&_swigt__p_SStrumpackSolver, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_STRUMPACK_GRAM_SCHMIDT_TYPE[] = {  {&_swigt__p_STRUMPACK_GRAM_SCHMIDT_TYPE, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_STRUMPACK_INTERFACE[] = {  {&_swigt__p_STRUMPACK_INTERFACE, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_STRUMPACK_KRYLOV_SOLVER[] = {  {&_swigt__p_STRUMPACK_KRYLOV_SOLVER, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_STRUMPACK_PRECISION[] = {  {&_swigt__p_STRUMPACK_PRECISION, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_STRUMPACK_RANDOM_DISTRIBUTION[] = {  {&_swigt__p_STRUMPACK_RANDOM_DISTRIBUTION, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_STRUMPACK_RANDOM_ENGINE[] = {  {&_swigt__p_STRUMPACK_RANDOM_ENGINE, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_STRUMPACK_REORDERING_STRATEGY[] = {  {&_swigt__p_STRUMPACK_REORDERING_STRATEGY, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_STRUMPACK_RETURN_CODE[] = {  {&_swigt__p_STRUMPACK_RETURN_CODE, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_STRUMPACK_SparseSolver[] = {  {&_swigt__p_STRUMPACK_SparseSolver, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_StrumpackSolverBase[] = {  {&_swigt__p_StrumpackSolverBase, 0, 0, 0},  {&_swigt__p_SStrumpackSolver, _p_SStrumpackSolverTo_p_StrumpackSolverBase, 0, 0},  {&_swigt__p_DStrumpackSolver, _p_DStrumpackSolverTo_p_StrumpackSolverBase, 0, 0},  {&_swigt__p_CStrumpackSolver, _p_CStrumpackSolverTo_p_StrumpackSolverBase, 0, 0},  {&_swigt__p_ZStrumpackSolver, _p_ZStrumpackSolverTo_p_StrumpackSolverBase, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ZStrumpackSolver[] = {  {&_swigt__p_ZStrumpackSolver, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_doublecomplex[] = {  {&_swigt__p_doublecomplex, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_floatcomplex[] = {  {&_swigt__p_floatcomplex, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_CStrumpackSolver,
   _swigc__p_DStrumpackSolver,
   _swigc__p_SStrumpackSolver,
   _swigc__p_STRUMPACK_GRAM_SCHMIDT_TYPE,
+  _swigc__p_STRUMPACK_INTERFACE,
   _swigc__p_STRUMPACK_KRYLOV_SOLVER,
+  _swigc__p_STRUMPACK_PRECISION,
+  _swigc__p_STRUMPACK_RANDOM_DISTRIBUTION,
+  _swigc__p_STRUMPACK_RANDOM_ENGINE,
   _swigc__p_STRUMPACK_REORDERING_STRATEGY,
   _swigc__p_STRUMPACK_RETURN_CODE,
+  _swigc__p_STRUMPACK_SparseSolver,
   _swigc__p_StrumpackSolverBase,
   _swigc__p_ZStrumpackSolver,
   _swigc__p_char,
+  _swigc__p_doublecomplex,
+  _swigc__p_floatcomplex,
 };
 
 
@@ -6345,6 +6356,39 @@ SWIG_init(void) {
   
   import_array();
   
+  SWIG_Python_SetConstant(d, "STRUMPACK_FLOAT",SWIG_From_int(static_cast< int >(STRUMPACK_FLOAT)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_DOUBLE",SWIG_From_int(static_cast< int >(STRUMPACK_DOUBLE)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_FLOATCOMPLEX",SWIG_From_int(static_cast< int >(STRUMPACK_FLOATCOMPLEX)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_DOUBLECOMPLEX",SWIG_From_int(static_cast< int >(STRUMPACK_DOUBLECOMPLEX)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_FLOAT_64",SWIG_From_int(static_cast< int >(STRUMPACK_FLOAT_64)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_DOUBLE_64",SWIG_From_int(static_cast< int >(STRUMPACK_DOUBLE_64)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_FLOATCOMPLEX_64",SWIG_From_int(static_cast< int >(STRUMPACK_FLOATCOMPLEX_64)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_DOUBLECOMPLEX_64",SWIG_From_int(static_cast< int >(STRUMPACK_DOUBLECOMPLEX_64)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_MT",SWIG_From_int(static_cast< int >(STRUMPACK_MT)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_MPI_DIST",SWIG_From_int(static_cast< int >(STRUMPACK_MPI_DIST)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_NATURAL",SWIG_From_int(static_cast< int >(STRUMPACK_NATURAL)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_METIS",SWIG_From_int(static_cast< int >(STRUMPACK_METIS)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_PARMETIS",SWIG_From_int(static_cast< int >(STRUMPACK_PARMETIS)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_SCOTCH",SWIG_From_int(static_cast< int >(STRUMPACK_SCOTCH)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_PTSCOTCH",SWIG_From_int(static_cast< int >(STRUMPACK_PTSCOTCH)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_RCM",SWIG_From_int(static_cast< int >(STRUMPACK_RCM)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_GEOMETRIC",SWIG_From_int(static_cast< int >(STRUMPACK_GEOMETRIC)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_CLASSICAL",SWIG_From_int(static_cast< int >(STRUMPACK_CLASSICAL)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_MODIFIED",SWIG_From_int(static_cast< int >(STRUMPACK_MODIFIED)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_NORMAL",SWIG_From_int(static_cast< int >(STRUMPACK_NORMAL)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_UNIFORM",SWIG_From_int(static_cast< int >(STRUMPACK_UNIFORM)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_LINEAR",SWIG_From_int(static_cast< int >(STRUMPACK_LINEAR)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_MERSENNE",SWIG_From_int(static_cast< int >(STRUMPACK_MERSENNE)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_AUTO",SWIG_From_int(static_cast< int >(STRUMPACK_AUTO)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_DIRECT",SWIG_From_int(static_cast< int >(STRUMPACK_DIRECT)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_REFINE",SWIG_From_int(static_cast< int >(STRUMPACK_REFINE)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_PREC_GMRES",SWIG_From_int(static_cast< int >(STRUMPACK_PREC_GMRES)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_GMRES",SWIG_From_int(static_cast< int >(STRUMPACK_GMRES)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_PREC_BICGSTAB",SWIG_From_int(static_cast< int >(STRUMPACK_PREC_BICGSTAB)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_BICGSTAB",SWIG_From_int(static_cast< int >(STRUMPACK_BICGSTAB)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_SUCCESS",SWIG_From_int(static_cast< int >(STRUMPACK_SUCCESS)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_MATRIX_NOT_SET",SWIG_From_int(static_cast< int >(STRUMPACK_MATRIX_NOT_SET)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_REORDERING_ERROR",SWIG_From_int(static_cast< int >(STRUMPACK_REORDERING_ERROR)));
 #if PY_VERSION_HEX >= 0x03000000
   return m;
 #else

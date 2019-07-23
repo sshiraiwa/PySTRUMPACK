@@ -17,6 +17,7 @@ import_array();
 %ignore  STRUMPACK_get_gmres_restart;
 %ignore  use_HSS;
 
+
 %inline %{
 class StrumpackSolverBase
 {
@@ -124,32 +125,35 @@ MakeSolver(Z, STRUMPACK_DOUBLECOMPLEX, std::complex<double>)
 %pythoncode %{
 import numpy as np
 def make_set_csr_matrix(mat_type):
- def set_csr_matrix(self, A, mat_type=mat_type):
+ def set_csr_matrix(self, A, symmetric=0, mat_type=mat_type):
   if A.dtype != mat_type:
     assert False, ("input data type is not correct "+str(mat_type) +
                    " is expected. " + str(A.dtype) + " is given")
   
   N = A.shape[0]
   values = A.data
-  row_ptr = A.indptr
-  col_ind = A.indices
+  row_ptr = A.indptr.astype(np.int32, copy=False)
+  col_ind = A.indices.astype(np.int32, copy=False)
 	      
-  return self.set_csr_matrix0(N, row_ptr, col_ind, values, 0)
+  return self.set_csr_matrix0(N, row_ptr, col_ind, values, symmetric)
  return set_csr_matrix
+
 def make_set_distributed_csr_matrix(mat_type):
- def set_distributed_csr_matrix(self, A, mat_type=mat_type):
+ def set_distributed_csr_matrix(self, A,  symmetric=0, mat_type=mat_type):
   if A.dtype != mat_type:
     assert False, ("input data type is not correct "+str(mat_type) +
                    " is expected. " + str(A.dtype) + " is given")
   
   local_rows = A.shape[0]
   values = A.data
-  row_ptr = A.indptr
-  col_ind = A.indices
+  row_ptr = A.indptr.astype(np.int32, copy=False)
+  col_ind = A.indices.astype(np.int32, copy=False)
 
-  assert False, "dist is not defined"
-  return self.set_distributed_csr_matrix0(local_rows, row_ptr, col_ind, values, dist, 0)
- return set_csr_matrix
+  from mpi4py import MPI
+  dist = np.hstack(([np.int32(0)], np.cumsum(MPI.allgather(local_rows)))).astype(np.int32, copy=False)
+      
+  return self.set_distributed_csr_matrix0(local_rows, row_ptr, col_ind, values, dist, symmetric)
+ return set_distributed_csr_matrix
 
 SStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float32)
 DStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float64)
@@ -162,6 +166,12 @@ CStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np
 ZStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex128)
 
 %}
+
+// include enum in header
+%rename("$ignore", %$isfunction) "";
+%rename("$ignore", %$isclass) "";
+
+%include "StrumpackSparseSolver.h"
 
 //%include "StrumpackSparseSolver.h"
 

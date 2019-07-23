@@ -351,32 +351,35 @@ ZStrumpackSolver_swigregister(ZStrumpackSolver)
 
 import numpy as np
 def make_set_csr_matrix(mat_type):
- def set_csr_matrix(self, A, mat_type=mat_type):
+ def set_csr_matrix(self, A, symmetric=0, mat_type=mat_type):
   if A.dtype != mat_type:
     assert False, ("input data type is not correct "+str(mat_type) +
                    " is expected. " + str(A.dtype) + " is given")
 
   N = A.shape[0]
   values = A.data
-  row_ptr = A.indptr
-  col_ind = A.indices
+  row_ptr = A.indptr.astype(np.int32, copy=False)
+  col_ind = A.indices.astype(np.int32, copy=False)
 
-  return self.set_csr_matrix0(N, row_ptr, col_ind, values, 0)
+  return self.set_csr_matrix0(N, row_ptr, col_ind, values, symmetric)
  return set_csr_matrix
+
 def make_set_distributed_csr_matrix(mat_type):
- def set_distributed_csr_matrix(self, A, mat_type=mat_type):
+ def set_distributed_csr_matrix(self, A,  symmetric=0, mat_type=mat_type):
   if A.dtype != mat_type:
     assert False, ("input data type is not correct "+str(mat_type) +
                    " is expected. " + str(A.dtype) + " is given")
 
   local_rows = A.shape[0]
   values = A.data
-  row_ptr = A.indptr
-  col_ind = A.indices
+  row_ptr = A.indptr.astype(np.int32, copy=False)
+  col_ind = A.indices.astype(np.int32, copy=False)
 
-  assert False, "dist is not defined"
-  return self.set_distributed_csr_matrix0(local_rows, row_ptr, col_ind, values, dist, 0)
- return set_csr_matrix
+  from mpi4py import MPI
+  dist = np.hstack(([np.int32(0)], np.cumsum(MPI.allgather(local_rows)))).astype(np.int32, copy=False)
+
+  return self.set_distributed_csr_matrix0(local_rows, row_ptr, col_ind, values, dist, symmetric)
+ return set_distributed_csr_matrix
 
 SStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float32)
 DStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float64)
@@ -389,6 +392,39 @@ CStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np
 ZStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex128)
 
 
+STRUMPACK_FLOAT = _StrumpackSparseSolver.STRUMPACK_FLOAT
+STRUMPACK_DOUBLE = _StrumpackSparseSolver.STRUMPACK_DOUBLE
+STRUMPACK_FLOATCOMPLEX = _StrumpackSparseSolver.STRUMPACK_FLOATCOMPLEX
+STRUMPACK_DOUBLECOMPLEX = _StrumpackSparseSolver.STRUMPACK_DOUBLECOMPLEX
+STRUMPACK_FLOAT_64 = _StrumpackSparseSolver.STRUMPACK_FLOAT_64
+STRUMPACK_DOUBLE_64 = _StrumpackSparseSolver.STRUMPACK_DOUBLE_64
+STRUMPACK_FLOATCOMPLEX_64 = _StrumpackSparseSolver.STRUMPACK_FLOATCOMPLEX_64
+STRUMPACK_DOUBLECOMPLEX_64 = _StrumpackSparseSolver.STRUMPACK_DOUBLECOMPLEX_64
+STRUMPACK_MT = _StrumpackSparseSolver.STRUMPACK_MT
+STRUMPACK_MPI_DIST = _StrumpackSparseSolver.STRUMPACK_MPI_DIST
+STRUMPACK_NATURAL = _StrumpackSparseSolver.STRUMPACK_NATURAL
+STRUMPACK_METIS = _StrumpackSparseSolver.STRUMPACK_METIS
+STRUMPACK_PARMETIS = _StrumpackSparseSolver.STRUMPACK_PARMETIS
+STRUMPACK_SCOTCH = _StrumpackSparseSolver.STRUMPACK_SCOTCH
+STRUMPACK_PTSCOTCH = _StrumpackSparseSolver.STRUMPACK_PTSCOTCH
+STRUMPACK_RCM = _StrumpackSparseSolver.STRUMPACK_RCM
+STRUMPACK_GEOMETRIC = _StrumpackSparseSolver.STRUMPACK_GEOMETRIC
+STRUMPACK_CLASSICAL = _StrumpackSparseSolver.STRUMPACK_CLASSICAL
+STRUMPACK_MODIFIED = _StrumpackSparseSolver.STRUMPACK_MODIFIED
+STRUMPACK_NORMAL = _StrumpackSparseSolver.STRUMPACK_NORMAL
+STRUMPACK_UNIFORM = _StrumpackSparseSolver.STRUMPACK_UNIFORM
+STRUMPACK_LINEAR = _StrumpackSparseSolver.STRUMPACK_LINEAR
+STRUMPACK_MERSENNE = _StrumpackSparseSolver.STRUMPACK_MERSENNE
+STRUMPACK_AUTO = _StrumpackSparseSolver.STRUMPACK_AUTO
+STRUMPACK_DIRECT = _StrumpackSparseSolver.STRUMPACK_DIRECT
+STRUMPACK_REFINE = _StrumpackSparseSolver.STRUMPACK_REFINE
+STRUMPACK_PREC_GMRES = _StrumpackSparseSolver.STRUMPACK_PREC_GMRES
+STRUMPACK_GMRES = _StrumpackSparseSolver.STRUMPACK_GMRES
+STRUMPACK_PREC_BICGSTAB = _StrumpackSparseSolver.STRUMPACK_PREC_BICGSTAB
+STRUMPACK_BICGSTAB = _StrumpackSparseSolver.STRUMPACK_BICGSTAB
+STRUMPACK_SUCCESS = _StrumpackSparseSolver.STRUMPACK_SUCCESS
+STRUMPACK_MATRIX_NOT_SET = _StrumpackSparseSolver.STRUMPACK_MATRIX_NOT_SET
+STRUMPACK_REORDERING_ERROR = _StrumpackSparseSolver.STRUMPACK_REORDERING_ERROR
 # This file is compatible with both classic and new-style classes.
 
 

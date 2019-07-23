@@ -1,4 +1,1 @@
-from STRUMPACK.StrumpackSparseSolver import SStrumpackSolver
-from STRUMPACK.StrumpackSparseSolver import DStrumpackSolver
-from STRUMPACK.StrumpackSparseSolver import CStrumpackSolver
-from STRUMPACK.StrumpackSparseSolver import ZStrumpackSolver
+from STRUMPACK.StrumpackSparseSolver import *

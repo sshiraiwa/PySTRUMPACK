@@ -2,36 +2,39 @@
 ##
 ##   default variable setting
 ##   
-MAKE=$(shell which make)
-PYTHON=$(shell which python)
-INSTALL_PREFIX=?/usr/local/
+MAKE ?= $(shell which make)
+PYTHON ?= $(shell which python)
+INSTALL_PREFIX ?= /usr/local/
 
 # serial compiler
-CXX_SER = g++
-CC_SER = g++
+#CXX_SER = g++
+#CC_SER = g++
 
 SWIG=$(shell which swig)
 SWIGFLAG = -Wall -c++ -python
 
+#
+CC = ?= gcc
+CXX = ?= g++
+OMPCXXFLAG ?= -fopenmp
+
 #Strumpack
-STRUMPACKINCDIR= $(HOME)/sandbox/include
-STRUMPACKLNKDIR= $(HOME)/sandbox/lib
+STRUMPACKINCDIR ?= /usr/local/include
+STRUMPACKLNKDIR ?= /usr/local/lib
 
 #MPI
-MPICHINCDIR    = /opt/local/include/mpich-mp
-MPICHLNKDIR    = /opt/local/lib/mpich-mp
-MPILIB = mpi
-MPI4PYINCDIR = $(shell $(PYTHON) -c "import mpi4py;print mpi4py.get_include()")
+MPIINCDIR    ?= /usr/local/include/mpich
+MPILNKDIR    ?= /usr/local/lib/mpich
 
-#numpy
-NUMPYINCDIR = $(shell $(PYTHON) -c "import numpy;print numpy.get_include()")
+MPI4PYINCDIR = $(shell $(PYTHON) -c "import mpi4py;print(mpi4py.get_include())")
 
+# overwrite everything if you need to
 include ./Makefile.local
 
-MPIINC  = -I$(MPIINCDIR)
 MPI4PYINC  = -I$(MPI4PYINCDIR)
 STRUMPACKINC = -I$(STRUMPACKINCDIR)
-INTERFACE = Strumpack
+
+INTERFACE = STRUMPACK
 # export everything so that it is avaialbe in setup.py
 IFILE = $(wildcard $(INTERFACE)/*.i)
 ALLCXX = $(IFILE:.i=_wrap.cxx)
@@ -44,14 +47,15 @@ so:
 debug:
 	@echo $(ALLCXX)
 cxx: $(ALLCXX)
-%_wrap.cxx: %.i
-	$(SWIG) $(SWIGFLAG) $(MPI4PYINC) $(STRUMPACKINC) $(MPIINC) $<
+	@echo $(ALLCXX)
+STRUMPACK/%_wrap.cxx: STRUMPACK/%.i
+	$(SWIG) $(SWIGFLAG) $(MPI4PYINC) $(STRUMPACKINC)  $<
 
 install:
 	$(PYTHON) setup.py install --prefix=$(INSTALL_PREFIX)
 cleancxx:
-	rm -f $(SRC)/*.cxx
+	rm -f STRUMPACK/*.cxx
 clean:
-	rm -f $(SRC)/*.o
+	rm -f STRUMPACK/*.o
 	rm -f setup_local.py
 

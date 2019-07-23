@@ -1,18 +1,23 @@
-# PyStrumpackSparse
+# PySTRUMPACK
+
+UnderConstruction. Please visit us a few days later. (2019/07/20)
 
 
-## install
+     
+1) Installation:
+ 1-1) Prerequisite:
 
-1) build strumpack as a shared library
-cmake .. -DBUILD_SHARED_LIBS=1
+     mpi compilers
+     STRUMPACK installed as a shared library
 
-ln -s <strumpack source>/src include
+ 1-2) Install
+     $ CC=mpicc CXX=mpicxx python setup.py install
 
-2) edit setup.py to add include and library directories
+     If include/library files are not in the standard path, you may need to
+     define enviromental variable. See more detail in Install.txt
 
-include_dirs=["include",
-              numpy_include,
-              "/opt/local/include/mpich-mp",
-              "/Users/shiraiwa/sandbox/include",
-              "../scotch_6.0.4/include"]
-library_dirs = ["/Users/shiraiwa/sandbox/lib",]
+
+2) Usage
+
+
+     

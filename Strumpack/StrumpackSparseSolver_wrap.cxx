@@ -3003,22 +3003,26 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 
 /* -------- TYPES TABLE (BEGIN) -------- */
 
-#define SWIGTYPE_p_CSRMatrixT_double_double_int_t swig_types[0]
-#define SWIGTYPE_p_CSRMatrixT_float_float_int_t swig_types[1]
-#define SWIGTYPE_p_CSRMatrixT_std__complexT_double_t_double_int_t swig_types[2]
-#define SWIGTYPE_p_CSRMatrixT_std__complexT_float_t_float_int_t swig_types[3]
-#define SWIGTYPE_p_char swig_types[4]
-#define SWIGTYPE_p_params__GramSchmidtType swig_types[5]
-#define SWIGTYPE_p_params__KrylovSolver swig_types[6]
-#define SWIGTYPE_p_params__MatrixReorderingStrategy swig_types[7]
-#define SWIGTYPE_p_params__RankPattern swig_types[8]
-#define SWIGTYPE_p_params__returnCode swig_types[9]
-#define SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t swig_types[10]
-#define SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t swig_types[11]
-#define SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t swig_types[12]
-#define SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t swig_types[13]
-static swig_type_info *swig_types[15];
-static swig_module_info swig_module = {swig_types, 14, 0, 0, 0, 0};
+#define SWIGTYPE_p_SStrumpackSolver swig_types[0]
+#define SWIGTYPE_p_STRUMPACK_GRAM_SCHMIDT_TYPE swig_types[1]
+#define SWIGTYPE_p_STRUMPACK_INTERFACE swig_types[2]
+#define SWIGTYPE_p_STRUMPACK_KRYLOV_SOLVER swig_types[3]
+#define SWIGTYPE_p_STRUMPACK_PRECISION swig_types[4]
+#define SWIGTYPE_p_STRUMPACK_RANDOM_DISTRIBUTION swig_types[5]
+#define SWIGTYPE_p_STRUMPACK_RANDOM_ENGINE swig_types[6]
+#define SWIGTYPE_p_STRUMPACK_REORDERING_STRATEGY swig_types[7]
+#define SWIGTYPE_p_STRUMPACK_RETURN_CODE swig_types[8]
+#define SWIGTYPE_p_STRUMPACK_SparseSolver swig_types[9]
+#define SWIGTYPE_p_StrumpackSolverBase swig_types[10]
+#define SWIGTYPE_p_char swig_types[11]
+#define SWIGTYPE_p_doublecomplex swig_types[12]
+#define SWIGTYPE_p_float swig_types[13]
+#define SWIGTYPE_p_floatcomplex swig_types[14]
+#define SWIGTYPE_p_int swig_types[15]
+#define SWIGTYPE_p_p_char swig_types[16]
+#define SWIGTYPE_p_void swig_types[17]
+static swig_type_info *swig_types[19];
+static swig_module_info swig_module = {swig_types, 18, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3123,19 +3127,116 @@ namespace swig {
 }
 
 
-#include <atomic>
-#include <tuple>
-#include <vector>
-#include <sstream>
-#include <new>
-#include <cmath>
-#include <complex>
-#include <iostream>  
+#include <stdio.h>
+#include <stdlib.h>
 #include "numpy/arrayobject.h"
-#include "StrumpackSparseSolver.hpp"
-#include "CSRMatrixMPI.hpp"
-using namespace strumpack;
-using namespace strumpack::params; 
+#include "StrumpackSparseSolver.h"
+
+
+class StrumpackSolverBase
+{
+ protected:
+  STRUMPACK_SparseSolver spss;
+ public:
+
+  STRUMPACK_RETURN_CODE factor(void){return STRUMPACK_factor(spss);}
+  STRUMPACK_RETURN_CODE reorder(void){return STRUMPACK_reorder(spss);}
+  STRUMPACK_RETURN_CODE reorder_regular(int nx, int ny, int nz){return STRUMPACK_reorder_regular(spss, nx, ny, nz);}
+  
+  void set_verbose(int v){STRUMPACK_set_verbose(spss, v);}
+  void set_maxit(int  maxit){STRUMPACK_set_maxit(spss, maxit);}
+  void set_gmres_restart(int m){STRUMPACK_set_gmres_restart(spss, m);}
+  void set_rel_tol(double tol){STRUMPACK_set_rel_tol(spss, tol);}
+  void set_abs_tol(double tol){STRUMPACK_set_abs_tol(spss, tol);}
+  void set_nd_param(int nd_param){STRUMPACK_set_nd_param(spss, nd_param);}
+  void set_reordering_method(STRUMPACK_REORDERING_STRATEGY m){STRUMPACK_set_reordering_method(spss, m);}
+  void set_GramSchmidt_type(STRUMPACK_GRAM_SCHMIDT_TYPE t){STRUMPACK_set_GramSchmidt_type(spss, t);}
+  void set_mc64job(int job){STRUMPACK_set_mc64job(spss, job);}
+  void set_matching(int job){STRUMPACK_set_matching(spss, job);}
+  void set_Krylov_solver(STRUMPACK_KRYLOV_SOLVER solver_type){STRUMPACK_set_Krylov_solver(spss, solver_type);}
+  void enable_HSS(void){STRUMPACK_enable_HSS(spss);}
+  void disable_HSS(void){STRUMPACK_disable_HSS(spss);}
+  void set_HSS_min_front_size(int size){STRUMPACK_set_HSS_min_front_size(spss, size);}
+  void set_HSS_min_sep_size(int size){STRUMPACK_set_HSS_min_sep_size(spss, size);}
+  void set_HSS_max_rank(int max_rank){STRUMPACK_set_HSS_max_rank(spss, max_rank);}
+  void set_HSS_leaf_size(int leaf_size){STRUMPACK_set_HSS_leaf_size(spss, leaf_size);}
+  void set_HSS_rel_tol(double rctol){STRUMPACK_set_HSS_rel_tol(spss, rctol);}
+  void set_HSS_abs_tol(double actol){STRUMPACK_set_HSS_abs_tol(spss, actol);}  
+  
+  int  get_verbose(void){return STRUMPACK_verbose(spss);}
+  int  get_maxit(void){return STRUMPACK_maxit(spss);}
+  double get_rel_tol(void){return STRUMPACK_rel_tol(spss);}
+  double get_abs_tol(void){return STRUMPACK_abs_tol(spss);}
+  int get_nd_param(void){return STRUMPACK_nd_param(spss);}
+  STRUMPACK_REORDERING_STRATEGY get_reordering_method(void){return STRUMPACK_reordering_method(spss);}
+  int get_mc64job(void){return STRUMPACK_mc64job(spss);}
+  int get_matching(void){return STRUMPACK_matching(spss);}
+  STRUMPACK_KRYLOV_SOLVER get_Krylov_solver(void){return STRUMPACK_Krylov_solver(spss);}
+  int get_HSS_min_front_size(void){return STRUMPACK_HSS_min_front_size(spss);}
+  int get_HSS_min_sep_size(void){return STRUMPACK_HSS_min_sep_size(spss);}
+  int get_HSS_max_rank(void){return STRUMPACK_HSS_max_rank(spss);}
+  int get_HSS_leaf_size(void){return STRUMPACK_HSS_leaf_size(spss);}
+  double get_HSS_rel_tol(void){return STRUMPACK_HSS_rel_tol(spss);}
+  double get_HSS_abs_tol(void){return STRUMPACK_HSS_abs_tol(spss);}
+  int get_its(void){return STRUMPACK_its(spss);}
+  int get_rank(void){return STRUMPACK_rank(spss);}
+  long get_factor_nonzeros(void){return STRUMPACK_factor_nonzeros(spss);}
+  long get_factor_memory(void){return STRUMPACK_factor_memory(spss);}
+};
+
+class SStrumpackSolver : public StrumpackSolverBase
+{
+ public:
+    SStrumpackSolver(){
+       char *argv[] = {NULL};
+       STRUMPACK_init_mt(&spss, STRUMPACK_FLOAT, STRUMPACK_MT, 1, argv, 0);
+    }
+    #if defined(STRUMPACK_USE_MPI)
+    SStrumpackSolver(MPI_Comm comm){
+       char *argv[] = {NULL};      
+       STRUMPACK_init(&spss, comm, STRUMPACK_FLOAT, STRUMPACK_MPI_DIST, 0, argv, 0);
+    }
+    #endif
+    ~SStrumpackSolver(){
+       STRUMPACK_destroy(&spss);
+    }
+    void set_csr_matrix(int N, int *row_ptr, int *col_ind, float *values, int symmetric_pattern){
+       STRUMPACK_set_csr_matrix(spss,  &N, (void*) row_ptr,(void*) col_ind,
+				(void*) values, symmetric_pattern);
+    }
+   #if defined(STRUMPACK_USE_MPI)
+     void set_distributed_csr_matrix(int local_rows, const int* row_ptr,
+                                     const int* col_ind, const float* values,
+				     const void* dist,   int symmetric_pattern){
+
+          STRUMPACK_set_distributed_csr_matrix(spss,
+					       &local_rows, (const void*) row_ptr,
+					       (const void*) col_ind, (const void*) values,
+						dist, symmetric_pattern);
+     }
+   #endif
+    
+    STRUMPACK_RETURN_CODE solve(float *b, float *x, int use_initial_guess){
+       return STRUMPACK_solve(spss, (const void*) b, (void*) x, use_initial_guess);
+    }
+   };
+
+
+SWIGINTERNINLINE PyObject*
+  SWIG_From_int  (int value)
+{
+  return PyInt_FromLong((long) value);
+}
+
+
+#include <limits.h>
+#if !defined(SWIG_NO_LLONG_MAX)
+# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
+#   define LLONG_MAX __LONG_LONG_MAX__
+#   define LLONG_MIN (-LLONG_MAX - 1LL)
+#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
+# endif
+#endif
 
 
 SWIGINTERN int
@@ -3264,30 +3365,6 @@ SWIG_AsVal_long (PyObject *obj, long* val)
 
 
 SWIGINTERN int
-SWIG_AsVal_bool (PyObject *obj, bool *val)
-{
-  int r;
-  if (!PyBool_Check(obj))
-    return SWIG_ERROR;
-  r = PyObject_IsTrue(obj);
-  if (r == -1)
-    return SWIG_ERROR;
-  if (val) *val = r ? true : false;
-  return SWIG_OK;
-}
-
-
-#include <limits.h>
-#if !defined(SWIG_NO_LLONG_MAX)
-# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
-#   define LLONG_MAX __LONG_LONG_MAX__
-#   define LLONG_MIN (-LLONG_MAX - 1LL)
-#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
-# endif
-#endif
-
-
-SWIGINTERN int
 SWIG_AsVal_int (PyObject * obj, int *val)
 {
   long v;
@@ -3301,6 +3378,12 @@ SWIG_AsVal_int (PyObject * obj, int *val)
   }  
   return res;
 }
+
+
+  #define SWIG_From_double   PyFloat_FromDouble 
+
+
+  #define SWIG_From_long   PyInt_FromLong 
 
 
 /* Getting isfinite working pre C99 across multiple platforms is non-trivial. Users can provide SWIG_isfinite on older platforms. */
@@ -3357,16 +3440,6 @@ SWIG_AsVal_float (PyObject * obj, float *val)
 }
 
 
-SWIGINTERNINLINE PyObject*
-  SWIG_From_int  (int value)
-{
-  return PyInt_FromLong((long) value);
-}
-
-
-  #define SWIG_From_double   PyFloat_FromDouble 
-
-
 SWIGINTERNINLINE PyObject *
 SWIG_From_float  (float value)
 {    
@@ -3388,250 +3461,1098 @@ SWIG_From_long_SS_long  (long long value)
 }
 #endif
 
-
-SWIGINTERNINLINE PyObject*
-  SWIG_From_bool  (bool value)
-{
-  return PyBool_FromLong(value ? 1 : 0);
-}
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-SWIGINTERN PyObject *_wrap_new_SStrumpackSparseSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_factor(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  int arg1 ;
-  char **arg2 ;
-  bool arg3 ;
-  bool arg4 ;
-  bool val3 ;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  STRUMPACK_RETURN_CODE result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_factor",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_factor" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (STRUMPACK_RETURN_CODE)(arg1)->factor();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_reorder(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  STRUMPACK_RETURN_CODE result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_reorder",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_reorder" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (STRUMPACK_RETURN_CODE)(arg1)->reorder();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_reorder_regular(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  int arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
   int ecode3 = 0 ;
-  bool val4 ;
+  int val4 ;
   int ecode4 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
-  strumpack::StrumpackSparseSolver< float,float,int > *result = 0 ;
+  PyObject * obj3 = 0 ;
+  STRUMPACK_RETURN_CODE result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:new_SStrumpackSparseSolver",&obj0,&obj1,&obj2)) SWIG_fail;
-  {
-    int i;
-    if (!PyList_Check(obj0)) {
-      PyErr_SetString(PyExc_ValueError, "Expecting a list");
-      SWIG_fail;
-    }
-    arg1 = PyList_Size(obj0);
-    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
-    for (i = 0; i < arg1; i++) {
-      PyObject *s = PyList_GetItem(obj0, i);
-      if (!PyString_Check(s)) {
-        free(arg2);
-        PyErr_SetString(PyExc_ValueError, "List items must be strings");
-        SWIG_fail;
-      }
-      arg2[i] = PyString_AsString(s);
-    }
-    arg2[i] = 0;
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:StrumpackSolverBase_reorder_regular",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_reorder_regular" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
   }
-  ecode3 = SWIG_AsVal_bool(obj1, &val3);
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_reorder_regular" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  ecode3 = SWIG_AsVal_int(obj2, &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_SStrumpackSparseSolver" "', argument " "3"" of type '" "bool""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "StrumpackSolverBase_reorder_regular" "', argument " "3"" of type '" "int""'");
   } 
-  arg3 = static_cast< bool >(val3);
-  ecode4 = SWIG_AsVal_bool(obj2, &val4);
+  arg3 = static_cast< int >(val3);
+  ecode4 = SWIG_AsVal_int(obj3, &val4);
   if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "new_SStrumpackSparseSolver" "', argument " "4"" of type '" "bool""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "StrumpackSolverBase_reorder_regular" "', argument " "4"" of type '" "int""'");
   } 
-  arg4 = static_cast< bool >(val4);
-  result = (strumpack::StrumpackSparseSolver< float,float,int > *)new strumpack::StrumpackSparseSolver< float,float,int >(arg1,arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, SWIG_POINTER_NEW |  0 );
-  {
-    if (arg2) free(arg2);
-  }
+  arg4 = static_cast< int >(val4);
+  result = (STRUMPACK_RETURN_CODE)(arg1)->reorder_regular(arg2,arg3,arg4);
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
-  {
-    if (arg2) free(arg2);
-  }
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_SStrumpackSparseSolver__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_verbose(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  int arg1 ;
-  char **arg2 ;
-  bool arg3 ;
-  bool val3 ;
-  int ecode3 = 0 ;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  strumpack::StrumpackSparseSolver< float,float,int > *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_SStrumpackSparseSolver",&obj0,&obj1)) SWIG_fail;
-  {
-    int i;
-    if (!PyList_Check(obj0)) {
-      PyErr_SetString(PyExc_ValueError, "Expecting a list");
-      SWIG_fail;
-    }
-    arg1 = PyList_Size(obj0);
-    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
-    for (i = 0; i < arg1; i++) {
-      PyObject *s = PyList_GetItem(obj0, i);
-      if (!PyString_Check(s)) {
-        free(arg2);
-        PyErr_SetString(PyExc_ValueError, "List items must be strings");
-        SWIG_fail;
-      }
-      arg2[i] = PyString_AsString(s);
-    }
-    arg2[i] = 0;
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_verbose",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_verbose" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
   }
-  ecode3 = SWIG_AsVal_bool(obj1, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_SStrumpackSparseSolver" "', argument " "3"" of type '" "bool""'");
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_verbose" "', argument " "2"" of type '" "int""'");
   } 
-  arg3 = static_cast< bool >(val3);
-  result = (strumpack::StrumpackSparseSolver< float,float,int > *)new strumpack::StrumpackSparseSolver< float,float,int >(arg1,arg2,arg3);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, SWIG_POINTER_NEW |  0 );
-  {
-    if (arg2) free(arg2);
-  }
+  arg2 = static_cast< int >(val2);
+  (arg1)->set_verbose(arg2);
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
-  {
-    if (arg2) free(arg2);
-  }
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_SStrumpackSparseSolver__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_maxit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  int arg1 ;
-  char **arg2 ;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
-  strumpack::StrumpackSparseSolver< float,float,int > *result = 0 ;
+  PyObject * obj1 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_SStrumpackSparseSolver",&obj0)) SWIG_fail;
-  {
-    int i;
-    if (!PyList_Check(obj0)) {
-      PyErr_SetString(PyExc_ValueError, "Expecting a list");
-      SWIG_fail;
-    }
-    arg1 = PyList_Size(obj0);
-    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
-    for (i = 0; i < arg1; i++) {
-      PyObject *s = PyList_GetItem(obj0, i);
-      if (!PyString_Check(s)) {
-        free(arg2);
-        PyErr_SetString(PyExc_ValueError, "List items must be strings");
-        SWIG_fail;
-      }
-      arg2[i] = PyString_AsString(s);
-    }
-    arg2[i] = 0;
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_maxit",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_maxit" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
   }
-  result = (strumpack::StrumpackSparseSolver< float,float,int > *)new strumpack::StrumpackSparseSolver< float,float,int >(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, SWIG_POINTER_NEW |  0 );
-  {
-    if (arg2) free(arg2);
-  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_maxit" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  (arg1)->set_maxit(arg2);
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
-  {
-    if (arg2) free(arg2);
-  }
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_SStrumpackSparseSolver(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  Py_ssize_t ii;
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_gmres_restart(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
   
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 3) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_gmres_restart",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_gmres_restart" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
   }
-  if (argc == 1) {
-    int _v;
-    {
-      _v = PyList_Check(argv[0]) ? 1 : 0;
-    }
-    if (_v) {
-      if (argc <= 1) {
-        return _wrap_new_SStrumpackSparseSolver__SWIG_2(self, args);
-      }
-      return _wrap_new_SStrumpackSparseSolver__SWIG_2(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    {
-      _v = PyList_Check(argv[0]) ? 1 : 0;
-    }
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_new_SStrumpackSparseSolver__SWIG_1(self, args);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    {
-      _v = PyList_Check(argv[0]) ? 1 : 0;
-    }
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_bool(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_new_SStrumpackSparseSolver__SWIG_0(self, args);
-        }
-      }
-    }
-  }
-  
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_gmres_restart" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  (arg1)->set_gmres_restart(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_SStrumpackSparseSolver'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::StrumpackSparseSolver(int,char *[],bool,bool)\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::StrumpackSparseSolver(int,char *[],bool)\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::StrumpackSparseSolver(int,char *[])\n");
-  return 0;
+  return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_SStrumpackSparseSolver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_rel_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  double arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_rel_tol",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_rel_tol" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_double(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_rel_tol" "', argument " "2"" of type '" "double""'");
+  } 
+  arg2 = static_cast< double >(val2);
+  (arg1)->set_rel_tol(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_abs_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  double arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_abs_tol",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_abs_tol" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_double(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_abs_tol" "', argument " "2"" of type '" "double""'");
+  } 
+  arg2 = static_cast< double >(val2);
+  (arg1)->set_abs_tol(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_nd_param(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_nd_param",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_nd_param" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_nd_param" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  (arg1)->set_nd_param(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_reordering_method(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  STRUMPACK_REORDERING_STRATEGY arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_reordering_method",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_reordering_method" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_reordering_method" "', argument " "2"" of type '" "STRUMPACK_REORDERING_STRATEGY""'");
+  } 
+  arg2 = static_cast< STRUMPACK_REORDERING_STRATEGY >(val2);
+  (arg1)->set_reordering_method(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_GramSchmidt_type(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  STRUMPACK_GRAM_SCHMIDT_TYPE arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_GramSchmidt_type",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_GramSchmidt_type" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_GramSchmidt_type" "', argument " "2"" of type '" "STRUMPACK_GRAM_SCHMIDT_TYPE""'");
+  } 
+  arg2 = static_cast< STRUMPACK_GRAM_SCHMIDT_TYPE >(val2);
+  (arg1)->set_GramSchmidt_type(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_mc64job(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_mc64job",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_mc64job" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_mc64job" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  (arg1)->set_mc64job(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_matching(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_matching",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_matching" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_matching" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  (arg1)->set_matching(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_Krylov_solver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  STRUMPACK_KRYLOV_SOLVER arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_Krylov_solver",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_Krylov_solver" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_Krylov_solver" "', argument " "2"" of type '" "STRUMPACK_KRYLOV_SOLVER""'");
+  } 
+  arg2 = static_cast< STRUMPACK_KRYLOV_SOLVER >(val2);
+  (arg1)->set_Krylov_solver(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_enable_HSS(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_SStrumpackSparseSolver",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_enable_HSS",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_SStrumpackSparseSolver" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_enable_HSS" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  (arg1)->enable_HSS();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_disable_HSS(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_disable_HSS",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_disable_HSS" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  (arg1)->disable_HSS();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_HSS_min_front_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_HSS_min_front_size",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_HSS_min_front_size" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_HSS_min_front_size" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  (arg1)->set_HSS_min_front_size(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_HSS_min_sep_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_HSS_min_sep_size",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_HSS_min_sep_size" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_HSS_min_sep_size" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  (arg1)->set_HSS_min_sep_size(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_HSS_max_rank(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_HSS_max_rank",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_HSS_max_rank" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_HSS_max_rank" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  (arg1)->set_HSS_max_rank(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_HSS_leaf_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_HSS_leaf_size",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_HSS_leaf_size" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_HSS_leaf_size" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  (arg1)->set_HSS_leaf_size(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_HSS_rel_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  double arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_HSS_rel_tol",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_HSS_rel_tol" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_double(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_HSS_rel_tol" "', argument " "2"" of type '" "double""'");
+  } 
+  arg2 = static_cast< double >(val2);
+  (arg1)->set_HSS_rel_tol(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_HSS_abs_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  double arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:StrumpackSolverBase_set_HSS_abs_tol",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_HSS_abs_tol" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  ecode2 = SWIG_AsVal_double(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StrumpackSolverBase_set_HSS_abs_tol" "', argument " "2"" of type '" "double""'");
+  } 
+  arg2 = static_cast< double >(val2);
+  (arg1)->set_HSS_abs_tol(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_verbose(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_verbose",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_verbose" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (int)(arg1)->get_verbose();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_maxit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_maxit",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_maxit" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (int)(arg1)->get_maxit();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_rel_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_rel_tol",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_rel_tol" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (double)(arg1)->get_rel_tol();
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_abs_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_abs_tol",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_abs_tol" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (double)(arg1)->get_abs_tol();
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_nd_param(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_nd_param",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_nd_param" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (int)(arg1)->get_nd_param();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_reordering_method(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  STRUMPACK_REORDERING_STRATEGY result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_reordering_method",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_reordering_method" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (STRUMPACK_REORDERING_STRATEGY)(arg1)->get_reordering_method();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_mc64job(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_mc64job",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_mc64job" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (int)(arg1)->get_mc64job();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_matching(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_matching",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_matching" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (int)(arg1)->get_matching();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_Krylov_solver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  STRUMPACK_KRYLOV_SOLVER result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_Krylov_solver",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_Krylov_solver" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (STRUMPACK_KRYLOV_SOLVER)(arg1)->get_Krylov_solver();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_HSS_min_front_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_HSS_min_front_size",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_HSS_min_front_size" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (int)(arg1)->get_HSS_min_front_size();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_HSS_min_sep_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_HSS_min_sep_size",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_HSS_min_sep_size" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (int)(arg1)->get_HSS_min_sep_size();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_HSS_max_rank(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_HSS_max_rank",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_HSS_max_rank" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (int)(arg1)->get_HSS_max_rank();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_HSS_leaf_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_HSS_leaf_size",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_HSS_leaf_size" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (int)(arg1)->get_HSS_leaf_size();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_HSS_rel_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_HSS_rel_tol",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_HSS_rel_tol" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (double)(arg1)->get_HSS_rel_tol();
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_HSS_abs_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_HSS_abs_tol",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_HSS_abs_tol" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (double)(arg1)->get_HSS_abs_tol();
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_its(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_its",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_its" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (int)(arg1)->get_its();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_rank(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_rank",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_rank" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (int)(arg1)->get_rank();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_factor_nonzeros(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  long result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_factor_nonzeros",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_factor_nonzeros" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (long)(arg1)->get_factor_nonzeros();
+  resultobj = SWIG_From_long(static_cast< long >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_get_factor_memory(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  long result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:StrumpackSolverBase_get_factor_memory",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_get_factor_memory" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  result = (long)(arg1)->get_factor_memory();
+  resultobj = SWIG_From_long(static_cast< long >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_StrumpackSolverBase(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_StrumpackSolverBase")) SWIG_fail;
+  result = (StrumpackSolverBase *)new StrumpackSolverBase();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_StrumpackSolverBase, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_StrumpackSolverBase(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_StrumpackSolverBase",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_StrumpackSolverBase, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_StrumpackSolverBase" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -3640,20 +4561,40 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_from_options(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *StrumpackSolverBase_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_StrumpackSolverBase, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_new_SStrumpackSolver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
+  SStrumpackSolver *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_SStrumpackSolver")) SWIG_fail;
+  result = (SStrumpackSolver *)new SStrumpackSolver();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SStrumpackSolver, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_SStrumpackSolver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SStrumpackSolver *arg1 = (SStrumpackSolver *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_set_from_options",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_SStrumpackSolver",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SStrumpackSolver, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_from_options" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_SStrumpackSolver" "', argument " "1"" of type '" "SStrumpackSolver *""'"); 
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  (arg1)->set_from_options();
+  arg1 = reinterpret_cast< SStrumpackSolver * >(argp1);
+  delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -3661,73 +4602,25 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_from_options_no_warning_unrecognized(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_SStrumpackSolver_set_csr_matrix(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_set_from_options_no_warning_unrecognized",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_from_options_no_warning_unrecognized" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  (arg1)->set_from_options_no_warning_unrecognized();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_matrix(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  CSRMatrix< float,float,int > *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_matrix",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_matrix" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_CSRMatrixT_float_float_int_t,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SStrumpackSparseSolver_set_matrix" "', argument " "2"" of type '" "CSRMatrix< float,float,int > &""'"); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "SStrumpackSparseSolver_set_matrix" "', argument " "2"" of type '" "CSRMatrix< float,float,int > &""'"); 
-  }
-  arg2 = reinterpret_cast< CSRMatrix< float,float,int > * >(argp2);
-  (arg1)->set_matrix(*arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_csr_matrix__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
+  SStrumpackSolver *arg1 = (SStrumpackSolver *) 0 ;
   int arg2 ;
   int *arg3 = (int *) 0 ;
   int *arg4 = (int *) 0 ;
   float *arg5 = (float *) 0 ;
-  bool arg6 ;
+  int arg6 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int val2 ;
   int ecode2 = 0 ;
-  bool val6 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  int val6 ;
   int ecode6 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
@@ -3736,46 +4629,37 @@ SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_csr_matrix__SWIG_0(PyObjec
   PyObject * obj4 = 0 ;
   PyObject * obj5 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:SStrumpackSparseSolver_set_csr_matrix",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:SStrumpackSolver_set_csr_matrix",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SStrumpackSolver, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_csr_matrix" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSolver_set_csr_matrix" "', argument " "1"" of type '" "SStrumpackSolver *""'"); 
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
+  arg1 = reinterpret_cast< SStrumpackSolver * >(argp1);
   ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_set_csr_matrix" "', argument " "2"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSolver_set_csr_matrix" "', argument " "2"" of type '" "int""'");
   } 
   arg2 = static_cast< int >(val2);
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (int *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SStrumpackSolver_set_csr_matrix" "', argument " "3"" of type '" "int *""'"); 
   }
-  {
-    if (PyArray_Check(obj3)){
-      arg4 = (int *) PyArray_DATA((PyArrayObject *)obj3);
-    }
-    else {
-      return NULL;
-    }
+  arg3 = reinterpret_cast< int * >(argp3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SStrumpackSolver_set_csr_matrix" "', argument " "4"" of type '" "int *""'"); 
   }
-  {
-    if (PyArray_Check(obj4)){
-      arg5 = (float *) PyArray_DATA((PyArrayObject *)obj4);
-    }
-    else {
-      return NULL;
-    }
+  arg4 = reinterpret_cast< int * >(argp4);
+  res5 = SWIG_ConvertPtr(obj4, &argp5,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "SStrumpackSolver_set_csr_matrix" "', argument " "5"" of type '" "float *""'"); 
   }
-  ecode6 = SWIG_AsVal_bool(obj5, &val6);
+  arg5 = reinterpret_cast< float * >(argp5);
+  ecode6 = SWIG_AsVal_int(obj5, &val6);
   if (!SWIG_IsOK(ecode6)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "SStrumpackSparseSolver_set_csr_matrix" "', argument " "6"" of type '" "bool""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "SStrumpackSolver_set_csr_matrix" "', argument " "6"" of type '" "int""'");
   } 
-  arg6 = static_cast< bool >(val6);
+  arg6 = static_cast< int >(val6);
   (arg1)->set_csr_matrix(arg2,arg3,arg4,arg5,arg6);
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -3784,1207 +4668,48 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_csr_matrix__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_SStrumpackSolver_solve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  int arg2 ;
-  int *arg3 = (int *) 0 ;
-  int *arg4 = (int *) 0 ;
-  float *arg5 = (float *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
-  PyObject * obj4 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOOOO:SStrumpackSparseSolver_set_csr_matrix",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_csr_matrix" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_set_csr_matrix" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (int *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj3)){
-      arg4 = (int *) PyArray_DATA((PyArrayObject *)obj3);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj4)){
-      arg5 = (float *) PyArray_DATA((PyArrayObject *)obj4);
-    }
-    else {
-      return NULL;
-    }
-  }
-  (arg1)->set_csr_matrix(arg2,arg3,arg4,arg5);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_csr_matrix(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[7] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 6) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 5) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          {
-            if (PyArray_Check(argv[3])){
-              _v = 1;
-            } else {
-              _v = 0;
-            }
-          }
-          if (_v) {
-            {
-              if (PyArray_Check(argv[4])){
-                _v = 1;
-              } else {
-                _v = 0;
-              }
-            }
-            if (_v) {
-              return _wrap_SStrumpackSparseSolver_set_csr_matrix__SWIG_1(self, args);
-            }
-          }
-        }
-      }
-    }
-  }
-  if (argc == 6) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          {
-            if (PyArray_Check(argv[3])){
-              _v = 1;
-            } else {
-              _v = 0;
-            }
-          }
-          if (_v) {
-            {
-              if (PyArray_Check(argv[4])){
-                _v = 1;
-              } else {
-                _v = 0;
-              }
-            }
-            if (_v) {
-              {
-                int res = SWIG_AsVal_bool(argv[5], NULL);
-                _v = SWIG_CheckState(res);
-              }
-              if (_v) {
-                return _wrap_SStrumpackSparseSolver_set_csr_matrix__SWIG_0(self, args);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'SStrumpackSparseSolver_set_csr_matrix'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::set_csr_matrix(int,int *,int *,float *,bool)\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::set_csr_matrix(int,int *,int *,float *)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_reorder__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  int arg2 ;
-  int arg3 ;
-  int arg4 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  int val4 ;
-  int ecode4 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:SStrumpackSparseSolver_reorder",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_reorder" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  ecode3 = SWIG_AsVal_int(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "SStrumpackSparseSolver_reorder" "', argument " "3"" of type '" "int""'");
-  } 
-  arg3 = static_cast< int >(val3);
-  ecode4 = SWIG_AsVal_int(obj3, &val4);
-  if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "SStrumpackSparseSolver_reorder" "', argument " "4"" of type '" "int""'");
-  } 
-  arg4 = static_cast< int >(val4);
-  result = (arg1)->reorder(arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_reorder__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  int arg2 ;
-  int arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:SStrumpackSparseSolver_reorder",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_reorder" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  ecode3 = SWIG_AsVal_int(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "SStrumpackSparseSolver_reorder" "', argument " "3"" of type '" "int""'");
-  } 
-  arg3 = static_cast< int >(val3);
-  result = (arg1)->reorder(arg2,arg3);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_reorder__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_reorder",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_reorder" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  result = (arg1)->reorder(arg2);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_reorder__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_reorder",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (arg1)->reorder();
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_reorder(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[5] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 4) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_SStrumpackSparseSolver_reorder__SWIG_3(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_SStrumpackSparseSolver_reorder__SWIG_2(self, args);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_SStrumpackSparseSolver_reorder__SWIG_1(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          {
-            int res = SWIG_AsVal_int(argv[3], NULL);
-            _v = SWIG_CheckState(res);
-          }
-          if (_v) {
-            return _wrap_SStrumpackSparseSolver_reorder__SWIG_0(self, args);
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'SStrumpackSparseSolver_reorder'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::reorder(int,int,int)\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::reorder(int,int)\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::reorder(int)\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::reorder()\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_factor(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_factor",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_factor" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (arg1)->factor();
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_solve__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
+  SStrumpackSolver *arg1 = (SStrumpackSolver *) 0 ;
   float *arg2 = (float *) 0 ;
   float *arg3 = (float *) 0 ;
-  bool arg4 ;
+  int arg4 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  bool val4 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  int val4 ;
   int ecode4 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
   PyObject * obj3 = 0 ;
-  params::returnCode result;
+  STRUMPACK_RETURN_CODE result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:SStrumpackSparseSolver_solve",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:SStrumpackSolver_solve",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SStrumpackSolver, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_solve" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSolver_solve" "', argument " "1"" of type '" "SStrumpackSolver *""'"); 
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  {
-    if (PyArray_Check(obj1)){
-      arg2 = (float *) PyArray_DATA((PyArrayObject *)obj1);
-    }
-    else {
-      return NULL;
-    }
+  arg1 = reinterpret_cast< SStrumpackSolver * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SStrumpackSolver_solve" "', argument " "2"" of type '" "float *""'"); 
   }
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (float *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
+  arg2 = reinterpret_cast< float * >(argp2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SStrumpackSolver_solve" "', argument " "3"" of type '" "float *""'"); 
   }
-  ecode4 = SWIG_AsVal_bool(obj3, &val4);
+  arg3 = reinterpret_cast< float * >(argp3);
+  ecode4 = SWIG_AsVal_int(obj3, &val4);
   if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "SStrumpackSparseSolver_solve" "', argument " "4"" of type '" "bool""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "SStrumpackSolver_solve" "', argument " "4"" of type '" "int""'");
   } 
-  arg4 = static_cast< bool >(val4);
-  result = (arg1)->solve(arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_solve__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  float *arg2 = (float *) 0 ;
-  float *arg3 = (float *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:SStrumpackSparseSolver_solve",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_solve" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  {
-    if (PyArray_Check(obj1)){
-      arg2 = (float *) PyArray_DATA((PyArrayObject *)obj1);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (float *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
-  }
-  result = (arg1)->solve(arg2,arg3);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_solve(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[5] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 4) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        if (PyArray_Check(argv[1])){
-          _v = 1;
-        } else {
-          _v = 0;
-        }
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          return _wrap_SStrumpackSparseSolver_solve__SWIG_1(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        if (PyArray_Check(argv[1])){
-          _v = 1;
-        } else {
-          _v = 0;
-        }
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          {
-            int res = SWIG_AsVal_bool(argv[3], NULL);
-            _v = SWIG_CheckState(res);
-          }
-          if (_v) {
-            return _wrap_SStrumpackSparseSolver_solve__SWIG_0(self, args);
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'SStrumpackSparseSolver_solve'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::solve(float *,float *,bool)\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::solve(float *,float *)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_maximum_Krylov_iterations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_maximum_Krylov_iterations",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_maximum_Krylov_iterations" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_set_maximum_Krylov_iterations" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_maximum_Krylov_iterations(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_gmres_restart(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_gmres_restart",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_gmres_restart" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_set_gmres_restart" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_gmres_restart(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_relative_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  float arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  float val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_relative_Krylov_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_relative_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_float(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_set_relative_Krylov_tolerance" "', argument " "2"" of type '" "float""'");
-  } 
-  arg2 = static_cast< float >(val2);
-  (arg1)->set_relative_Krylov_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_absolute_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  float arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  float val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_absolute_Krylov_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_absolute_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_float(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_set_absolute_Krylov_tolerance" "', argument " "2"" of type '" "float""'");
-  } 
-  arg2 = static_cast< float >(val2);
-  (arg1)->set_absolute_Krylov_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_scotch_strategy(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_scotch_strategy",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_scotch_strategy" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_set_scotch_strategy" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_scotch_strategy(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_nested_dissection_parameter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_nested_dissection_parameter",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_nested_dissection_parameter" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_set_nested_dissection_parameter" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_nested_dissection_parameter(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_matrix_reordering_method(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  params::MatrixReorderingStrategy arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_matrix_reordering_method",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_matrix_reordering_method" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__MatrixReorderingStrategy,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SStrumpackSparseSolver_set_matrix_reordering_method" "', argument " "2"" of type '" "params::MatrixReorderingStrategy""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "SStrumpackSparseSolver_set_matrix_reordering_method" "', argument " "2"" of type '" "params::MatrixReorderingStrategy""'");
-    } else {
-      params::MatrixReorderingStrategy * temp = reinterpret_cast< params::MatrixReorderingStrategy * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_matrix_reordering_method(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_GramSchmidt_type(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  params::GramSchmidtType arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_GramSchmidt_type",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_GramSchmidt_type" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__GramSchmidtType,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SStrumpackSparseSolver_set_GramSchmidt_type" "', argument " "2"" of type '" "params::GramSchmidtType""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "SStrumpackSparseSolver_set_GramSchmidt_type" "', argument " "2"" of type '" "params::GramSchmidtType""'");
-    } else {
-      params::GramSchmidtType * temp = reinterpret_cast< params::GramSchmidtType * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_GramSchmidt_type(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_mc64job(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_mc64job",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_mc64job" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_set_mc64job" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_mc64job(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_Krylov_solver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  params::KrylovSolver arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_Krylov_solver",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_Krylov_solver" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__KrylovSolver,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SStrumpackSparseSolver_set_Krylov_solver" "', argument " "2"" of type '" "params::KrylovSolver""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "SStrumpackSparseSolver_set_Krylov_solver" "', argument " "2"" of type '" "params::KrylovSolver""'");
-    } else {
-      params::KrylovSolver * temp = reinterpret_cast< params::KrylovSolver * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_Krylov_solver(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_use_HSS__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  bool arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_use_HSS",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_use_HSS" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_bool(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_use_HSS" "', argument " "2"" of type '" "bool""'");
-  } 
-  arg2 = static_cast< bool >(val2);
-  (arg1)->use_HSS(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_minimum_HSS_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_minimum_HSS_size",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_minimum_HSS_size" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_set_minimum_HSS_size" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_minimum_HSS_size(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_relative_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  float arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  float val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_relative_compression_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_relative_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_float(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_set_relative_compression_tolerance" "', argument " "2"" of type '" "float""'");
-  } 
-  arg2 = static_cast< float >(val2);
-  (arg1)->set_relative_compression_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_absolute_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  float arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  float val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_absolute_compression_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_absolute_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_float(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_set_absolute_compression_tolerance" "', argument " "2"" of type '" "float""'");
-  } 
-  arg2 = static_cast< float >(val2);
-  (arg1)->set_absolute_compression_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_rank_pattern(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  params::RankPattern arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_rank_pattern",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_rank_pattern" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__RankPattern,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SStrumpackSparseSolver_set_rank_pattern" "', argument " "2"" of type '" "params::RankPattern""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "SStrumpackSparseSolver_set_rank_pattern" "', argument " "2"" of type '" "params::RankPattern""'");
-    } else {
-      params::RankPattern * temp = reinterpret_cast< params::RankPattern * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_rank_pattern(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_verbose__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  bool arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:SStrumpackSparseSolver_set_verbose",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_verbose" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_bool(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSparseSolver_set_verbose" "', argument " "2"" of type '" "bool""'");
-  } 
-  arg2 = static_cast< bool >(val2);
-  (arg1)->set_verbose(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_verbose__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_set_verbose",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_set_verbose" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  (arg1)->set_verbose();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_set_verbose(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 2) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_SStrumpackSparseSolver_set_verbose__SWIG_1(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_SStrumpackSparseSolver_set_verbose__SWIG_0(self, args);
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'SStrumpackSparseSolver_set_verbose'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::set_verbose(bool)\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::set_verbose()\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_maximum_Krylov_iterations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_maximum_Krylov_iterations",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_maximum_Krylov_iterations" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (int)(arg1)->get_maximum_Krylov_iterations();
+  arg4 = static_cast< int >(val4);
+  result = (STRUMPACK_RETURN_CODE)(arg1)->solve(arg2,arg3,arg4);
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -4992,689 +4717,193 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_gmres_restart(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_gmres_restart",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_gmres_restart" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (int)(arg1)->get_gmres_restart();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_relative_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  float result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_relative_Krylov_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_relative_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (float)(arg1)->get_relative_Krylov_tolerance();
-  resultobj = SWIG_From_float(static_cast< float >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_absolute_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  float result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_absolute_Krylov_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_absolute_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (float)(arg1)->get_absolute_Krylov_tolerance();
-  resultobj = SWIG_From_float(static_cast< float >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_scotch_strategy(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_scotch_strategy",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_scotch_strategy" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (int)(arg1)->get_scotch_strategy();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_nested_dissection_parameter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_nested_dissection_parameter",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_nested_dissection_parameter" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (int)(arg1)->get_nested_dissection_parameter();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_matrix_reordering_method(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::MatrixReorderingStrategy result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_matrix_reordering_method",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_matrix_reordering_method" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (arg1)->get_matrix_reordering_method();
-  resultobj = SWIG_NewPointerObj((new params::MatrixReorderingStrategy(static_cast< const params::MatrixReorderingStrategy& >(result))), SWIGTYPE_p_params__MatrixReorderingStrategy, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_GramSchmidt_type(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::GramSchmidtType result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_GramSchmidt_type",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_GramSchmidt_type" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (arg1)->get_GramSchmidt_type();
-  resultobj = SWIG_NewPointerObj((new params::GramSchmidtType(static_cast< const params::GramSchmidtType& >(result))), SWIGTYPE_p_params__GramSchmidtType, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_maximum_rank(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_maximum_rank",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_maximum_rank" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (int)(arg1)->get_maximum_rank();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_factor_nonzeros(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  long long result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_factor_nonzeros",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_factor_nonzeros" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (long long)(arg1)->get_factor_nonzeros();
-  resultobj = SWIG_From_long_SS_long(static_cast< long long >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_factor_memory(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  long long result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_factor_memory",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_factor_memory" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (long long)(arg1)->get_factor_memory();
-  resultobj = SWIG_From_long_SS_long(static_cast< long long >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_Krylov_iterations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_Krylov_iterations",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_Krylov_iterations" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (int)(arg1)->get_Krylov_iterations();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_mc64job(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_mc64job",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_mc64job" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (int)(arg1)->get_mc64job();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_use_HSS__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  bool result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_use_HSS",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_use_HSS" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (bool)(arg1)->use_HSS();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_use_HSS(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 2) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_SStrumpackSparseSolver_use_HSS__SWIG_1(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_SStrumpackSparseSolver_use_HSS__SWIG_0(self, args);
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'SStrumpackSparseSolver_use_HSS'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::use_HSS(bool)\n"
-    "    strumpack::StrumpackSparseSolver< float,float,int >::use_HSS()\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_minimum_HSS_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_minimum_HSS_size",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_minimum_HSS_size" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (int)(arg1)->get_minimum_HSS_size();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_relative_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  float result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_relative_compression_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_relative_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (float)(arg1)->get_relative_compression_tolerance();
-  resultobj = SWIG_From_float(static_cast< float >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_absolute_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  float result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_absolute_compression_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_absolute_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (float)(arg1)->get_absolute_compression_tolerance();
-  resultobj = SWIG_From_float(static_cast< float >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_Krylov_solver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::KrylovSolver result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_Krylov_solver",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_Krylov_solver" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (arg1)->get_Krylov_solver();
-  resultobj = SWIG_NewPointerObj((new params::KrylovSolver(static_cast< const params::KrylovSolver& >(result))), SWIGTYPE_p_params__KrylovSolver, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SStrumpackSparseSolver_get_rank_pattern(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< float,float,int > *arg1 = (strumpack::StrumpackSparseSolver< float,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::RankPattern result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SStrumpackSparseSolver_get_rank_pattern",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSparseSolver_get_rank_pattern" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< float,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< float,float,int > * >(argp1);
-  result = (arg1)->get_rank_pattern();
-  resultobj = SWIG_NewPointerObj((new params::RankPattern(static_cast< const params::RankPattern& >(result))), SWIGTYPE_p_params__RankPattern, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *SStrumpackSparseSolver_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *SStrumpackSolver_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_strumpack__StrumpackSparseSolverT_float_float_int_t, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_SStrumpackSolver, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_DStrumpackSparseSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_STRUMPACK_SparseSolver_solver_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  int arg1 ;
-  char **arg2 ;
-  bool arg3 ;
-  bool arg4 ;
-  bool val3 ;
-  int ecode3 = 0 ;
-  bool val4 ;
-  int ecode4 = 0 ;
+  STRUMPACK_SparseSolver *arg1 = (STRUMPACK_SparseSolver *) 0 ;
+  void *arg2 = (void *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  strumpack::StrumpackSparseSolver< double,double,int > *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:new_DStrumpackSparseSolver",&obj0,&obj1,&obj2)) SWIG_fail;
-  {
-    int i;
-    if (!PyList_Check(obj0)) {
-      PyErr_SetString(PyExc_ValueError, "Expecting a list");
-      SWIG_fail;
-    }
-    arg1 = PyList_Size(obj0);
-    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
-    for (i = 0; i < arg1; i++) {
-      PyObject *s = PyList_GetItem(obj0, i);
-      if (!PyString_Check(s)) {
-        free(arg2);
-        PyErr_SetString(PyExc_ValueError, "List items must be strings");
-        SWIG_fail;
-      }
-      arg2[i] = PyString_AsString(s);
-    }
-    arg2[i] = 0;
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_SparseSolver_solver_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_STRUMPACK_SparseSolver, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_SparseSolver_solver_set" "', argument " "1"" of type '" "STRUMPACK_SparseSolver *""'"); 
   }
-  ecode3 = SWIG_AsVal_bool(obj1, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_DStrumpackSparseSolver" "', argument " "3"" of type '" "bool""'");
-  } 
-  arg3 = static_cast< bool >(val3);
-  ecode4 = SWIG_AsVal_bool(obj2, &val4);
-  if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "new_DStrumpackSparseSolver" "', argument " "4"" of type '" "bool""'");
-  } 
-  arg4 = static_cast< bool >(val4);
-  result = (strumpack::StrumpackSparseSolver< double,double,int > *)new strumpack::StrumpackSparseSolver< double,double,int >(arg1,arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, SWIG_POINTER_NEW |  0 );
-  {
-    if (arg2) free(arg2);
+  arg1 = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, SWIG_POINTER_DISOWN);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "STRUMPACK_SparseSolver_solver_set" "', argument " "2"" of type '" "void *""'"); 
   }
+  if (arg1) (arg1)->solver = arg2;
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
-  {
-    if (arg2) free(arg2);
-  }
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_DStrumpackSparseSolver__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_STRUMPACK_SparseSolver_solver_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  int arg1 ;
-  char **arg2 ;
-  bool arg3 ;
-  bool val3 ;
-  int ecode3 = 0 ;
+  STRUMPACK_SparseSolver *arg1 = (STRUMPACK_SparseSolver *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  void *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_SparseSolver_solver_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_STRUMPACK_SparseSolver, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_SparseSolver_solver_get" "', argument " "1"" of type '" "STRUMPACK_SparseSolver *""'"); 
+  }
+  arg1 = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+  result = (void *) ((arg1)->solver);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_void, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_SparseSolver_precision_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver *arg1 = (STRUMPACK_SparseSolver *) 0 ;
+  STRUMPACK_PRECISION arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  strumpack::StrumpackSparseSolver< double,double,int > *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_DStrumpackSparseSolver",&obj0,&obj1)) SWIG_fail;
-  {
-    int i;
-    if (!PyList_Check(obj0)) {
-      PyErr_SetString(PyExc_ValueError, "Expecting a list");
-      SWIG_fail;
-    }
-    arg1 = PyList_Size(obj0);
-    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
-    for (i = 0; i < arg1; i++) {
-      PyObject *s = PyList_GetItem(obj0, i);
-      if (!PyString_Check(s)) {
-        free(arg2);
-        PyErr_SetString(PyExc_ValueError, "List items must be strings");
-        SWIG_fail;
-      }
-      arg2[i] = PyString_AsString(s);
-    }
-    arg2[i] = 0;
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_SparseSolver_precision_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_STRUMPACK_SparseSolver, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_SparseSolver_precision_set" "', argument " "1"" of type '" "STRUMPACK_SparseSolver *""'"); 
   }
-  ecode3 = SWIG_AsVal_bool(obj1, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_DStrumpackSparseSolver" "', argument " "3"" of type '" "bool""'");
+  arg1 = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_SparseSolver_precision_set" "', argument " "2"" of type '" "STRUMPACK_PRECISION""'");
   } 
-  arg3 = static_cast< bool >(val3);
-  result = (strumpack::StrumpackSparseSolver< double,double,int > *)new strumpack::StrumpackSparseSolver< double,double,int >(arg1,arg2,arg3);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, SWIG_POINTER_NEW |  0 );
-  {
-    if (arg2) free(arg2);
-  }
+  arg2 = static_cast< STRUMPACK_PRECISION >(val2);
+  if (arg1) (arg1)->precision = arg2;
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
-  {
-    if (arg2) free(arg2);
-  }
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_DStrumpackSparseSolver__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_STRUMPACK_SparseSolver_precision_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  int arg1 ;
-  char **arg2 ;
+  STRUMPACK_SparseSolver *arg1 = (STRUMPACK_SparseSolver *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  strumpack::StrumpackSparseSolver< double,double,int > *result = 0 ;
+  STRUMPACK_PRECISION result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_DStrumpackSparseSolver",&obj0)) SWIG_fail;
-  {
-    int i;
-    if (!PyList_Check(obj0)) {
-      PyErr_SetString(PyExc_ValueError, "Expecting a list");
-      SWIG_fail;
-    }
-    arg1 = PyList_Size(obj0);
-    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
-    for (i = 0; i < arg1; i++) {
-      PyObject *s = PyList_GetItem(obj0, i);
-      if (!PyString_Check(s)) {
-        free(arg2);
-        PyErr_SetString(PyExc_ValueError, "List items must be strings");
-        SWIG_fail;
-      }
-      arg2[i] = PyString_AsString(s);
-    }
-    arg2[i] = 0;
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_SparseSolver_precision_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_STRUMPACK_SparseSolver, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_SparseSolver_precision_get" "', argument " "1"" of type '" "STRUMPACK_SparseSolver *""'"); 
   }
-  result = (strumpack::StrumpackSparseSolver< double,double,int > *)new strumpack::StrumpackSparseSolver< double,double,int >(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, SWIG_POINTER_NEW |  0 );
-  {
-    if (arg2) free(arg2);
-  }
+  arg1 = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+  result = (STRUMPACK_PRECISION) ((arg1)->precision);
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
-  {
-    if (arg2) free(arg2);
-  }
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_DStrumpackSparseSolver(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  Py_ssize_t ii;
+SWIGINTERN PyObject *_wrap_STRUMPACK_SparseSolver_interface_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver *arg1 = (STRUMPACK_SparseSolver *) 0 ;
+  STRUMPACK_INTERFACE arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
   
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 3) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_SparseSolver_interface_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_STRUMPACK_SparseSolver, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_SparseSolver_interface_set" "', argument " "1"" of type '" "STRUMPACK_SparseSolver *""'"); 
   }
-  if (argc == 1) {
-    int _v;
-    {
-      _v = PyList_Check(argv[0]) ? 1 : 0;
-    }
-    if (_v) {
-      if (argc <= 1) {
-        return _wrap_new_DStrumpackSparseSolver__SWIG_2(self, args);
-      }
-      return _wrap_new_DStrumpackSparseSolver__SWIG_2(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    {
-      _v = PyList_Check(argv[0]) ? 1 : 0;
-    }
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_new_DStrumpackSparseSolver__SWIG_1(self, args);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    {
-      _v = PyList_Check(argv[0]) ? 1 : 0;
-    }
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_bool(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_new_DStrumpackSparseSolver__SWIG_0(self, args);
-        }
-      }
-    }
-  }
-  
+  arg1 = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_SparseSolver_interface_set" "', argument " "2"" of type '" "STRUMPACK_INTERFACE""'");
+  } 
+  arg2 = static_cast< STRUMPACK_INTERFACE >(val2);
+  if (arg1) (arg1)->interface = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_DStrumpackSparseSolver'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::StrumpackSparseSolver(int,char *[],bool,bool)\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::StrumpackSparseSolver(int,char *[],bool)\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::StrumpackSparseSolver(int,char *[])\n");
-  return 0;
+  return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_DStrumpackSparseSolver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_STRUMPACK_SparseSolver_interface_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
+  STRUMPACK_SparseSolver *arg1 = (STRUMPACK_SparseSolver *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  STRUMPACK_INTERFACE result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_SparseSolver_interface_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_STRUMPACK_SparseSolver, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_SparseSolver_interface_get" "', argument " "1"" of type '" "STRUMPACK_SparseSolver *""'"); 
+  }
+  arg1 = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+  result = (STRUMPACK_INTERFACE) ((arg1)->interface);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_STRUMPACK_SparseSolver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_STRUMPACK_SparseSolver")) SWIG_fail;
+  result = (STRUMPACK_SparseSolver *)new STRUMPACK_SparseSolver();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_STRUMPACK_SparseSolver, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_STRUMPACK_SparseSolver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver *arg1 = (STRUMPACK_SparseSolver *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_DStrumpackSparseSolver",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_STRUMPACK_SparseSolver",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_STRUMPACK_SparseSolver, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_DStrumpackSparseSolver" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_STRUMPACK_SparseSolver" "', argument " "1"" of type '" "STRUMPACK_SparseSolver *""'"); 
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
+  arg1 = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -5683,74 +4912,36 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_from_options(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_set_from_options",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_from_options" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  (arg1)->set_from_options();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
+SWIGINTERN PyObject *STRUMPACK_SparseSolver_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_STRUMPACK_SparseSolver, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
 }
 
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_from_options_no_warning_unrecognized(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_floatcomplex_r_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
+  floatcomplex *arg1 = (floatcomplex *) 0 ;
+  float arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_set_from_options_no_warning_unrecognized",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_from_options_no_warning_unrecognized" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  (arg1)->set_from_options_no_warning_unrecognized();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_matrix(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  CSRMatrix< double,double,int > *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_matrix",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"OO:floatcomplex_r_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_floatcomplex, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_matrix" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "floatcomplex_r_set" "', argument " "1"" of type '" "floatcomplex *""'"); 
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_CSRMatrixT_double_double_int_t,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DStrumpackSparseSolver_set_matrix" "', argument " "2"" of type '" "CSRMatrix< double,double,int > &""'"); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "DStrumpackSparseSolver_set_matrix" "', argument " "2"" of type '" "CSRMatrix< double,double,int > &""'"); 
-  }
-  arg2 = reinterpret_cast< CSRMatrix< double,double,int > * >(argp2);
-  (arg1)->set_matrix(*arg2);
+  arg1 = reinterpret_cast< floatcomplex * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "floatcomplex_r_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->r = arg2;
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -5758,19 +4949,285 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_csr_matrix__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_floatcomplex_r_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  int arg2 ;
-  int *arg3 = (int *) 0 ;
-  int *arg4 = (int *) 0 ;
-  double *arg5 = (double *) 0 ;
-  bool arg6 ;
+  floatcomplex *arg1 = (floatcomplex *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:floatcomplex_r_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_floatcomplex, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "floatcomplex_r_get" "', argument " "1"" of type '" "floatcomplex *""'"); 
+  }
+  arg1 = reinterpret_cast< floatcomplex * >(argp1);
+  result = (float) ((arg1)->r);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_floatcomplex_i_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  floatcomplex *arg1 = (floatcomplex *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:floatcomplex_i_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_floatcomplex, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "floatcomplex_i_set" "', argument " "1"" of type '" "floatcomplex *""'"); 
+  }
+  arg1 = reinterpret_cast< floatcomplex * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "floatcomplex_i_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->i = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_floatcomplex_i_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  floatcomplex *arg1 = (floatcomplex *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:floatcomplex_i_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_floatcomplex, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "floatcomplex_i_get" "', argument " "1"" of type '" "floatcomplex *""'"); 
+  }
+  arg1 = reinterpret_cast< floatcomplex * >(argp1);
+  result = (float) ((arg1)->i);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_floatcomplex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  floatcomplex *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_floatcomplex")) SWIG_fail;
+  result = (floatcomplex *)new floatcomplex();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_floatcomplex, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_floatcomplex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  floatcomplex *arg1 = (floatcomplex *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_floatcomplex",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_floatcomplex, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_floatcomplex" "', argument " "1"" of type '" "floatcomplex *""'"); 
+  }
+  arg1 = reinterpret_cast< floatcomplex * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *floatcomplex_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_floatcomplex, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_doublecomplex_r_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  doublecomplex *arg1 = (doublecomplex *) 0 ;
+  double arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:doublecomplex_r_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_doublecomplex, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "doublecomplex_r_set" "', argument " "1"" of type '" "doublecomplex *""'"); 
+  }
+  arg1 = reinterpret_cast< doublecomplex * >(argp1);
+  ecode2 = SWIG_AsVal_double(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "doublecomplex_r_set" "', argument " "2"" of type '" "double""'");
+  } 
+  arg2 = static_cast< double >(val2);
+  if (arg1) (arg1)->r = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_doublecomplex_r_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  doublecomplex *arg1 = (doublecomplex *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:doublecomplex_r_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_doublecomplex, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "doublecomplex_r_get" "', argument " "1"" of type '" "doublecomplex *""'"); 
+  }
+  arg1 = reinterpret_cast< doublecomplex * >(argp1);
+  result = (double) ((arg1)->r);
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_doublecomplex_i_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  doublecomplex *arg1 = (doublecomplex *) 0 ;
+  double arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:doublecomplex_i_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_doublecomplex, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "doublecomplex_i_set" "', argument " "1"" of type '" "doublecomplex *""'"); 
+  }
+  arg1 = reinterpret_cast< doublecomplex * >(argp1);
+  ecode2 = SWIG_AsVal_double(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "doublecomplex_i_set" "', argument " "2"" of type '" "double""'");
+  } 
+  arg2 = static_cast< double >(val2);
+  if (arg1) (arg1)->i = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_doublecomplex_i_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  doublecomplex *arg1 = (doublecomplex *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:doublecomplex_i_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_doublecomplex, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "doublecomplex_i_get" "', argument " "1"" of type '" "doublecomplex *""'"); 
+  }
+  arg1 = reinterpret_cast< doublecomplex * >(argp1);
+  result = (double) ((arg1)->i);
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_doublecomplex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  doublecomplex *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_doublecomplex")) SWIG_fail;
+  result = (doublecomplex *)new doublecomplex();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_doublecomplex, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_doublecomplex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  doublecomplex *arg1 = (doublecomplex *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_doublecomplex",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_doublecomplex, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_doublecomplex" "', argument " "1"" of type '" "doublecomplex *""'"); 
+  }
+  arg1 = reinterpret_cast< doublecomplex * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *doublecomplex_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_doublecomplex, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_init_mt(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver *arg1 = (STRUMPACK_SparseSolver *) 0 ;
+  STRUMPACK_PRECISION arg2 ;
+  STRUMPACK_INTERFACE arg3 ;
+  int arg4 ;
+  char **arg5 ;
+  int arg6 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   int val2 ;
   int ecode2 = 0 ;
-  bool val6 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  int val6 ;
   int ecode6 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
@@ -5779,47 +5236,38 @@ SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_csr_matrix__SWIG_0(PyObjec
   PyObject * obj4 = 0 ;
   PyObject * obj5 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:DStrumpackSparseSolver_set_csr_matrix",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:STRUMPACK_init_mt",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_STRUMPACK_SparseSolver, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_csr_matrix" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_init_mt" "', argument " "1"" of type '" "STRUMPACK_SparseSolver *""'"); 
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
+  arg1 = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
   ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_set_csr_matrix" "', argument " "2"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_init_mt" "', argument " "2"" of type '" "STRUMPACK_PRECISION""'");
   } 
-  arg2 = static_cast< int >(val2);
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (int *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj3)){
-      arg4 = (int *) PyArray_DATA((PyArrayObject *)obj3);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj4)){
-      arg5 = (double *) PyArray_DATA((PyArrayObject *)obj4);
-    }
-    else {
-      return NULL;
-    }
-  }
-  ecode6 = SWIG_AsVal_bool(obj5, &val6);
+  arg2 = static_cast< STRUMPACK_PRECISION >(val2);
+  ecode3 = SWIG_AsVal_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "STRUMPACK_init_mt" "', argument " "3"" of type '" "STRUMPACK_INTERFACE""'");
+  } 
+  arg3 = static_cast< STRUMPACK_INTERFACE >(val3);
+  ecode4 = SWIG_AsVal_int(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "STRUMPACK_init_mt" "', argument " "4"" of type '" "int""'");
+  } 
+  arg4 = static_cast< int >(val4);
+  res5 = SWIG_ConvertPtr(obj4, &argp5,SWIGTYPE_p_p_char, 0 |  0 );
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "STRUMPACK_init_mt" "', argument " "5"" of type '" "char *[]""'"); 
+  } 
+  arg5 = reinterpret_cast< char ** >(argp5);
+  ecode6 = SWIG_AsVal_int(obj5, &val6);
   if (!SWIG_IsOK(ecode6)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "DStrumpackSparseSolver_set_csr_matrix" "', argument " "6"" of type '" "bool""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "STRUMPACK_init_mt" "', argument " "6"" of type '" "int""'");
   } 
-  arg6 = static_cast< bool >(val6);
-  (arg1)->set_csr_matrix(arg2,arg3,arg4,arg5,arg6);
+  arg6 = static_cast< int >(val6);
+  STRUMPACK_init_mt(arg1,arg2,arg3,arg4,arg5,arg6);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -5827,59 +5275,86 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_csr_matrix__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_STRUMPACK_destroy(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  int arg2 ;
-  int *arg3 = (int *) 0 ;
-  int *arg4 = (int *) 0 ;
-  double *arg5 = (double *) 0 ;
+  STRUMPACK_SparseSolver *arg1 = (STRUMPACK_SparseSolver *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_destroy",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_STRUMPACK_SparseSolver, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_destroy" "', argument " "1"" of type '" "STRUMPACK_SparseSolver *""'"); 
+  }
+  arg1 = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+  STRUMPACK_destroy(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_csr_matrix(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *arg2 = (void *) 0 ;
+  void *arg3 = (void *) 0 ;
+  void *arg4 = (void *) 0 ;
+  void *arg5 = (void *) 0 ;
+  int arg6 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int res2 ;
+  int res3 ;
+  int res4 ;
+  int res5 ;
+  int val6 ;
+  int ecode6 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
   PyObject * obj3 = 0 ;
   PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOOO:DStrumpackSparseSolver_set_csr_matrix",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_csr_matrix" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:STRUMPACK_set_csr_matrix",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_csr_matrix" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_csr_matrix" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_set_csr_matrix" "', argument " "2"" of type '" "int""'");
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "STRUMPACK_set_csr_matrix" "', argument " "2"" of type '" "void const *""'"); 
+  }
+  res3 = SWIG_ConvertPtr(obj2,SWIG_as_voidptrptr(&arg3), 0, 0);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "STRUMPACK_set_csr_matrix" "', argument " "3"" of type '" "void const *""'"); 
+  }
+  res4 = SWIG_ConvertPtr(obj3,SWIG_as_voidptrptr(&arg4), 0, 0);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "STRUMPACK_set_csr_matrix" "', argument " "4"" of type '" "void const *""'"); 
+  }
+  res5 = SWIG_ConvertPtr(obj4,SWIG_as_voidptrptr(&arg5), 0, 0);
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "STRUMPACK_set_csr_matrix" "', argument " "5"" of type '" "void const *""'"); 
+  }
+  ecode6 = SWIG_AsVal_int(obj5, &val6);
+  if (!SWIG_IsOK(ecode6)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "STRUMPACK_set_csr_matrix" "', argument " "6"" of type '" "int""'");
   } 
-  arg2 = static_cast< int >(val2);
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (int *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj3)){
-      arg4 = (int *) PyArray_DATA((PyArrayObject *)obj3);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj4)){
-      arg5 = (double *) PyArray_DATA((PyArrayObject *)obj4);
-    }
-    else {
-      return NULL;
-    }
-  }
-  (arg1)->set_csr_matrix(arg2,arg3,arg4,arg5);
+  arg6 = static_cast< int >(val6);
+  STRUMPACK_set_csr_matrix(arg1,(void const *)arg2,(void const *)arg3,(void const *)arg4,(void const *)arg5,arg6);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -5887,125 +5362,125 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_csr_matrix(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[7] = {
-    0
-  };
-  Py_ssize_t ii;
+SWIGINTERN PyObject *_wrap_STRUMPACK_solve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *arg2 = (void *) 0 ;
+  void *arg3 = (void *) 0 ;
+  int arg4 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int res2 ;
+  int res3 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  STRUMPACK_RETURN_CODE result;
   
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 6) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 5) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          {
-            if (PyArray_Check(argv[3])){
-              _v = 1;
-            } else {
-              _v = 0;
-            }
-          }
-          if (_v) {
-            {
-              if (PyArray_Check(argv[4])){
-                _v = 1;
-              } else {
-                _v = 0;
-              }
-            }
-            if (_v) {
-              return _wrap_DStrumpackSparseSolver_set_csr_matrix__SWIG_1(self, args);
-            }
-          }
-        }
-      }
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:STRUMPACK_solve",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_solve" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_solve" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
     }
   }
-  if (argc == 6) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          {
-            if (PyArray_Check(argv[3])){
-              _v = 1;
-            } else {
-              _v = 0;
-            }
-          }
-          if (_v) {
-            {
-              if (PyArray_Check(argv[4])){
-                _v = 1;
-              } else {
-                _v = 0;
-              }
-            }
-            if (_v) {
-              {
-                int res = SWIG_AsVal_bool(argv[5], NULL);
-                _v = SWIG_CheckState(res);
-              }
-              if (_v) {
-                return _wrap_DStrumpackSparseSolver_set_csr_matrix__SWIG_0(self, args);
-              }
-            }
-          }
-        }
-      }
-    }
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "STRUMPACK_solve" "', argument " "2"" of type '" "void const *""'"); 
   }
-  
+  res3 = SWIG_ConvertPtr(obj2,SWIG_as_voidptrptr(&arg3), 0, 0);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "STRUMPACK_solve" "', argument " "3"" of type '" "void *""'"); 
+  }
+  ecode4 = SWIG_AsVal_int(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "STRUMPACK_solve" "', argument " "4"" of type '" "int""'");
+  } 
+  arg4 = static_cast< int >(val4);
+  result = (STRUMPACK_RETURN_CODE)STRUMPACK_solve(arg1,(void const *)arg2,arg3,arg4);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'DStrumpackSparseSolver_set_csr_matrix'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::set_csr_matrix(int,int *,int *,double *,bool)\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::set_csr_matrix(int,int *,int *,double *)\n");
-  return 0;
+  return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_reorder__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_from_options(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_set_from_options",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_from_options" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_from_options" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  STRUMPACK_set_from_options(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_reorder(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  STRUMPACK_RETURN_CODE result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_reorder",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_reorder" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_reorder" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = (STRUMPACK_RETURN_CODE)STRUMPACK_reorder(arg1);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_reorder_regular(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
   int arg2 ;
   int arg3 ;
   int arg4 ;
-  void *argp1 = 0 ;
+  void *argp1 ;
   int res1 = 0 ;
   int val2 ;
   int ecode2 = 0 ;
@@ -6017,1017 +5492,38 @@ SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_reorder__SWIG_0(PyObject *SWIG
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
   PyObject * obj3 = 0 ;
-  params::returnCode result;
+  STRUMPACK_RETURN_CODE result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:DStrumpackSparseSolver_reorder",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:STRUMPACK_reorder_regular",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_reorder_regular" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_reorder_regular" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
   ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_reorder" "', argument " "2"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_reorder_regular" "', argument " "2"" of type '" "int""'");
   } 
   arg2 = static_cast< int >(val2);
   ecode3 = SWIG_AsVal_int(obj2, &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "DStrumpackSparseSolver_reorder" "', argument " "3"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "STRUMPACK_reorder_regular" "', argument " "3"" of type '" "int""'");
   } 
   arg3 = static_cast< int >(val3);
   ecode4 = SWIG_AsVal_int(obj3, &val4);
   if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "DStrumpackSparseSolver_reorder" "', argument " "4"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "STRUMPACK_reorder_regular" "', argument " "4"" of type '" "int""'");
   } 
   arg4 = static_cast< int >(val4);
-  result = (arg1)->reorder(arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_reorder__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  int arg2 ;
-  int arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:DStrumpackSparseSolver_reorder",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_reorder" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  ecode3 = SWIG_AsVal_int(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "DStrumpackSparseSolver_reorder" "', argument " "3"" of type '" "int""'");
-  } 
-  arg3 = static_cast< int >(val3);
-  result = (arg1)->reorder(arg2,arg3);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_reorder__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_reorder",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_reorder" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  result = (arg1)->reorder(arg2);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_reorder__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_reorder",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (arg1)->reorder();
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_reorder(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[5] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 4) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_DStrumpackSparseSolver_reorder__SWIG_3(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_DStrumpackSparseSolver_reorder__SWIG_2(self, args);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_DStrumpackSparseSolver_reorder__SWIG_1(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          {
-            int res = SWIG_AsVal_int(argv[3], NULL);
-            _v = SWIG_CheckState(res);
-          }
-          if (_v) {
-            return _wrap_DStrumpackSparseSolver_reorder__SWIG_0(self, args);
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'DStrumpackSparseSolver_reorder'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::reorder(int,int,int)\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::reorder(int,int)\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::reorder(int)\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::reorder()\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_factor(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_factor",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_factor" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (arg1)->factor();
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_solve__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  double *arg2 = (double *) 0 ;
-  double *arg3 = (double *) 0 ;
-  bool arg4 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val4 ;
-  int ecode4 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:DStrumpackSparseSolver_solve",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_solve" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  {
-    if (PyArray_Check(obj1)){
-      arg2 = (double *) PyArray_DATA((PyArrayObject *)obj1);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (double *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
-  }
-  ecode4 = SWIG_AsVal_bool(obj3, &val4);
-  if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "DStrumpackSparseSolver_solve" "', argument " "4"" of type '" "bool""'");
-  } 
-  arg4 = static_cast< bool >(val4);
-  result = (arg1)->solve(arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_solve__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  double *arg2 = (double *) 0 ;
-  double *arg3 = (double *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:DStrumpackSparseSolver_solve",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_solve" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  {
-    if (PyArray_Check(obj1)){
-      arg2 = (double *) PyArray_DATA((PyArrayObject *)obj1);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (double *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
-  }
-  result = (arg1)->solve(arg2,arg3);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_solve(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[5] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 4) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        if (PyArray_Check(argv[1])){
-          _v = 1;
-        } else {
-          _v = 0;
-        }
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          return _wrap_DStrumpackSparseSolver_solve__SWIG_1(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        if (PyArray_Check(argv[1])){
-          _v = 1;
-        } else {
-          _v = 0;
-        }
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          {
-            int res = SWIG_AsVal_bool(argv[3], NULL);
-            _v = SWIG_CheckState(res);
-          }
-          if (_v) {
-            return _wrap_DStrumpackSparseSolver_solve__SWIG_0(self, args);
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'DStrumpackSparseSolver_solve'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::solve(double *,double *,bool)\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::solve(double *,double *)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_maximum_Krylov_iterations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_maximum_Krylov_iterations",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_maximum_Krylov_iterations" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_set_maximum_Krylov_iterations" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_maximum_Krylov_iterations(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_gmres_restart(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_gmres_restart",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_gmres_restart" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_set_gmres_restart" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_gmres_restart(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_relative_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  double arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  double val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_relative_Krylov_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_relative_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_double(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_set_relative_Krylov_tolerance" "', argument " "2"" of type '" "double""'");
-  } 
-  arg2 = static_cast< double >(val2);
-  (arg1)->set_relative_Krylov_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_absolute_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  double arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  double val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_absolute_Krylov_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_absolute_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_double(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_set_absolute_Krylov_tolerance" "', argument " "2"" of type '" "double""'");
-  } 
-  arg2 = static_cast< double >(val2);
-  (arg1)->set_absolute_Krylov_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_scotch_strategy(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_scotch_strategy",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_scotch_strategy" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_set_scotch_strategy" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_scotch_strategy(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_nested_dissection_parameter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_nested_dissection_parameter",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_nested_dissection_parameter" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_set_nested_dissection_parameter" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_nested_dissection_parameter(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_matrix_reordering_method(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  params::MatrixReorderingStrategy arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_matrix_reordering_method",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_matrix_reordering_method" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__MatrixReorderingStrategy,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DStrumpackSparseSolver_set_matrix_reordering_method" "', argument " "2"" of type '" "params::MatrixReorderingStrategy""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "DStrumpackSparseSolver_set_matrix_reordering_method" "', argument " "2"" of type '" "params::MatrixReorderingStrategy""'");
-    } else {
-      params::MatrixReorderingStrategy * temp = reinterpret_cast< params::MatrixReorderingStrategy * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_matrix_reordering_method(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_GramSchmidt_type(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  params::GramSchmidtType arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_GramSchmidt_type",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_GramSchmidt_type" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__GramSchmidtType,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DStrumpackSparseSolver_set_GramSchmidt_type" "', argument " "2"" of type '" "params::GramSchmidtType""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "DStrumpackSparseSolver_set_GramSchmidt_type" "', argument " "2"" of type '" "params::GramSchmidtType""'");
-    } else {
-      params::GramSchmidtType * temp = reinterpret_cast< params::GramSchmidtType * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_GramSchmidt_type(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_mc64job(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_mc64job",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_mc64job" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_set_mc64job" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_mc64job(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_Krylov_solver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  params::KrylovSolver arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_Krylov_solver",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_Krylov_solver" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__KrylovSolver,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DStrumpackSparseSolver_set_Krylov_solver" "', argument " "2"" of type '" "params::KrylovSolver""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "DStrumpackSparseSolver_set_Krylov_solver" "', argument " "2"" of type '" "params::KrylovSolver""'");
-    } else {
-      params::KrylovSolver * temp = reinterpret_cast< params::KrylovSolver * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_Krylov_solver(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_use_HSS__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  bool arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_use_HSS",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_use_HSS" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_bool(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_use_HSS" "', argument " "2"" of type '" "bool""'");
-  } 
-  arg2 = static_cast< bool >(val2);
-  (arg1)->use_HSS(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_minimum_HSS_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_minimum_HSS_size",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_minimum_HSS_size" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_set_minimum_HSS_size" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_minimum_HSS_size(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_relative_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  double arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  double val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_relative_compression_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_relative_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_double(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_set_relative_compression_tolerance" "', argument " "2"" of type '" "double""'");
-  } 
-  arg2 = static_cast< double >(val2);
-  (arg1)->set_relative_compression_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_absolute_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  double arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  double val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_absolute_compression_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_absolute_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_double(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_set_absolute_compression_tolerance" "', argument " "2"" of type '" "double""'");
-  } 
-  arg2 = static_cast< double >(val2);
-  (arg1)->set_absolute_compression_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_rank_pattern(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  params::RankPattern arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_rank_pattern",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_rank_pattern" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__RankPattern,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DStrumpackSparseSolver_set_rank_pattern" "', argument " "2"" of type '" "params::RankPattern""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "DStrumpackSparseSolver_set_rank_pattern" "', argument " "2"" of type '" "params::RankPattern""'");
-    } else {
-      params::RankPattern * temp = reinterpret_cast< params::RankPattern * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_rank_pattern(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_verbose__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  bool arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:DStrumpackSparseSolver_set_verbose",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_verbose" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_bool(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSparseSolver_set_verbose" "', argument " "2"" of type '" "bool""'");
-  } 
-  arg2 = static_cast< bool >(val2);
-  (arg1)->set_verbose(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_verbose__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_set_verbose",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_set_verbose" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  (arg1)->set_verbose();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_set_verbose(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 2) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_DStrumpackSparseSolver_set_verbose__SWIG_1(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_DStrumpackSparseSolver_set_verbose__SWIG_0(self, args);
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'DStrumpackSparseSolver_set_verbose'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::set_verbose(bool)\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::set_verbose()\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_maximum_Krylov_iterations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_maximum_Krylov_iterations",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_maximum_Krylov_iterations" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (int)(arg1)->get_maximum_Krylov_iterations();
+  result = (STRUMPACK_RETURN_CODE)STRUMPACK_reorder_regular(arg1,arg2,arg3,arg4);
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -7035,21 +5531,29 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_gmres_restart(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_STRUMPACK_factor(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  int result;
+  STRUMPACK_RETURN_CODE result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_gmres_restart",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_gmres_restart" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_factor",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_factor" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_factor" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (int)(arg1)->get_gmres_restart();
+  result = (STRUMPACK_RETURN_CODE)STRUMPACK_factor(arg1);
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -7057,21 +5561,793 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_relative_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_verbose(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
+  STRUMPACK_SparseSolver arg1 ;
+  int arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_verbose",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_verbose" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_verbose" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_verbose" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  STRUMPACK_set_verbose(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_maxit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  int arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_maxit",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_maxit" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_maxit" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_maxit" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  STRUMPACK_set_maxit(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_gmres_restart(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  int arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_gmres_restart",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_gmres_restart" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_gmres_restart" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_gmres_restart" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  STRUMPACK_set_gmres_restart(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_rel_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  double arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_rel_tol",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_rel_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_rel_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_double(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_rel_tol" "', argument " "2"" of type '" "double""'");
+  } 
+  arg2 = static_cast< double >(val2);
+  STRUMPACK_set_rel_tol(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_abs_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  double arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_abs_tol",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_abs_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_abs_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_double(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_abs_tol" "', argument " "2"" of type '" "double""'");
+  } 
+  arg2 = static_cast< double >(val2);
+  STRUMPACK_set_abs_tol(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_nd_param(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  int arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_nd_param",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_nd_param" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_nd_param" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_nd_param" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  STRUMPACK_set_nd_param(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_reordering_method(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  STRUMPACK_REORDERING_STRATEGY arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_reordering_method",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_reordering_method" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_reordering_method" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_reordering_method" "', argument " "2"" of type '" "STRUMPACK_REORDERING_STRATEGY""'");
+  } 
+  arg2 = static_cast< STRUMPACK_REORDERING_STRATEGY >(val2);
+  STRUMPACK_set_reordering_method(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_GramSchmidt_type(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  STRUMPACK_GRAM_SCHMIDT_TYPE arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_GramSchmidt_type",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_GramSchmidt_type" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_GramSchmidt_type" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_GramSchmidt_type" "', argument " "2"" of type '" "STRUMPACK_GRAM_SCHMIDT_TYPE""'");
+  } 
+  arg2 = static_cast< STRUMPACK_GRAM_SCHMIDT_TYPE >(val2);
+  STRUMPACK_set_GramSchmidt_type(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_mc64job(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  int arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_mc64job",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_mc64job" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_mc64job" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_mc64job" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  STRUMPACK_set_mc64job(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_matching(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  int arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_matching",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_matching" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_matching" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_matching" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  STRUMPACK_set_matching(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_Krylov_solver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  STRUMPACK_KRYLOV_SOLVER arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_Krylov_solver",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_Krylov_solver" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_Krylov_solver" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_Krylov_solver" "', argument " "2"" of type '" "STRUMPACK_KRYLOV_SOLVER""'");
+  } 
+  arg2 = static_cast< STRUMPACK_KRYLOV_SOLVER >(val2);
+  STRUMPACK_set_Krylov_solver(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_enable_HSS(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_enable_HSS",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_enable_HSS" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_enable_HSS" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  STRUMPACK_enable_HSS(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_disable_HSS(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_disable_HSS",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_disable_HSS" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_disable_HSS" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  STRUMPACK_disable_HSS(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_HSS_min_front_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  int arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_HSS_min_front_size",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_HSS_min_front_size" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_HSS_min_front_size" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_HSS_min_front_size" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  STRUMPACK_set_HSS_min_front_size(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_HSS_min_sep_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  int arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_HSS_min_sep_size",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_HSS_min_sep_size" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_HSS_min_sep_size" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_HSS_min_sep_size" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  STRUMPACK_set_HSS_min_sep_size(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_HSS_max_rank(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  int arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_HSS_max_rank",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_HSS_max_rank" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_HSS_max_rank" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_HSS_max_rank" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  STRUMPACK_set_HSS_max_rank(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_HSS_leaf_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  int arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_HSS_leaf_size",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_HSS_leaf_size" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_HSS_leaf_size" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_HSS_leaf_size" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  STRUMPACK_set_HSS_leaf_size(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_HSS_rel_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  double arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_HSS_rel_tol",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_HSS_rel_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_HSS_rel_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_double(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_HSS_rel_tol" "', argument " "2"" of type '" "double""'");
+  } 
+  arg2 = static_cast< double >(val2);
+  STRUMPACK_set_HSS_rel_tol(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_set_HSS_abs_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  double arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  double val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:STRUMPACK_set_HSS_abs_tol",&obj0,&obj1)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_set_HSS_abs_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_set_HSS_abs_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  ecode2 = SWIG_AsVal_double(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "STRUMPACK_set_HSS_abs_tol" "', argument " "2"" of type '" "double""'");
+  } 
+  arg2 = static_cast< double >(val2);
+  STRUMPACK_set_HSS_abs_tol(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_verbose(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_verbose",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_verbose" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_verbose" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = (int)STRUMPACK_verbose(arg1);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_maxit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_maxit",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_maxit" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_maxit" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = (int)STRUMPACK_maxit(arg1);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_rel_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   double result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_relative_Krylov_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_relative_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_rel_tol",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_rel_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_rel_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (double)(arg1)->get_relative_Krylov_tolerance();
+  result = (double)STRUMPACK_rel_tol(arg1);
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -7079,21 +6355,29 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_absolute_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_STRUMPACK_abs_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   double result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_absolute_Krylov_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_absolute_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_abs_tol",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_abs_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_abs_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (double)(arg1)->get_absolute_Krylov_tolerance();
+  result = (double)STRUMPACK_abs_tol(arg1);
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -7101,21 +6385,29 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_scotch_strategy(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_STRUMPACK_nd_param(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_scotch_strategy",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_scotch_strategy" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_nd_param",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_nd_param" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_nd_param" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (int)(arg1)->get_scotch_strategy();
+  result = (int)STRUMPACK_nd_param(arg1);
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -7123,21 +6415,29 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_nested_dissection_parameter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_STRUMPACK_reordering_method(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  int result;
+  STRUMPACK_REORDERING_STRATEGY result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_nested_dissection_parameter",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_nested_dissection_parameter" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_reordering_method",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_reordering_method" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_reordering_method" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (int)(arg1)->get_nested_dissection_parameter();
+  result = (STRUMPACK_REORDERING_STRATEGY)STRUMPACK_reordering_method(arg1);
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -7145,65 +6445,29 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_matrix_reordering_method(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_STRUMPACK_GramSchmidt_type(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  params::MatrixReorderingStrategy result;
+  STRUMPACK_GRAM_SCHMIDT_TYPE result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_matrix_reordering_method",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_matrix_reordering_method" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_GramSchmidt_type",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_GramSchmidt_type" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_GramSchmidt_type" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (arg1)->get_matrix_reordering_method();
-  resultobj = SWIG_NewPointerObj((new params::MatrixReorderingStrategy(static_cast< const params::MatrixReorderingStrategy& >(result))), SWIGTYPE_p_params__MatrixReorderingStrategy, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_GramSchmidt_type(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::GramSchmidtType result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_GramSchmidt_type",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_GramSchmidt_type" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (arg1)->get_GramSchmidt_type();
-  resultobj = SWIG_NewPointerObj((new params::GramSchmidtType(static_cast< const params::GramSchmidtType& >(result))), SWIGTYPE_p_params__GramSchmidtType, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_maximum_rank(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_maximum_rank",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_maximum_rank" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (int)(arg1)->get_maximum_rank();
+  result = (STRUMPACK_GRAM_SCHMIDT_TYPE)STRUMPACK_GramSchmidt_type(arg1);
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -7211,21 +6475,359 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_factor_nonzeros(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_STRUMPACK_mc64job(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_mc64job",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_mc64job" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_mc64job" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = (int)STRUMPACK_mc64job(arg1);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_matching(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_matching",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_matching" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_matching" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = (int)STRUMPACK_matching(arg1);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_Krylov_solver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  STRUMPACK_KRYLOV_SOLVER result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_Krylov_solver",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_Krylov_solver" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_Krylov_solver" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = (STRUMPACK_KRYLOV_SOLVER)STRUMPACK_Krylov_solver(arg1);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_HSS_min_front_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_HSS_min_front_size",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_HSS_min_front_size" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_HSS_min_front_size" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = (int)STRUMPACK_HSS_min_front_size(arg1);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_HSS_min_sep_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_HSS_min_sep_size",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_HSS_min_sep_size" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_HSS_min_sep_size" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = (int)STRUMPACK_HSS_min_sep_size(arg1);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_HSS_max_rank(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_HSS_max_rank",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_HSS_max_rank" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_HSS_max_rank" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = (int)STRUMPACK_HSS_max_rank(arg1);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_HSS_leaf_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_HSS_leaf_size",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_HSS_leaf_size" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_HSS_leaf_size" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = (int)STRUMPACK_HSS_leaf_size(arg1);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_HSS_rel_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_HSS_rel_tol",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_HSS_rel_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_HSS_rel_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = (double)STRUMPACK_HSS_rel_tol(arg1);
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_HSS_abs_tol(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_HSS_abs_tol",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_HSS_abs_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_HSS_abs_tol" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = (double)STRUMPACK_HSS_abs_tol(arg1);
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_its(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_its",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_its" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_its" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = (int)STRUMPACK_its(arg1);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_rank(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_rank",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_rank" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_rank" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  result = (int)STRUMPACK_rank(arg1);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_STRUMPACK_factor_nonzeros(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   long long result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_factor_nonzeros",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_factor_nonzeros" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_factor_nonzeros",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_factor_nonzeros" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_factor_nonzeros" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (long long)(arg1)->get_factor_nonzeros();
+  result = (long long)STRUMPACK_factor_nonzeros(arg1);
   resultobj = SWIG_From_long_SS_long(static_cast< long long >(result));
   return resultobj;
 fail:
@@ -7233,4589 +6835,244 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_factor_memory(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_STRUMPACK_factor_memory(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
+  STRUMPACK_SparseSolver arg1 ;
+  void *argp1 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   long long result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_factor_memory",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_factor_memory" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
+  if (!PyArg_ParseTuple(args,(char *)"O:STRUMPACK_factor_memory",&obj0)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_STRUMPACK_SparseSolver,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "STRUMPACK_factor_memory" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "STRUMPACK_factor_memory" "', argument " "1"" of type '" "STRUMPACK_SparseSolver""'");
+    } else {
+      STRUMPACK_SparseSolver * temp = reinterpret_cast< STRUMPACK_SparseSolver * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
   }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (long long)(arg1)->get_factor_memory();
+  result = (long long)STRUMPACK_factor_memory(arg1);
   resultobj = SWIG_From_long_SS_long(static_cast< long long >(result));
   return resultobj;
 fail:
   return NULL;
 }
 
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_Krylov_iterations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_Krylov_iterations",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_Krylov_iterations" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (int)(arg1)->get_Krylov_iterations();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_mc64job(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_mc64job",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_mc64job" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (int)(arg1)->get_mc64job();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_use_HSS__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  bool result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_use_HSS",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_use_HSS" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (bool)(arg1)->use_HSS();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_use_HSS(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 2) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_DStrumpackSparseSolver_use_HSS__SWIG_1(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_DStrumpackSparseSolver_use_HSS__SWIG_0(self, args);
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'DStrumpackSparseSolver_use_HSS'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::use_HSS(bool)\n"
-    "    strumpack::StrumpackSparseSolver< double,double,int >::use_HSS()\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_minimum_HSS_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_minimum_HSS_size",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_minimum_HSS_size" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (int)(arg1)->get_minimum_HSS_size();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_relative_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  double result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_relative_compression_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_relative_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (double)(arg1)->get_relative_compression_tolerance();
-  resultobj = SWIG_From_double(static_cast< double >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_absolute_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  double result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_absolute_compression_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_absolute_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (double)(arg1)->get_absolute_compression_tolerance();
-  resultobj = SWIG_From_double(static_cast< double >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_Krylov_solver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::KrylovSolver result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_Krylov_solver",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_Krylov_solver" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (arg1)->get_Krylov_solver();
-  resultobj = SWIG_NewPointerObj((new params::KrylovSolver(static_cast< const params::KrylovSolver& >(result))), SWIGTYPE_p_params__KrylovSolver, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_DStrumpackSparseSolver_get_rank_pattern(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< double,double,int > *arg1 = (strumpack::StrumpackSparseSolver< double,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::RankPattern result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:DStrumpackSparseSolver_get_rank_pattern",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSparseSolver_get_rank_pattern" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< double,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< double,double,int > * >(argp1);
-  result = (arg1)->get_rank_pattern();
-  resultobj = SWIG_NewPointerObj((new params::RankPattern(static_cast< const params::RankPattern& >(result))), SWIGTYPE_p_params__RankPattern, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *DStrumpackSparseSolver_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *obj;
-  if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_strumpack__StrumpackSparseSolverT_double_double_int_t, SWIG_NewClientData(obj));
-  return SWIG_Py_Void();
-}
-
-SWIGINTERN PyObject *_wrap_new_CStrumpackSparseSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  int arg1 ;
-  char **arg2 ;
-  bool arg3 ;
-  bool arg4 ;
-  bool val3 ;
-  int ecode3 = 0 ;
-  bool val4 ;
-  int ecode4 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:new_CStrumpackSparseSolver",&obj0,&obj1,&obj2)) SWIG_fail;
-  {
-    int i;
-    if (!PyList_Check(obj0)) {
-      PyErr_SetString(PyExc_ValueError, "Expecting a list");
-      SWIG_fail;
-    }
-    arg1 = PyList_Size(obj0);
-    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
-    for (i = 0; i < arg1; i++) {
-      PyObject *s = PyList_GetItem(obj0, i);
-      if (!PyString_Check(s)) {
-        free(arg2);
-        PyErr_SetString(PyExc_ValueError, "List items must be strings");
-        SWIG_fail;
-      }
-      arg2[i] = PyString_AsString(s);
-    }
-    arg2[i] = 0;
-  }
-  ecode3 = SWIG_AsVal_bool(obj1, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_CStrumpackSparseSolver" "', argument " "3"" of type '" "bool""'");
-  } 
-  arg3 = static_cast< bool >(val3);
-  ecode4 = SWIG_AsVal_bool(obj2, &val4);
-  if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "new_CStrumpackSparseSolver" "', argument " "4"" of type '" "bool""'");
-  } 
-  arg4 = static_cast< bool >(val4);
-  result = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *)new strumpack::StrumpackSparseSolver< std::complex< float >,float,int >(arg1,arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, SWIG_POINTER_NEW |  0 );
-  {
-    if (arg2) free(arg2);
-  }
-  return resultobj;
-fail:
-  {
-    if (arg2) free(arg2);
-  }
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_CStrumpackSparseSolver__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  int arg1 ;
-  char **arg2 ;
-  bool arg3 ;
-  bool val3 ;
-  int ecode3 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_CStrumpackSparseSolver",&obj0,&obj1)) SWIG_fail;
-  {
-    int i;
-    if (!PyList_Check(obj0)) {
-      PyErr_SetString(PyExc_ValueError, "Expecting a list");
-      SWIG_fail;
-    }
-    arg1 = PyList_Size(obj0);
-    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
-    for (i = 0; i < arg1; i++) {
-      PyObject *s = PyList_GetItem(obj0, i);
-      if (!PyString_Check(s)) {
-        free(arg2);
-        PyErr_SetString(PyExc_ValueError, "List items must be strings");
-        SWIG_fail;
-      }
-      arg2[i] = PyString_AsString(s);
-    }
-    arg2[i] = 0;
-  }
-  ecode3 = SWIG_AsVal_bool(obj1, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_CStrumpackSparseSolver" "', argument " "3"" of type '" "bool""'");
-  } 
-  arg3 = static_cast< bool >(val3);
-  result = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *)new strumpack::StrumpackSparseSolver< std::complex< float >,float,int >(arg1,arg2,arg3);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, SWIG_POINTER_NEW |  0 );
-  {
-    if (arg2) free(arg2);
-  }
-  return resultobj;
-fail:
-  {
-    if (arg2) free(arg2);
-  }
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_CStrumpackSparseSolver__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  int arg1 ;
-  char **arg2 ;
-  PyObject * obj0 = 0 ;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:new_CStrumpackSparseSolver",&obj0)) SWIG_fail;
-  {
-    int i;
-    if (!PyList_Check(obj0)) {
-      PyErr_SetString(PyExc_ValueError, "Expecting a list");
-      SWIG_fail;
-    }
-    arg1 = PyList_Size(obj0);
-    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
-    for (i = 0; i < arg1; i++) {
-      PyObject *s = PyList_GetItem(obj0, i);
-      if (!PyString_Check(s)) {
-        free(arg2);
-        PyErr_SetString(PyExc_ValueError, "List items must be strings");
-        SWIG_fail;
-      }
-      arg2[i] = PyString_AsString(s);
-    }
-    arg2[i] = 0;
-  }
-  result = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *)new strumpack::StrumpackSparseSolver< std::complex< float >,float,int >(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, SWIG_POINTER_NEW |  0 );
-  {
-    if (arg2) free(arg2);
-  }
-  return resultobj;
-fail:
-  {
-    if (arg2) free(arg2);
-  }
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_CStrumpackSparseSolver(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 3) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 1) {
-    int _v;
-    {
-      _v = PyList_Check(argv[0]) ? 1 : 0;
-    }
-    if (_v) {
-      if (argc <= 1) {
-        return _wrap_new_CStrumpackSparseSolver__SWIG_2(self, args);
-      }
-      return _wrap_new_CStrumpackSparseSolver__SWIG_2(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    {
-      _v = PyList_Check(argv[0]) ? 1 : 0;
-    }
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_new_CStrumpackSparseSolver__SWIG_1(self, args);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    {
-      _v = PyList_Check(argv[0]) ? 1 : 0;
-    }
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_bool(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_new_CStrumpackSparseSolver__SWIG_0(self, args);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_CStrumpackSparseSolver'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::StrumpackSparseSolver(int,char *[],bool,bool)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::StrumpackSparseSolver(int,char *[],bool)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::StrumpackSparseSolver(int,char *[])\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_delete_CStrumpackSparseSolver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_CStrumpackSparseSolver",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_CStrumpackSparseSolver" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  delete arg1;
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_from_options(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_set_from_options",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_from_options" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  (arg1)->set_from_options();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_from_options_no_warning_unrecognized(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_set_from_options_no_warning_unrecognized",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_from_options_no_warning_unrecognized" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  (arg1)->set_from_options_no_warning_unrecognized();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_matrix(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  CSRMatrix< std::complex< float >,float,int > *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_matrix",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_matrix" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_CSRMatrixT_std__complexT_float_t_float_int_t,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CStrumpackSparseSolver_set_matrix" "', argument " "2"" of type '" "CSRMatrix< std::complex< float >,float,int > &""'"); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "CStrumpackSparseSolver_set_matrix" "', argument " "2"" of type '" "CSRMatrix< std::complex< float >,float,int > &""'"); 
-  }
-  arg2 = reinterpret_cast< CSRMatrix< std::complex< float >,float,int > * >(argp2);
-  (arg1)->set_matrix(*arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_csr_matrix__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  int arg2 ;
-  int *arg3 = (int *) 0 ;
-  int *arg4 = (int *) 0 ;
-  std::complex< float > *arg5 = (std::complex< float > *) 0 ;
-  bool arg6 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  bool val6 ;
-  int ecode6 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
-  PyObject * obj4 = 0 ;
-  PyObject * obj5 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:CStrumpackSparseSolver_set_csr_matrix",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_csr_matrix" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_set_csr_matrix" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (int *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj3)){
-      arg4 = (int *) PyArray_DATA((PyArrayObject *)obj3);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj4)){
-      arg5 = (std::complex<float> *) PyArray_DATA((PyArrayObject *)obj4);
-    }
-    else {
-      return NULL;
-    }
-  }
-  ecode6 = SWIG_AsVal_bool(obj5, &val6);
-  if (!SWIG_IsOK(ecode6)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "CStrumpackSparseSolver_set_csr_matrix" "', argument " "6"" of type '" "bool""'");
-  } 
-  arg6 = static_cast< bool >(val6);
-  (arg1)->set_csr_matrix(arg2,arg3,arg4,arg5,arg6);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_csr_matrix__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  int arg2 ;
-  int *arg3 = (int *) 0 ;
-  int *arg4 = (int *) 0 ;
-  std::complex< float > *arg5 = (std::complex< float > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
-  PyObject * obj4 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOOOO:CStrumpackSparseSolver_set_csr_matrix",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_csr_matrix" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_set_csr_matrix" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (int *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj3)){
-      arg4 = (int *) PyArray_DATA((PyArrayObject *)obj3);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj4)){
-      arg5 = (std::complex<float> *) PyArray_DATA((PyArrayObject *)obj4);
-    }
-    else {
-      return NULL;
-    }
-  }
-  (arg1)->set_csr_matrix(arg2,arg3,arg4,arg5);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_csr_matrix(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[7] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 6) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 5) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          {
-            if (PyArray_Check(argv[3])){
-              _v = 1;
-            } else {
-              _v = 0;
-            }
-          }
-          if (_v) {
-            {
-              if (PyArray_Check(argv[4])){
-                _v = 1;
-              } else {
-                _v = 0;
-              }
-            }
-            if (_v) {
-              return _wrap_CStrumpackSparseSolver_set_csr_matrix__SWIG_1(self, args);
-            }
-          }
-        }
-      }
-    }
-  }
-  if (argc == 6) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          {
-            if (PyArray_Check(argv[3])){
-              _v = 1;
-            } else {
-              _v = 0;
-            }
-          }
-          if (_v) {
-            {
-              if (PyArray_Check(argv[4])){
-                _v = 1;
-              } else {
-                _v = 0;
-              }
-            }
-            if (_v) {
-              {
-                int res = SWIG_AsVal_bool(argv[5], NULL);
-                _v = SWIG_CheckState(res);
-              }
-              if (_v) {
-                return _wrap_CStrumpackSparseSolver_set_csr_matrix__SWIG_0(self, args);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'CStrumpackSparseSolver_set_csr_matrix'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::set_csr_matrix(int,int *,int *,std::complex< float > *,bool)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::set_csr_matrix(int,int *,int *,std::complex< float > *)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_reorder__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  int arg2 ;
-  int arg3 ;
-  int arg4 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  int val4 ;
-  int ecode4 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:CStrumpackSparseSolver_reorder",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_reorder" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  ecode3 = SWIG_AsVal_int(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "CStrumpackSparseSolver_reorder" "', argument " "3"" of type '" "int""'");
-  } 
-  arg3 = static_cast< int >(val3);
-  ecode4 = SWIG_AsVal_int(obj3, &val4);
-  if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "CStrumpackSparseSolver_reorder" "', argument " "4"" of type '" "int""'");
-  } 
-  arg4 = static_cast< int >(val4);
-  result = (arg1)->reorder(arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_reorder__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  int arg2 ;
-  int arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:CStrumpackSparseSolver_reorder",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_reorder" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  ecode3 = SWIG_AsVal_int(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "CStrumpackSparseSolver_reorder" "', argument " "3"" of type '" "int""'");
-  } 
-  arg3 = static_cast< int >(val3);
-  result = (arg1)->reorder(arg2,arg3);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_reorder__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_reorder",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_reorder" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  result = (arg1)->reorder(arg2);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_reorder__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_reorder",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (arg1)->reorder();
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_reorder(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[5] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 4) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_CStrumpackSparseSolver_reorder__SWIG_3(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_CStrumpackSparseSolver_reorder__SWIG_2(self, args);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_CStrumpackSparseSolver_reorder__SWIG_1(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          {
-            int res = SWIG_AsVal_int(argv[3], NULL);
-            _v = SWIG_CheckState(res);
-          }
-          if (_v) {
-            return _wrap_CStrumpackSparseSolver_reorder__SWIG_0(self, args);
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'CStrumpackSparseSolver_reorder'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::reorder(int,int,int)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::reorder(int,int)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::reorder(int)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::reorder()\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_factor(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_factor",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_factor" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (arg1)->factor();
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_solve__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  std::complex< float > *arg2 = (std::complex< float > *) 0 ;
-  std::complex< float > *arg3 = (std::complex< float > *) 0 ;
-  bool arg4 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val4 ;
-  int ecode4 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:CStrumpackSparseSolver_solve",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_solve" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  {
-    if (PyArray_Check(obj1)){
-      arg2 = (std::complex<float> *) PyArray_DATA((PyArrayObject *)obj1);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (std::complex<float> *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
-  }
-  ecode4 = SWIG_AsVal_bool(obj3, &val4);
-  if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "CStrumpackSparseSolver_solve" "', argument " "4"" of type '" "bool""'");
-  } 
-  arg4 = static_cast< bool >(val4);
-  result = (arg1)->solve(arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_solve__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  std::complex< float > *arg2 = (std::complex< float > *) 0 ;
-  std::complex< float > *arg3 = (std::complex< float > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:CStrumpackSparseSolver_solve",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_solve" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  {
-    if (PyArray_Check(obj1)){
-      arg2 = (std::complex<float> *) PyArray_DATA((PyArrayObject *)obj1);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (std::complex<float> *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
-  }
-  result = (arg1)->solve(arg2,arg3);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_solve(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[5] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 4) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        if (PyArray_Check(argv[1])){
-          _v = 1;
-        } else {
-          _v = 0;
-        }
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          return _wrap_CStrumpackSparseSolver_solve__SWIG_1(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        if (PyArray_Check(argv[1])){
-          _v = 1;
-        } else {
-          _v = 0;
-        }
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          {
-            int res = SWIG_AsVal_bool(argv[3], NULL);
-            _v = SWIG_CheckState(res);
-          }
-          if (_v) {
-            return _wrap_CStrumpackSparseSolver_solve__SWIG_0(self, args);
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'CStrumpackSparseSolver_solve'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::solve(std::complex< float > *,std::complex< float > *,bool)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::solve(std::complex< float > *,std::complex< float > *)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_maximum_Krylov_iterations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_maximum_Krylov_iterations",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_maximum_Krylov_iterations" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_set_maximum_Krylov_iterations" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_maximum_Krylov_iterations(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_gmres_restart(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_gmres_restart",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_gmres_restart" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_set_gmres_restart" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_gmres_restart(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_relative_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  float arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  float val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_relative_Krylov_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_relative_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_float(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_set_relative_Krylov_tolerance" "', argument " "2"" of type '" "float""'");
-  } 
-  arg2 = static_cast< float >(val2);
-  (arg1)->set_relative_Krylov_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_absolute_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  float arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  float val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_absolute_Krylov_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_absolute_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_float(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_set_absolute_Krylov_tolerance" "', argument " "2"" of type '" "float""'");
-  } 
-  arg2 = static_cast< float >(val2);
-  (arg1)->set_absolute_Krylov_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_scotch_strategy(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_scotch_strategy",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_scotch_strategy" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_set_scotch_strategy" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_scotch_strategy(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_nested_dissection_parameter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_nested_dissection_parameter",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_nested_dissection_parameter" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_set_nested_dissection_parameter" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_nested_dissection_parameter(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_matrix_reordering_method(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  params::MatrixReorderingStrategy arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_matrix_reordering_method",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_matrix_reordering_method" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__MatrixReorderingStrategy,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CStrumpackSparseSolver_set_matrix_reordering_method" "', argument " "2"" of type '" "params::MatrixReorderingStrategy""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "CStrumpackSparseSolver_set_matrix_reordering_method" "', argument " "2"" of type '" "params::MatrixReorderingStrategy""'");
-    } else {
-      params::MatrixReorderingStrategy * temp = reinterpret_cast< params::MatrixReorderingStrategy * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_matrix_reordering_method(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_GramSchmidt_type(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  params::GramSchmidtType arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_GramSchmidt_type",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_GramSchmidt_type" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__GramSchmidtType,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CStrumpackSparseSolver_set_GramSchmidt_type" "', argument " "2"" of type '" "params::GramSchmidtType""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "CStrumpackSparseSolver_set_GramSchmidt_type" "', argument " "2"" of type '" "params::GramSchmidtType""'");
-    } else {
-      params::GramSchmidtType * temp = reinterpret_cast< params::GramSchmidtType * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_GramSchmidt_type(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_mc64job(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_mc64job",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_mc64job" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_set_mc64job" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_mc64job(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_Krylov_solver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  params::KrylovSolver arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_Krylov_solver",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_Krylov_solver" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__KrylovSolver,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CStrumpackSparseSolver_set_Krylov_solver" "', argument " "2"" of type '" "params::KrylovSolver""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "CStrumpackSparseSolver_set_Krylov_solver" "', argument " "2"" of type '" "params::KrylovSolver""'");
-    } else {
-      params::KrylovSolver * temp = reinterpret_cast< params::KrylovSolver * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_Krylov_solver(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_use_HSS__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  bool arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_use_HSS",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_use_HSS" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_bool(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_use_HSS" "', argument " "2"" of type '" "bool""'");
-  } 
-  arg2 = static_cast< bool >(val2);
-  (arg1)->use_HSS(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_minimum_HSS_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_minimum_HSS_size",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_minimum_HSS_size" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_set_minimum_HSS_size" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_minimum_HSS_size(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_relative_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  float arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  float val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_relative_compression_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_relative_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_float(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_set_relative_compression_tolerance" "', argument " "2"" of type '" "float""'");
-  } 
-  arg2 = static_cast< float >(val2);
-  (arg1)->set_relative_compression_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_absolute_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  float arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  float val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_absolute_compression_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_absolute_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_float(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_set_absolute_compression_tolerance" "', argument " "2"" of type '" "float""'");
-  } 
-  arg2 = static_cast< float >(val2);
-  (arg1)->set_absolute_compression_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_rank_pattern(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  params::RankPattern arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_rank_pattern",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_rank_pattern" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__RankPattern,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CStrumpackSparseSolver_set_rank_pattern" "', argument " "2"" of type '" "params::RankPattern""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "CStrumpackSparseSolver_set_rank_pattern" "', argument " "2"" of type '" "params::RankPattern""'");
-    } else {
-      params::RankPattern * temp = reinterpret_cast< params::RankPattern * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_rank_pattern(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_verbose__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  bool arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:CStrumpackSparseSolver_set_verbose",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_verbose" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  ecode2 = SWIG_AsVal_bool(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSparseSolver_set_verbose" "', argument " "2"" of type '" "bool""'");
-  } 
-  arg2 = static_cast< bool >(val2);
-  (arg1)->set_verbose(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_verbose__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_set_verbose",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_set_verbose" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  (arg1)->set_verbose();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_set_verbose(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 2) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_CStrumpackSparseSolver_set_verbose__SWIG_1(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_CStrumpackSparseSolver_set_verbose__SWIG_0(self, args);
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'CStrumpackSparseSolver_set_verbose'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::set_verbose(bool)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::set_verbose()\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_maximum_Krylov_iterations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_maximum_Krylov_iterations",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_maximum_Krylov_iterations" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (int)(arg1)->get_maximum_Krylov_iterations();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_gmres_restart(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_gmres_restart",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_gmres_restart" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (int)(arg1)->get_gmres_restart();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_relative_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  float result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_relative_Krylov_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_relative_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (float)(arg1)->get_relative_Krylov_tolerance();
-  resultobj = SWIG_From_float(static_cast< float >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_absolute_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  float result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_absolute_Krylov_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_absolute_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (float)(arg1)->get_absolute_Krylov_tolerance();
-  resultobj = SWIG_From_float(static_cast< float >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_scotch_strategy(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_scotch_strategy",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_scotch_strategy" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (int)(arg1)->get_scotch_strategy();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_nested_dissection_parameter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_nested_dissection_parameter",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_nested_dissection_parameter" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (int)(arg1)->get_nested_dissection_parameter();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_matrix_reordering_method(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::MatrixReorderingStrategy result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_matrix_reordering_method",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_matrix_reordering_method" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (arg1)->get_matrix_reordering_method();
-  resultobj = SWIG_NewPointerObj((new params::MatrixReorderingStrategy(static_cast< const params::MatrixReorderingStrategy& >(result))), SWIGTYPE_p_params__MatrixReorderingStrategy, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_GramSchmidt_type(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::GramSchmidtType result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_GramSchmidt_type",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_GramSchmidt_type" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (arg1)->get_GramSchmidt_type();
-  resultobj = SWIG_NewPointerObj((new params::GramSchmidtType(static_cast< const params::GramSchmidtType& >(result))), SWIGTYPE_p_params__GramSchmidtType, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_maximum_rank(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_maximum_rank",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_maximum_rank" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (int)(arg1)->get_maximum_rank();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_factor_nonzeros(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  long long result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_factor_nonzeros",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_factor_nonzeros" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (long long)(arg1)->get_factor_nonzeros();
-  resultobj = SWIG_From_long_SS_long(static_cast< long long >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_factor_memory(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  long long result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_factor_memory",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_factor_memory" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (long long)(arg1)->get_factor_memory();
-  resultobj = SWIG_From_long_SS_long(static_cast< long long >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_Krylov_iterations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_Krylov_iterations",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_Krylov_iterations" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (int)(arg1)->get_Krylov_iterations();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_mc64job(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_mc64job",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_mc64job" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (int)(arg1)->get_mc64job();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_use_HSS__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  bool result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_use_HSS",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_use_HSS" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (bool)(arg1)->use_HSS();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_use_HSS(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 2) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_CStrumpackSparseSolver_use_HSS__SWIG_1(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_CStrumpackSparseSolver_use_HSS__SWIG_0(self, args);
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'CStrumpackSparseSolver_use_HSS'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::use_HSS(bool)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< float >,float,int >::use_HSS()\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_minimum_HSS_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_minimum_HSS_size",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_minimum_HSS_size" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (int)(arg1)->get_minimum_HSS_size();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_relative_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  float result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_relative_compression_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_relative_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (float)(arg1)->get_relative_compression_tolerance();
-  resultobj = SWIG_From_float(static_cast< float >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_absolute_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  float result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_absolute_compression_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_absolute_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (float)(arg1)->get_absolute_compression_tolerance();
-  resultobj = SWIG_From_float(static_cast< float >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_Krylov_solver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::KrylovSolver result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_Krylov_solver",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_Krylov_solver" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (arg1)->get_Krylov_solver();
-  resultobj = SWIG_NewPointerObj((new params::KrylovSolver(static_cast< const params::KrylovSolver& >(result))), SWIGTYPE_p_params__KrylovSolver, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_CStrumpackSparseSolver_get_rank_pattern(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::RankPattern result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:CStrumpackSparseSolver_get_rank_pattern",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSparseSolver_get_rank_pattern" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< float >,float,int > * >(argp1);
-  result = (arg1)->get_rank_pattern();
-  resultobj = SWIG_NewPointerObj((new params::RankPattern(static_cast< const params::RankPattern& >(result))), SWIGTYPE_p_params__RankPattern, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *CStrumpackSparseSolver_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *obj;
-  if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, SWIG_NewClientData(obj));
-  return SWIG_Py_Void();
-}
-
-SWIGINTERN PyObject *_wrap_new_ZStrumpackSparseSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  int arg1 ;
-  char **arg2 ;
-  bool arg3 ;
-  bool arg4 ;
-  bool val3 ;
-  int ecode3 = 0 ;
-  bool val4 ;
-  int ecode4 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:new_ZStrumpackSparseSolver",&obj0,&obj1,&obj2)) SWIG_fail;
-  {
-    int i;
-    if (!PyList_Check(obj0)) {
-      PyErr_SetString(PyExc_ValueError, "Expecting a list");
-      SWIG_fail;
-    }
-    arg1 = PyList_Size(obj0);
-    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
-    for (i = 0; i < arg1; i++) {
-      PyObject *s = PyList_GetItem(obj0, i);
-      if (!PyString_Check(s)) {
-        free(arg2);
-        PyErr_SetString(PyExc_ValueError, "List items must be strings");
-        SWIG_fail;
-      }
-      arg2[i] = PyString_AsString(s);
-    }
-    arg2[i] = 0;
-  }
-  ecode3 = SWIG_AsVal_bool(obj1, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_ZStrumpackSparseSolver" "', argument " "3"" of type '" "bool""'");
-  } 
-  arg3 = static_cast< bool >(val3);
-  ecode4 = SWIG_AsVal_bool(obj2, &val4);
-  if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "new_ZStrumpackSparseSolver" "', argument " "4"" of type '" "bool""'");
-  } 
-  arg4 = static_cast< bool >(val4);
-  result = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *)new strumpack::StrumpackSparseSolver< std::complex< double >,double,int >(arg1,arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, SWIG_POINTER_NEW |  0 );
-  {
-    if (arg2) free(arg2);
-  }
-  return resultobj;
-fail:
-  {
-    if (arg2) free(arg2);
-  }
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_ZStrumpackSparseSolver__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  int arg1 ;
-  char **arg2 ;
-  bool arg3 ;
-  bool val3 ;
-  int ecode3 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_ZStrumpackSparseSolver",&obj0,&obj1)) SWIG_fail;
-  {
-    int i;
-    if (!PyList_Check(obj0)) {
-      PyErr_SetString(PyExc_ValueError, "Expecting a list");
-      SWIG_fail;
-    }
-    arg1 = PyList_Size(obj0);
-    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
-    for (i = 0; i < arg1; i++) {
-      PyObject *s = PyList_GetItem(obj0, i);
-      if (!PyString_Check(s)) {
-        free(arg2);
-        PyErr_SetString(PyExc_ValueError, "List items must be strings");
-        SWIG_fail;
-      }
-      arg2[i] = PyString_AsString(s);
-    }
-    arg2[i] = 0;
-  }
-  ecode3 = SWIG_AsVal_bool(obj1, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_ZStrumpackSparseSolver" "', argument " "3"" of type '" "bool""'");
-  } 
-  arg3 = static_cast< bool >(val3);
-  result = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *)new strumpack::StrumpackSparseSolver< std::complex< double >,double,int >(arg1,arg2,arg3);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, SWIG_POINTER_NEW |  0 );
-  {
-    if (arg2) free(arg2);
-  }
-  return resultobj;
-fail:
-  {
-    if (arg2) free(arg2);
-  }
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_ZStrumpackSparseSolver__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  int arg1 ;
-  char **arg2 ;
-  PyObject * obj0 = 0 ;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:new_ZStrumpackSparseSolver",&obj0)) SWIG_fail;
-  {
-    int i;
-    if (!PyList_Check(obj0)) {
-      PyErr_SetString(PyExc_ValueError, "Expecting a list");
-      SWIG_fail;
-    }
-    arg1 = PyList_Size(obj0);
-    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
-    for (i = 0; i < arg1; i++) {
-      PyObject *s = PyList_GetItem(obj0, i);
-      if (!PyString_Check(s)) {
-        free(arg2);
-        PyErr_SetString(PyExc_ValueError, "List items must be strings");
-        SWIG_fail;
-      }
-      arg2[i] = PyString_AsString(s);
-    }
-    arg2[i] = 0;
-  }
-  result = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *)new strumpack::StrumpackSparseSolver< std::complex< double >,double,int >(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, SWIG_POINTER_NEW |  0 );
-  {
-    if (arg2) free(arg2);
-  }
-  return resultobj;
-fail:
-  {
-    if (arg2) free(arg2);
-  }
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_ZStrumpackSparseSolver(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 3) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 1) {
-    int _v;
-    {
-      _v = PyList_Check(argv[0]) ? 1 : 0;
-    }
-    if (_v) {
-      if (argc <= 1) {
-        return _wrap_new_ZStrumpackSparseSolver__SWIG_2(self, args);
-      }
-      return _wrap_new_ZStrumpackSparseSolver__SWIG_2(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    {
-      _v = PyList_Check(argv[0]) ? 1 : 0;
-    }
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_new_ZStrumpackSparseSolver__SWIG_1(self, args);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    {
-      _v = PyList_Check(argv[0]) ? 1 : 0;
-    }
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_bool(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_new_ZStrumpackSparseSolver__SWIG_0(self, args);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_ZStrumpackSparseSolver'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::StrumpackSparseSolver(int,char *[],bool,bool)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::StrumpackSparseSolver(int,char *[],bool)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::StrumpackSparseSolver(int,char *[])\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_delete_ZStrumpackSparseSolver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_ZStrumpackSparseSolver",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ZStrumpackSparseSolver" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  delete arg1;
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_from_options(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_set_from_options",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_from_options" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  (arg1)->set_from_options();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_from_options_no_warning_unrecognized(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_set_from_options_no_warning_unrecognized",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_from_options_no_warning_unrecognized" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  (arg1)->set_from_options_no_warning_unrecognized();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_matrix(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  CSRMatrix< std::complex< double >,double,int > *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_matrix",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_matrix" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_CSRMatrixT_std__complexT_double_t_double_int_t,  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ZStrumpackSparseSolver_set_matrix" "', argument " "2"" of type '" "CSRMatrix< std::complex< double >,double,int > &""'"); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ZStrumpackSparseSolver_set_matrix" "', argument " "2"" of type '" "CSRMatrix< std::complex< double >,double,int > &""'"); 
-  }
-  arg2 = reinterpret_cast< CSRMatrix< std::complex< double >,double,int > * >(argp2);
-  (arg1)->set_matrix(*arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_csr_matrix__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  int arg2 ;
-  int *arg3 = (int *) 0 ;
-  int *arg4 = (int *) 0 ;
-  std::complex< double > *arg5 = (std::complex< double > *) 0 ;
-  bool arg6 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  bool val6 ;
-  int ecode6 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
-  PyObject * obj4 = 0 ;
-  PyObject * obj5 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:ZStrumpackSparseSolver_set_csr_matrix",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_csr_matrix" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_set_csr_matrix" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (int *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj3)){
-      arg4 = (int *) PyArray_DATA((PyArrayObject *)obj3);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj4)){
-      arg5 = (std::complex<double> *) PyArray_DATA((PyArrayObject *)obj4);
-    }
-    else {
-      return NULL;
-    }
-  }
-  ecode6 = SWIG_AsVal_bool(obj5, &val6);
-  if (!SWIG_IsOK(ecode6)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "ZStrumpackSparseSolver_set_csr_matrix" "', argument " "6"" of type '" "bool""'");
-  } 
-  arg6 = static_cast< bool >(val6);
-  (arg1)->set_csr_matrix(arg2,arg3,arg4,arg5,arg6);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_csr_matrix__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  int arg2 ;
-  int *arg3 = (int *) 0 ;
-  int *arg4 = (int *) 0 ;
-  std::complex< double > *arg5 = (std::complex< double > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
-  PyObject * obj4 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOOOO:ZStrumpackSparseSolver_set_csr_matrix",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_csr_matrix" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_set_csr_matrix" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (int *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj3)){
-      arg4 = (int *) PyArray_DATA((PyArrayObject *)obj3);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj4)){
-      arg5 = (std::complex<double> *) PyArray_DATA((PyArrayObject *)obj4);
-    }
-    else {
-      return NULL;
-    }
-  }
-  (arg1)->set_csr_matrix(arg2,arg3,arg4,arg5);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_csr_matrix(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[7] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 6) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 5) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          {
-            if (PyArray_Check(argv[3])){
-              _v = 1;
-            } else {
-              _v = 0;
-            }
-          }
-          if (_v) {
-            {
-              if (PyArray_Check(argv[4])){
-                _v = 1;
-              } else {
-                _v = 0;
-              }
-            }
-            if (_v) {
-              return _wrap_ZStrumpackSparseSolver_set_csr_matrix__SWIG_1(self, args);
-            }
-          }
-        }
-      }
-    }
-  }
-  if (argc == 6) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          {
-            if (PyArray_Check(argv[3])){
-              _v = 1;
-            } else {
-              _v = 0;
-            }
-          }
-          if (_v) {
-            {
-              if (PyArray_Check(argv[4])){
-                _v = 1;
-              } else {
-                _v = 0;
-              }
-            }
-            if (_v) {
-              {
-                int res = SWIG_AsVal_bool(argv[5], NULL);
-                _v = SWIG_CheckState(res);
-              }
-              if (_v) {
-                return _wrap_ZStrumpackSparseSolver_set_csr_matrix__SWIG_0(self, args);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'ZStrumpackSparseSolver_set_csr_matrix'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::set_csr_matrix(int,int *,int *,std::complex< double > *,bool)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::set_csr_matrix(int,int *,int *,std::complex< double > *)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_reorder__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  int arg2 ;
-  int arg3 ;
-  int arg4 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  int val4 ;
-  int ecode4 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:ZStrumpackSparseSolver_reorder",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_reorder" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  ecode3 = SWIG_AsVal_int(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ZStrumpackSparseSolver_reorder" "', argument " "3"" of type '" "int""'");
-  } 
-  arg3 = static_cast< int >(val3);
-  ecode4 = SWIG_AsVal_int(obj3, &val4);
-  if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ZStrumpackSparseSolver_reorder" "', argument " "4"" of type '" "int""'");
-  } 
-  arg4 = static_cast< int >(val4);
-  result = (arg1)->reorder(arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_reorder__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  int arg2 ;
-  int arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:ZStrumpackSparseSolver_reorder",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_reorder" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  ecode3 = SWIG_AsVal_int(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ZStrumpackSparseSolver_reorder" "', argument " "3"" of type '" "int""'");
-  } 
-  arg3 = static_cast< int >(val3);
-  result = (arg1)->reorder(arg2,arg3);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_reorder__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_reorder",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_reorder" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  result = (arg1)->reorder(arg2);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_reorder__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_reorder",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_reorder" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (arg1)->reorder();
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_reorder(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[5] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 4) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_ZStrumpackSparseSolver_reorder__SWIG_3(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_ZStrumpackSparseSolver_reorder__SWIG_2(self, args);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_ZStrumpackSparseSolver_reorder__SWIG_1(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          {
-            int res = SWIG_AsVal_int(argv[3], NULL);
-            _v = SWIG_CheckState(res);
-          }
-          if (_v) {
-            return _wrap_ZStrumpackSparseSolver_reorder__SWIG_0(self, args);
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'ZStrumpackSparseSolver_reorder'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::reorder(int,int,int)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::reorder(int,int)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::reorder(int)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::reorder()\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_factor(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_factor",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_factor" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (arg1)->factor();
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_solve__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  std::complex< double > *arg2 = (std::complex< double > *) 0 ;
-  std::complex< double > *arg3 = (std::complex< double > *) 0 ;
-  bool arg4 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val4 ;
-  int ecode4 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:ZStrumpackSparseSolver_solve",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_solve" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  {
-    if (PyArray_Check(obj1)){
-      arg2 = (std::complex<double> *) PyArray_DATA((PyArrayObject *)obj1);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (std::complex<double> *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
-  }
-  ecode4 = SWIG_AsVal_bool(obj3, &val4);
-  if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "ZStrumpackSparseSolver_solve" "', argument " "4"" of type '" "bool""'");
-  } 
-  arg4 = static_cast< bool >(val4);
-  result = (arg1)->solve(arg2,arg3,arg4);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_solve__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  std::complex< double > *arg2 = (std::complex< double > *) 0 ;
-  std::complex< double > *arg3 = (std::complex< double > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  params::returnCode result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:ZStrumpackSparseSolver_solve",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_solve" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  {
-    if (PyArray_Check(obj1)){
-      arg2 = (std::complex<double> *) PyArray_DATA((PyArrayObject *)obj1);
-    }
-    else {
-      return NULL;
-    }
-  }
-  {
-    if (PyArray_Check(obj2)){
-      arg3 = (std::complex<double> *) PyArray_DATA((PyArrayObject *)obj2);
-    }
-    else {
-      return NULL;
-    }
-  }
-  result = (arg1)->solve(arg2,arg3);
-  resultobj = SWIG_NewPointerObj((new params::returnCode(static_cast< const params::returnCode& >(result))), SWIGTYPE_p_params__returnCode, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_solve(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[5] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 4) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        if (PyArray_Check(argv[1])){
-          _v = 1;
-        } else {
-          _v = 0;
-        }
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          return _wrap_ZStrumpackSparseSolver_solve__SWIG_1(self, args);
-        }
-      }
-    }
-  }
-  if (argc == 4) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        if (PyArray_Check(argv[1])){
-          _v = 1;
-        } else {
-          _v = 0;
-        }
-      }
-      if (_v) {
-        {
-          if (PyArray_Check(argv[2])){
-            _v = 1;
-          } else {
-            _v = 0;
-          }
-        }
-        if (_v) {
-          {
-            int res = SWIG_AsVal_bool(argv[3], NULL);
-            _v = SWIG_CheckState(res);
-          }
-          if (_v) {
-            return _wrap_ZStrumpackSparseSolver_solve__SWIG_0(self, args);
-          }
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'ZStrumpackSparseSolver_solve'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::solve(std::complex< double > *,std::complex< double > *,bool)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::solve(std::complex< double > *,std::complex< double > *)\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_maximum_Krylov_iterations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_maximum_Krylov_iterations",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_maximum_Krylov_iterations" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_set_maximum_Krylov_iterations" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_maximum_Krylov_iterations(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_gmres_restart(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_gmres_restart",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_gmres_restart" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_set_gmres_restart" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_gmres_restart(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_relative_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  double arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  double val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_relative_Krylov_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_relative_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_double(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_set_relative_Krylov_tolerance" "', argument " "2"" of type '" "double""'");
-  } 
-  arg2 = static_cast< double >(val2);
-  (arg1)->set_relative_Krylov_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_absolute_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  double arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  double val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_absolute_Krylov_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_absolute_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_double(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_set_absolute_Krylov_tolerance" "', argument " "2"" of type '" "double""'");
-  } 
-  arg2 = static_cast< double >(val2);
-  (arg1)->set_absolute_Krylov_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_scotch_strategy(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_scotch_strategy",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_scotch_strategy" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_set_scotch_strategy" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_scotch_strategy(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_nested_dissection_parameter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_nested_dissection_parameter",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_nested_dissection_parameter" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_set_nested_dissection_parameter" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_nested_dissection_parameter(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_matrix_reordering_method(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  params::MatrixReorderingStrategy arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_matrix_reordering_method",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_matrix_reordering_method" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__MatrixReorderingStrategy,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ZStrumpackSparseSolver_set_matrix_reordering_method" "', argument " "2"" of type '" "params::MatrixReorderingStrategy""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ZStrumpackSparseSolver_set_matrix_reordering_method" "', argument " "2"" of type '" "params::MatrixReorderingStrategy""'");
-    } else {
-      params::MatrixReorderingStrategy * temp = reinterpret_cast< params::MatrixReorderingStrategy * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_matrix_reordering_method(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_GramSchmidt_type(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  params::GramSchmidtType arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_GramSchmidt_type",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_GramSchmidt_type" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__GramSchmidtType,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ZStrumpackSparseSolver_set_GramSchmidt_type" "', argument " "2"" of type '" "params::GramSchmidtType""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ZStrumpackSparseSolver_set_GramSchmidt_type" "', argument " "2"" of type '" "params::GramSchmidtType""'");
-    } else {
-      params::GramSchmidtType * temp = reinterpret_cast< params::GramSchmidtType * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_GramSchmidt_type(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_mc64job(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_mc64job",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_mc64job" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_set_mc64job" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_mc64job(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_Krylov_solver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  params::KrylovSolver arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_Krylov_solver",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_Krylov_solver" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__KrylovSolver,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ZStrumpackSparseSolver_set_Krylov_solver" "', argument " "2"" of type '" "params::KrylovSolver""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ZStrumpackSparseSolver_set_Krylov_solver" "', argument " "2"" of type '" "params::KrylovSolver""'");
-    } else {
-      params::KrylovSolver * temp = reinterpret_cast< params::KrylovSolver * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_Krylov_solver(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_use_HSS__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  bool arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_use_HSS",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_use_HSS" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_bool(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_use_HSS" "', argument " "2"" of type '" "bool""'");
-  } 
-  arg2 = static_cast< bool >(val2);
-  (arg1)->use_HSS(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_minimum_HSS_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_minimum_HSS_size",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_minimum_HSS_size" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_set_minimum_HSS_size" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  (arg1)->set_minimum_HSS_size(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_relative_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  double arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  double val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_relative_compression_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_relative_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_double(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_set_relative_compression_tolerance" "', argument " "2"" of type '" "double""'");
-  } 
-  arg2 = static_cast< double >(val2);
-  (arg1)->set_relative_compression_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_absolute_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  double arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  double val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_absolute_compression_tolerance",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_absolute_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_double(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_set_absolute_compression_tolerance" "', argument " "2"" of type '" "double""'");
-  } 
-  arg2 = static_cast< double >(val2);
-  (arg1)->set_absolute_compression_tolerance(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_rank_pattern(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  params::RankPattern arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_rank_pattern",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_rank_pattern" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_params__RankPattern,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ZStrumpackSparseSolver_set_rank_pattern" "', argument " "2"" of type '" "params::RankPattern""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ZStrumpackSparseSolver_set_rank_pattern" "', argument " "2"" of type '" "params::RankPattern""'");
-    } else {
-      params::RankPattern * temp = reinterpret_cast< params::RankPattern * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->set_rank_pattern(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_verbose__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  bool arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  bool val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:ZStrumpackSparseSolver_set_verbose",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_verbose" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  ecode2 = SWIG_AsVal_bool(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSparseSolver_set_verbose" "', argument " "2"" of type '" "bool""'");
-  } 
-  arg2 = static_cast< bool >(val2);
-  (arg1)->set_verbose(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_verbose__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_set_verbose",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_set_verbose" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  (arg1)->set_verbose();
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_set_verbose(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 2) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_ZStrumpackSparseSolver_set_verbose__SWIG_1(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_ZStrumpackSparseSolver_set_verbose__SWIG_0(self, args);
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'ZStrumpackSparseSolver_set_verbose'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::set_verbose(bool)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::set_verbose()\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_maximum_Krylov_iterations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_maximum_Krylov_iterations",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_maximum_Krylov_iterations" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (int)(arg1)->get_maximum_Krylov_iterations();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_gmres_restart(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_gmres_restart",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_gmres_restart" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (int)(arg1)->get_gmres_restart();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_relative_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  double result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_relative_Krylov_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_relative_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (double)(arg1)->get_relative_Krylov_tolerance();
-  resultobj = SWIG_From_double(static_cast< double >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_absolute_Krylov_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  double result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_absolute_Krylov_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_absolute_Krylov_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (double)(arg1)->get_absolute_Krylov_tolerance();
-  resultobj = SWIG_From_double(static_cast< double >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_scotch_strategy(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_scotch_strategy",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_scotch_strategy" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (int)(arg1)->get_scotch_strategy();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_nested_dissection_parameter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_nested_dissection_parameter",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_nested_dissection_parameter" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (int)(arg1)->get_nested_dissection_parameter();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_matrix_reordering_method(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::MatrixReorderingStrategy result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_matrix_reordering_method",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_matrix_reordering_method" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (arg1)->get_matrix_reordering_method();
-  resultobj = SWIG_NewPointerObj((new params::MatrixReorderingStrategy(static_cast< const params::MatrixReorderingStrategy& >(result))), SWIGTYPE_p_params__MatrixReorderingStrategy, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_GramSchmidt_type(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::GramSchmidtType result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_GramSchmidt_type",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_GramSchmidt_type" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (arg1)->get_GramSchmidt_type();
-  resultobj = SWIG_NewPointerObj((new params::GramSchmidtType(static_cast< const params::GramSchmidtType& >(result))), SWIGTYPE_p_params__GramSchmidtType, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_maximum_rank(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_maximum_rank",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_maximum_rank" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (int)(arg1)->get_maximum_rank();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_factor_nonzeros(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  long long result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_factor_nonzeros",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_factor_nonzeros" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (long long)(arg1)->get_factor_nonzeros();
-  resultobj = SWIG_From_long_SS_long(static_cast< long long >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_factor_memory(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  long long result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_factor_memory",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_factor_memory" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (long long)(arg1)->get_factor_memory();
-  resultobj = SWIG_From_long_SS_long(static_cast< long long >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_Krylov_iterations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_Krylov_iterations",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_Krylov_iterations" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (int)(arg1)->get_Krylov_iterations();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_mc64job(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_mc64job",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_mc64job" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (int)(arg1)->get_mc64job();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_use_HSS__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  bool result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_use_HSS",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_use_HSS" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (bool)(arg1)->use_HSS();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_use_HSS(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[3] = {
-    0
-  };
-  Py_ssize_t ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 2) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_ZStrumpackSparseSolver_use_HSS__SWIG_1(self, args);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_bool(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_ZStrumpackSparseSolver_use_HSS__SWIG_0(self, args);
-      }
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'ZStrumpackSparseSolver_use_HSS'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::use_HSS(bool)\n"
-    "    strumpack::StrumpackSparseSolver< std::complex< double >,double,int >::use_HSS()\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_minimum_HSS_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  int result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_minimum_HSS_size",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_minimum_HSS_size" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (int)(arg1)->get_minimum_HSS_size();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_relative_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  double result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_relative_compression_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_relative_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (double)(arg1)->get_relative_compression_tolerance();
-  resultobj = SWIG_From_double(static_cast< double >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_absolute_compression_tolerance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  double result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_absolute_compression_tolerance",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_absolute_compression_tolerance" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (double)(arg1)->get_absolute_compression_tolerance();
-  resultobj = SWIG_From_double(static_cast< double >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_Krylov_solver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::KrylovSolver result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_Krylov_solver",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_Krylov_solver" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (arg1)->get_Krylov_solver();
-  resultobj = SWIG_NewPointerObj((new params::KrylovSolver(static_cast< const params::KrylovSolver& >(result))), SWIGTYPE_p_params__KrylovSolver, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ZStrumpackSparseSolver_get_rank_pattern(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *arg1 = (strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  params::RankPattern result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:ZStrumpackSparseSolver_get_rank_pattern",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSparseSolver_get_rank_pattern" "', argument " "1"" of type '" "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *""'"); 
-  }
-  arg1 = reinterpret_cast< strumpack::StrumpackSparseSolver< std::complex< double >,double,int > * >(argp1);
-  result = (arg1)->get_rank_pattern();
-  resultobj = SWIG_NewPointerObj((new params::RankPattern(static_cast< const params::RankPattern& >(result))), SWIGTYPE_p_params__RankPattern, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *ZStrumpackSparseSolver_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *obj;
-  if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, SWIG_NewClientData(obj));
-  return SWIG_Py_Void();
-}
 
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
-	 { (char *)"new_SStrumpackSparseSolver", _wrap_new_SStrumpackSparseSolver, METH_VARARGS, NULL},
-	 { (char *)"delete_SStrumpackSparseSolver", _wrap_delete_SStrumpackSparseSolver, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_from_options", _wrap_SStrumpackSparseSolver_set_from_options, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_from_options_no_warning_unrecognized", _wrap_SStrumpackSparseSolver_set_from_options_no_warning_unrecognized, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_matrix", _wrap_SStrumpackSparseSolver_set_matrix, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_csr_matrix", _wrap_SStrumpackSparseSolver_set_csr_matrix, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_reorder", _wrap_SStrumpackSparseSolver_reorder, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_factor", _wrap_SStrumpackSparseSolver_factor, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_solve", _wrap_SStrumpackSparseSolver_solve, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_maximum_Krylov_iterations", _wrap_SStrumpackSparseSolver_set_maximum_Krylov_iterations, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_gmres_restart", _wrap_SStrumpackSparseSolver_set_gmres_restart, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_relative_Krylov_tolerance", _wrap_SStrumpackSparseSolver_set_relative_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_absolute_Krylov_tolerance", _wrap_SStrumpackSparseSolver_set_absolute_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_scotch_strategy", _wrap_SStrumpackSparseSolver_set_scotch_strategy, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_nested_dissection_parameter", _wrap_SStrumpackSparseSolver_set_nested_dissection_parameter, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_matrix_reordering_method", _wrap_SStrumpackSparseSolver_set_matrix_reordering_method, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_GramSchmidt_type", _wrap_SStrumpackSparseSolver_set_GramSchmidt_type, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_mc64job", _wrap_SStrumpackSparseSolver_set_mc64job, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_Krylov_solver", _wrap_SStrumpackSparseSolver_set_Krylov_solver, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_minimum_HSS_size", _wrap_SStrumpackSparseSolver_set_minimum_HSS_size, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_relative_compression_tolerance", _wrap_SStrumpackSparseSolver_set_relative_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_absolute_compression_tolerance", _wrap_SStrumpackSparseSolver_set_absolute_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_rank_pattern", _wrap_SStrumpackSparseSolver_set_rank_pattern, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_set_verbose", _wrap_SStrumpackSparseSolver_set_verbose, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_maximum_Krylov_iterations", _wrap_SStrumpackSparseSolver_get_maximum_Krylov_iterations, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_gmres_restart", _wrap_SStrumpackSparseSolver_get_gmres_restart, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_relative_Krylov_tolerance", _wrap_SStrumpackSparseSolver_get_relative_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_absolute_Krylov_tolerance", _wrap_SStrumpackSparseSolver_get_absolute_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_scotch_strategy", _wrap_SStrumpackSparseSolver_get_scotch_strategy, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_nested_dissection_parameter", _wrap_SStrumpackSparseSolver_get_nested_dissection_parameter, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_matrix_reordering_method", _wrap_SStrumpackSparseSolver_get_matrix_reordering_method, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_GramSchmidt_type", _wrap_SStrumpackSparseSolver_get_GramSchmidt_type, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_maximum_rank", _wrap_SStrumpackSparseSolver_get_maximum_rank, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_factor_nonzeros", _wrap_SStrumpackSparseSolver_get_factor_nonzeros, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_factor_memory", _wrap_SStrumpackSparseSolver_get_factor_memory, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_Krylov_iterations", _wrap_SStrumpackSparseSolver_get_Krylov_iterations, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_mc64job", _wrap_SStrumpackSparseSolver_get_mc64job, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_use_HSS", _wrap_SStrumpackSparseSolver_use_HSS, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_minimum_HSS_size", _wrap_SStrumpackSparseSolver_get_minimum_HSS_size, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_relative_compression_tolerance", _wrap_SStrumpackSparseSolver_get_relative_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_absolute_compression_tolerance", _wrap_SStrumpackSparseSolver_get_absolute_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_Krylov_solver", _wrap_SStrumpackSparseSolver_get_Krylov_solver, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_get_rank_pattern", _wrap_SStrumpackSparseSolver_get_rank_pattern, METH_VARARGS, NULL},
-	 { (char *)"SStrumpackSparseSolver_swigregister", SStrumpackSparseSolver_swigregister, METH_VARARGS, NULL},
-	 { (char *)"new_DStrumpackSparseSolver", _wrap_new_DStrumpackSparseSolver, METH_VARARGS, NULL},
-	 { (char *)"delete_DStrumpackSparseSolver", _wrap_delete_DStrumpackSparseSolver, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_from_options", _wrap_DStrumpackSparseSolver_set_from_options, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_from_options_no_warning_unrecognized", _wrap_DStrumpackSparseSolver_set_from_options_no_warning_unrecognized, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_matrix", _wrap_DStrumpackSparseSolver_set_matrix, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_csr_matrix", _wrap_DStrumpackSparseSolver_set_csr_matrix, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_reorder", _wrap_DStrumpackSparseSolver_reorder, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_factor", _wrap_DStrumpackSparseSolver_factor, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_solve", _wrap_DStrumpackSparseSolver_solve, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_maximum_Krylov_iterations", _wrap_DStrumpackSparseSolver_set_maximum_Krylov_iterations, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_gmres_restart", _wrap_DStrumpackSparseSolver_set_gmres_restart, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_relative_Krylov_tolerance", _wrap_DStrumpackSparseSolver_set_relative_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_absolute_Krylov_tolerance", _wrap_DStrumpackSparseSolver_set_absolute_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_scotch_strategy", _wrap_DStrumpackSparseSolver_set_scotch_strategy, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_nested_dissection_parameter", _wrap_DStrumpackSparseSolver_set_nested_dissection_parameter, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_matrix_reordering_method", _wrap_DStrumpackSparseSolver_set_matrix_reordering_method, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_GramSchmidt_type", _wrap_DStrumpackSparseSolver_set_GramSchmidt_type, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_mc64job", _wrap_DStrumpackSparseSolver_set_mc64job, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_Krylov_solver", _wrap_DStrumpackSparseSolver_set_Krylov_solver, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_minimum_HSS_size", _wrap_DStrumpackSparseSolver_set_minimum_HSS_size, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_relative_compression_tolerance", _wrap_DStrumpackSparseSolver_set_relative_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_absolute_compression_tolerance", _wrap_DStrumpackSparseSolver_set_absolute_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_rank_pattern", _wrap_DStrumpackSparseSolver_set_rank_pattern, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_set_verbose", _wrap_DStrumpackSparseSolver_set_verbose, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_maximum_Krylov_iterations", _wrap_DStrumpackSparseSolver_get_maximum_Krylov_iterations, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_gmres_restart", _wrap_DStrumpackSparseSolver_get_gmres_restart, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_relative_Krylov_tolerance", _wrap_DStrumpackSparseSolver_get_relative_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_absolute_Krylov_tolerance", _wrap_DStrumpackSparseSolver_get_absolute_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_scotch_strategy", _wrap_DStrumpackSparseSolver_get_scotch_strategy, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_nested_dissection_parameter", _wrap_DStrumpackSparseSolver_get_nested_dissection_parameter, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_matrix_reordering_method", _wrap_DStrumpackSparseSolver_get_matrix_reordering_method, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_GramSchmidt_type", _wrap_DStrumpackSparseSolver_get_GramSchmidt_type, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_maximum_rank", _wrap_DStrumpackSparseSolver_get_maximum_rank, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_factor_nonzeros", _wrap_DStrumpackSparseSolver_get_factor_nonzeros, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_factor_memory", _wrap_DStrumpackSparseSolver_get_factor_memory, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_Krylov_iterations", _wrap_DStrumpackSparseSolver_get_Krylov_iterations, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_mc64job", _wrap_DStrumpackSparseSolver_get_mc64job, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_use_HSS", _wrap_DStrumpackSparseSolver_use_HSS, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_minimum_HSS_size", _wrap_DStrumpackSparseSolver_get_minimum_HSS_size, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_relative_compression_tolerance", _wrap_DStrumpackSparseSolver_get_relative_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_absolute_compression_tolerance", _wrap_DStrumpackSparseSolver_get_absolute_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_Krylov_solver", _wrap_DStrumpackSparseSolver_get_Krylov_solver, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_get_rank_pattern", _wrap_DStrumpackSparseSolver_get_rank_pattern, METH_VARARGS, NULL},
-	 { (char *)"DStrumpackSparseSolver_swigregister", DStrumpackSparseSolver_swigregister, METH_VARARGS, NULL},
-	 { (char *)"new_CStrumpackSparseSolver", _wrap_new_CStrumpackSparseSolver, METH_VARARGS, NULL},
-	 { (char *)"delete_CStrumpackSparseSolver", _wrap_delete_CStrumpackSparseSolver, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_from_options", _wrap_CStrumpackSparseSolver_set_from_options, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_from_options_no_warning_unrecognized", _wrap_CStrumpackSparseSolver_set_from_options_no_warning_unrecognized, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_matrix", _wrap_CStrumpackSparseSolver_set_matrix, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_csr_matrix", _wrap_CStrumpackSparseSolver_set_csr_matrix, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_reorder", _wrap_CStrumpackSparseSolver_reorder, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_factor", _wrap_CStrumpackSparseSolver_factor, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_solve", _wrap_CStrumpackSparseSolver_solve, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_maximum_Krylov_iterations", _wrap_CStrumpackSparseSolver_set_maximum_Krylov_iterations, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_gmres_restart", _wrap_CStrumpackSparseSolver_set_gmres_restart, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_relative_Krylov_tolerance", _wrap_CStrumpackSparseSolver_set_relative_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_absolute_Krylov_tolerance", _wrap_CStrumpackSparseSolver_set_absolute_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_scotch_strategy", _wrap_CStrumpackSparseSolver_set_scotch_strategy, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_nested_dissection_parameter", _wrap_CStrumpackSparseSolver_set_nested_dissection_parameter, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_matrix_reordering_method", _wrap_CStrumpackSparseSolver_set_matrix_reordering_method, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_GramSchmidt_type", _wrap_CStrumpackSparseSolver_set_GramSchmidt_type, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_mc64job", _wrap_CStrumpackSparseSolver_set_mc64job, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_Krylov_solver", _wrap_CStrumpackSparseSolver_set_Krylov_solver, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_minimum_HSS_size", _wrap_CStrumpackSparseSolver_set_minimum_HSS_size, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_relative_compression_tolerance", _wrap_CStrumpackSparseSolver_set_relative_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_absolute_compression_tolerance", _wrap_CStrumpackSparseSolver_set_absolute_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_rank_pattern", _wrap_CStrumpackSparseSolver_set_rank_pattern, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_set_verbose", _wrap_CStrumpackSparseSolver_set_verbose, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_maximum_Krylov_iterations", _wrap_CStrumpackSparseSolver_get_maximum_Krylov_iterations, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_gmres_restart", _wrap_CStrumpackSparseSolver_get_gmres_restart, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_relative_Krylov_tolerance", _wrap_CStrumpackSparseSolver_get_relative_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_absolute_Krylov_tolerance", _wrap_CStrumpackSparseSolver_get_absolute_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_scotch_strategy", _wrap_CStrumpackSparseSolver_get_scotch_strategy, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_nested_dissection_parameter", _wrap_CStrumpackSparseSolver_get_nested_dissection_parameter, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_matrix_reordering_method", _wrap_CStrumpackSparseSolver_get_matrix_reordering_method, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_GramSchmidt_type", _wrap_CStrumpackSparseSolver_get_GramSchmidt_type, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_maximum_rank", _wrap_CStrumpackSparseSolver_get_maximum_rank, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_factor_nonzeros", _wrap_CStrumpackSparseSolver_get_factor_nonzeros, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_factor_memory", _wrap_CStrumpackSparseSolver_get_factor_memory, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_Krylov_iterations", _wrap_CStrumpackSparseSolver_get_Krylov_iterations, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_mc64job", _wrap_CStrumpackSparseSolver_get_mc64job, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_use_HSS", _wrap_CStrumpackSparseSolver_use_HSS, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_minimum_HSS_size", _wrap_CStrumpackSparseSolver_get_minimum_HSS_size, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_relative_compression_tolerance", _wrap_CStrumpackSparseSolver_get_relative_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_absolute_compression_tolerance", _wrap_CStrumpackSparseSolver_get_absolute_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_Krylov_solver", _wrap_CStrumpackSparseSolver_get_Krylov_solver, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_get_rank_pattern", _wrap_CStrumpackSparseSolver_get_rank_pattern, METH_VARARGS, NULL},
-	 { (char *)"CStrumpackSparseSolver_swigregister", CStrumpackSparseSolver_swigregister, METH_VARARGS, NULL},
-	 { (char *)"new_ZStrumpackSparseSolver", _wrap_new_ZStrumpackSparseSolver, METH_VARARGS, NULL},
-	 { (char *)"delete_ZStrumpackSparseSolver", _wrap_delete_ZStrumpackSparseSolver, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_from_options", _wrap_ZStrumpackSparseSolver_set_from_options, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_from_options_no_warning_unrecognized", _wrap_ZStrumpackSparseSolver_set_from_options_no_warning_unrecognized, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_matrix", _wrap_ZStrumpackSparseSolver_set_matrix, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_csr_matrix", _wrap_ZStrumpackSparseSolver_set_csr_matrix, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_reorder", _wrap_ZStrumpackSparseSolver_reorder, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_factor", _wrap_ZStrumpackSparseSolver_factor, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_solve", _wrap_ZStrumpackSparseSolver_solve, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_maximum_Krylov_iterations", _wrap_ZStrumpackSparseSolver_set_maximum_Krylov_iterations, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_gmres_restart", _wrap_ZStrumpackSparseSolver_set_gmres_restart, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_relative_Krylov_tolerance", _wrap_ZStrumpackSparseSolver_set_relative_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_absolute_Krylov_tolerance", _wrap_ZStrumpackSparseSolver_set_absolute_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_scotch_strategy", _wrap_ZStrumpackSparseSolver_set_scotch_strategy, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_nested_dissection_parameter", _wrap_ZStrumpackSparseSolver_set_nested_dissection_parameter, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_matrix_reordering_method", _wrap_ZStrumpackSparseSolver_set_matrix_reordering_method, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_GramSchmidt_type", _wrap_ZStrumpackSparseSolver_set_GramSchmidt_type, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_mc64job", _wrap_ZStrumpackSparseSolver_set_mc64job, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_Krylov_solver", _wrap_ZStrumpackSparseSolver_set_Krylov_solver, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_minimum_HSS_size", _wrap_ZStrumpackSparseSolver_set_minimum_HSS_size, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_relative_compression_tolerance", _wrap_ZStrumpackSparseSolver_set_relative_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_absolute_compression_tolerance", _wrap_ZStrumpackSparseSolver_set_absolute_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_rank_pattern", _wrap_ZStrumpackSparseSolver_set_rank_pattern, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_set_verbose", _wrap_ZStrumpackSparseSolver_set_verbose, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_maximum_Krylov_iterations", _wrap_ZStrumpackSparseSolver_get_maximum_Krylov_iterations, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_gmres_restart", _wrap_ZStrumpackSparseSolver_get_gmres_restart, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_relative_Krylov_tolerance", _wrap_ZStrumpackSparseSolver_get_relative_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_absolute_Krylov_tolerance", _wrap_ZStrumpackSparseSolver_get_absolute_Krylov_tolerance, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_scotch_strategy", _wrap_ZStrumpackSparseSolver_get_scotch_strategy, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_nested_dissection_parameter", _wrap_ZStrumpackSparseSolver_get_nested_dissection_parameter, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_matrix_reordering_method", _wrap_ZStrumpackSparseSolver_get_matrix_reordering_method, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_GramSchmidt_type", _wrap_ZStrumpackSparseSolver_get_GramSchmidt_type, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_maximum_rank", _wrap_ZStrumpackSparseSolver_get_maximum_rank, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_factor_nonzeros", _wrap_ZStrumpackSparseSolver_get_factor_nonzeros, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_factor_memory", _wrap_ZStrumpackSparseSolver_get_factor_memory, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_Krylov_iterations", _wrap_ZStrumpackSparseSolver_get_Krylov_iterations, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_mc64job", _wrap_ZStrumpackSparseSolver_get_mc64job, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_use_HSS", _wrap_ZStrumpackSparseSolver_use_HSS, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_minimum_HSS_size", _wrap_ZStrumpackSparseSolver_get_minimum_HSS_size, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_relative_compression_tolerance", _wrap_ZStrumpackSparseSolver_get_relative_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_absolute_compression_tolerance", _wrap_ZStrumpackSparseSolver_get_absolute_compression_tolerance, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_Krylov_solver", _wrap_ZStrumpackSparseSolver_get_Krylov_solver, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_get_rank_pattern", _wrap_ZStrumpackSparseSolver_get_rank_pattern, METH_VARARGS, NULL},
-	 { (char *)"ZStrumpackSparseSolver_swigregister", ZStrumpackSparseSolver_swigregister, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_factor", _wrap_StrumpackSolverBase_factor, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_reorder", _wrap_StrumpackSolverBase_reorder, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_reorder_regular", _wrap_StrumpackSolverBase_reorder_regular, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_verbose", _wrap_StrumpackSolverBase_set_verbose, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_maxit", _wrap_StrumpackSolverBase_set_maxit, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_gmres_restart", _wrap_StrumpackSolverBase_set_gmres_restart, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_rel_tol", _wrap_StrumpackSolverBase_set_rel_tol, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_abs_tol", _wrap_StrumpackSolverBase_set_abs_tol, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_nd_param", _wrap_StrumpackSolverBase_set_nd_param, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_reordering_method", _wrap_StrumpackSolverBase_set_reordering_method, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_GramSchmidt_type", _wrap_StrumpackSolverBase_set_GramSchmidt_type, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_mc64job", _wrap_StrumpackSolverBase_set_mc64job, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_matching", _wrap_StrumpackSolverBase_set_matching, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_Krylov_solver", _wrap_StrumpackSolverBase_set_Krylov_solver, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_enable_HSS", _wrap_StrumpackSolverBase_enable_HSS, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_disable_HSS", _wrap_StrumpackSolverBase_disable_HSS, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_HSS_min_front_size", _wrap_StrumpackSolverBase_set_HSS_min_front_size, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_HSS_min_sep_size", _wrap_StrumpackSolverBase_set_HSS_min_sep_size, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_HSS_max_rank", _wrap_StrumpackSolverBase_set_HSS_max_rank, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_HSS_leaf_size", _wrap_StrumpackSolverBase_set_HSS_leaf_size, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_HSS_rel_tol", _wrap_StrumpackSolverBase_set_HSS_rel_tol, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_set_HSS_abs_tol", _wrap_StrumpackSolverBase_set_HSS_abs_tol, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_verbose", _wrap_StrumpackSolverBase_get_verbose, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_maxit", _wrap_StrumpackSolverBase_get_maxit, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_rel_tol", _wrap_StrumpackSolverBase_get_rel_tol, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_abs_tol", _wrap_StrumpackSolverBase_get_abs_tol, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_nd_param", _wrap_StrumpackSolverBase_get_nd_param, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_reordering_method", _wrap_StrumpackSolverBase_get_reordering_method, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_mc64job", _wrap_StrumpackSolverBase_get_mc64job, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_matching", _wrap_StrumpackSolverBase_get_matching, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_Krylov_solver", _wrap_StrumpackSolverBase_get_Krylov_solver, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_HSS_min_front_size", _wrap_StrumpackSolverBase_get_HSS_min_front_size, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_HSS_min_sep_size", _wrap_StrumpackSolverBase_get_HSS_min_sep_size, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_HSS_max_rank", _wrap_StrumpackSolverBase_get_HSS_max_rank, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_HSS_leaf_size", _wrap_StrumpackSolverBase_get_HSS_leaf_size, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_HSS_rel_tol", _wrap_StrumpackSolverBase_get_HSS_rel_tol, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_HSS_abs_tol", _wrap_StrumpackSolverBase_get_HSS_abs_tol, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_its", _wrap_StrumpackSolverBase_get_its, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_rank", _wrap_StrumpackSolverBase_get_rank, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_factor_nonzeros", _wrap_StrumpackSolverBase_get_factor_nonzeros, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_get_factor_memory", _wrap_StrumpackSolverBase_get_factor_memory, METH_VARARGS, NULL},
+	 { (char *)"new_StrumpackSolverBase", _wrap_new_StrumpackSolverBase, METH_VARARGS, NULL},
+	 { (char *)"delete_StrumpackSolverBase", _wrap_delete_StrumpackSolverBase, METH_VARARGS, NULL},
+	 { (char *)"StrumpackSolverBase_swigregister", StrumpackSolverBase_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_SStrumpackSolver", _wrap_new_SStrumpackSolver, METH_VARARGS, NULL},
+	 { (char *)"delete_SStrumpackSolver", _wrap_delete_SStrumpackSolver, METH_VARARGS, NULL},
+	 { (char *)"SStrumpackSolver_set_csr_matrix", _wrap_SStrumpackSolver_set_csr_matrix, METH_VARARGS, NULL},
+	 { (char *)"SStrumpackSolver_solve", _wrap_SStrumpackSolver_solve, METH_VARARGS, NULL},
+	 { (char *)"SStrumpackSolver_swigregister", SStrumpackSolver_swigregister, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_SparseSolver_solver_set", _wrap_STRUMPACK_SparseSolver_solver_set, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_SparseSolver_solver_get", _wrap_STRUMPACK_SparseSolver_solver_get, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_SparseSolver_precision_set", _wrap_STRUMPACK_SparseSolver_precision_set, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_SparseSolver_precision_get", _wrap_STRUMPACK_SparseSolver_precision_get, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_SparseSolver_interface_set", _wrap_STRUMPACK_SparseSolver_interface_set, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_SparseSolver_interface_get", _wrap_STRUMPACK_SparseSolver_interface_get, METH_VARARGS, NULL},
+	 { (char *)"new_STRUMPACK_SparseSolver", _wrap_new_STRUMPACK_SparseSolver, METH_VARARGS, NULL},
+	 { (char *)"delete_STRUMPACK_SparseSolver", _wrap_delete_STRUMPACK_SparseSolver, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_SparseSolver_swigregister", STRUMPACK_SparseSolver_swigregister, METH_VARARGS, NULL},
+	 { (char *)"floatcomplex_r_set", _wrap_floatcomplex_r_set, METH_VARARGS, NULL},
+	 { (char *)"floatcomplex_r_get", _wrap_floatcomplex_r_get, METH_VARARGS, NULL},
+	 { (char *)"floatcomplex_i_set", _wrap_floatcomplex_i_set, METH_VARARGS, NULL},
+	 { (char *)"floatcomplex_i_get", _wrap_floatcomplex_i_get, METH_VARARGS, NULL},
+	 { (char *)"new_floatcomplex", _wrap_new_floatcomplex, METH_VARARGS, NULL},
+	 { (char *)"delete_floatcomplex", _wrap_delete_floatcomplex, METH_VARARGS, NULL},
+	 { (char *)"floatcomplex_swigregister", floatcomplex_swigregister, METH_VARARGS, NULL},
+	 { (char *)"doublecomplex_r_set", _wrap_doublecomplex_r_set, METH_VARARGS, NULL},
+	 { (char *)"doublecomplex_r_get", _wrap_doublecomplex_r_get, METH_VARARGS, NULL},
+	 { (char *)"doublecomplex_i_set", _wrap_doublecomplex_i_set, METH_VARARGS, NULL},
+	 { (char *)"doublecomplex_i_get", _wrap_doublecomplex_i_get, METH_VARARGS, NULL},
+	 { (char *)"new_doublecomplex", _wrap_new_doublecomplex, METH_VARARGS, NULL},
+	 { (char *)"delete_doublecomplex", _wrap_delete_doublecomplex, METH_VARARGS, NULL},
+	 { (char *)"doublecomplex_swigregister", doublecomplex_swigregister, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_init_mt", _wrap_STRUMPACK_init_mt, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_destroy", _wrap_STRUMPACK_destroy, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_csr_matrix", _wrap_STRUMPACK_set_csr_matrix, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_solve", _wrap_STRUMPACK_solve, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_from_options", _wrap_STRUMPACK_set_from_options, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_reorder", _wrap_STRUMPACK_reorder, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_reorder_regular", _wrap_STRUMPACK_reorder_regular, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_factor", _wrap_STRUMPACK_factor, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_verbose", _wrap_STRUMPACK_set_verbose, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_maxit", _wrap_STRUMPACK_set_maxit, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_gmres_restart", _wrap_STRUMPACK_set_gmres_restart, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_rel_tol", _wrap_STRUMPACK_set_rel_tol, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_abs_tol", _wrap_STRUMPACK_set_abs_tol, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_nd_param", _wrap_STRUMPACK_set_nd_param, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_reordering_method", _wrap_STRUMPACK_set_reordering_method, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_GramSchmidt_type", _wrap_STRUMPACK_set_GramSchmidt_type, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_mc64job", _wrap_STRUMPACK_set_mc64job, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_matching", _wrap_STRUMPACK_set_matching, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_Krylov_solver", _wrap_STRUMPACK_set_Krylov_solver, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_enable_HSS", _wrap_STRUMPACK_enable_HSS, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_disable_HSS", _wrap_STRUMPACK_disable_HSS, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_HSS_min_front_size", _wrap_STRUMPACK_set_HSS_min_front_size, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_HSS_min_sep_size", _wrap_STRUMPACK_set_HSS_min_sep_size, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_HSS_max_rank", _wrap_STRUMPACK_set_HSS_max_rank, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_HSS_leaf_size", _wrap_STRUMPACK_set_HSS_leaf_size, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_HSS_rel_tol", _wrap_STRUMPACK_set_HSS_rel_tol, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_set_HSS_abs_tol", _wrap_STRUMPACK_set_HSS_abs_tol, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_verbose", _wrap_STRUMPACK_verbose, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_maxit", _wrap_STRUMPACK_maxit, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_rel_tol", _wrap_STRUMPACK_rel_tol, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_abs_tol", _wrap_STRUMPACK_abs_tol, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_nd_param", _wrap_STRUMPACK_nd_param, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_reordering_method", _wrap_STRUMPACK_reordering_method, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_GramSchmidt_type", _wrap_STRUMPACK_GramSchmidt_type, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_mc64job", _wrap_STRUMPACK_mc64job, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_matching", _wrap_STRUMPACK_matching, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_Krylov_solver", _wrap_STRUMPACK_Krylov_solver, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_HSS_min_front_size", _wrap_STRUMPACK_HSS_min_front_size, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_HSS_min_sep_size", _wrap_STRUMPACK_HSS_min_sep_size, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_HSS_max_rank", _wrap_STRUMPACK_HSS_max_rank, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_HSS_leaf_size", _wrap_STRUMPACK_HSS_leaf_size, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_HSS_rel_tol", _wrap_STRUMPACK_HSS_rel_tol, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_HSS_abs_tol", _wrap_STRUMPACK_HSS_abs_tol, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_its", _wrap_STRUMPACK_its, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_rank", _wrap_STRUMPACK_rank, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_factor_nonzeros", _wrap_STRUMPACK_factor_nonzeros, METH_VARARGS, NULL},
+	 { (char *)"STRUMPACK_factor_memory", _wrap_STRUMPACK_factor_memory, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
-static swig_type_info _swigt__p_CSRMatrixT_double_double_int_t = {"_p_CSRMatrixT_double_double_int_t", "CSRMatrix< double,double,int > *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_CSRMatrixT_float_float_int_t = {"_p_CSRMatrixT_float_float_int_t", "CSRMatrix< float,float,int > *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_CSRMatrixT_std__complexT_double_t_double_int_t = {"_p_CSRMatrixT_std__complexT_double_t_double_int_t", "CSRMatrix< std::complex< double >,double,int > *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_CSRMatrixT_std__complexT_float_t_float_int_t = {"_p_CSRMatrixT_std__complexT_float_t_float_int_t", "CSRMatrix< std::complex< float >,float,int > *", 0, 0, (void*)0, 0};
+static void *_p_SStrumpackSolverTo_p_StrumpackSolverBase(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((StrumpackSolverBase *)  ((SStrumpackSolver *) x));
+}
+static swig_type_info _swigt__p_SStrumpackSolver = {"_p_SStrumpackSolver", "SStrumpackSolver *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_GRAM_SCHMIDT_TYPE = {"_p_STRUMPACK_GRAM_SCHMIDT_TYPE", "enum STRUMPACK_GRAM_SCHMIDT_TYPE *|STRUMPACK_GRAM_SCHMIDT_TYPE *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_INTERFACE = {"_p_STRUMPACK_INTERFACE", "enum STRUMPACK_INTERFACE *|STRUMPACK_INTERFACE *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_KRYLOV_SOLVER = {"_p_STRUMPACK_KRYLOV_SOLVER", "enum STRUMPACK_KRYLOV_SOLVER *|STRUMPACK_KRYLOV_SOLVER *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_PRECISION = {"_p_STRUMPACK_PRECISION", "enum STRUMPACK_PRECISION *|STRUMPACK_PRECISION *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_RANDOM_DISTRIBUTION = {"_p_STRUMPACK_RANDOM_DISTRIBUTION", "enum STRUMPACK_RANDOM_DISTRIBUTION *|STRUMPACK_RANDOM_DISTRIBUTION *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_RANDOM_ENGINE = {"_p_STRUMPACK_RANDOM_ENGINE", "enum STRUMPACK_RANDOM_ENGINE *|STRUMPACK_RANDOM_ENGINE *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_REORDERING_STRATEGY = {"_p_STRUMPACK_REORDERING_STRATEGY", "enum STRUMPACK_REORDERING_STRATEGY *|STRUMPACK_REORDERING_STRATEGY *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_RETURN_CODE = {"_p_STRUMPACK_RETURN_CODE", "enum STRUMPACK_RETURN_CODE *|STRUMPACK_RETURN_CODE *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_STRUMPACK_SparseSolver = {"_p_STRUMPACK_SparseSolver", "STRUMPACK_SparseSolver *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_StrumpackSolverBase = {"_p_StrumpackSolverBase", "StrumpackSolverBase *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_params__GramSchmidtType = {"_p_params__GramSchmidtType", "params::GramSchmidtType *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_params__KrylovSolver = {"_p_params__KrylovSolver", "params::KrylovSolver *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_params__MatrixReorderingStrategy = {"_p_params__MatrixReorderingStrategy", "params::MatrixReorderingStrategy *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_params__RankPattern = {"_p_params__RankPattern", "params::RankPattern *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_params__returnCode = {"_p_params__returnCode", "params::returnCode *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_strumpack__StrumpackSparseSolverT_double_double_int_t = {"_p_strumpack__StrumpackSparseSolverT_double_double_int_t", "strumpack::StrumpackSparseSolver< double,double,int > *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_strumpack__StrumpackSparseSolverT_float_float_int_t = {"_p_strumpack__StrumpackSparseSolverT_float_float_int_t", "strumpack::StrumpackSparseSolver< float,float,int > *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t = {"_p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t", "strumpack::StrumpackSparseSolver< std::complex< double >,double,int > *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t = {"_p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t", "strumpack::StrumpackSparseSolver< std::complex< float >,float,int > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_doublecomplex = {"_p_doublecomplex", "doublecomplex *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_float = {"_p_float", "float *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_floatcomplex = {"_p_floatcomplex", "floatcomplex *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_int = {"_p_int", "int *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_p_char = {"_p_p_char", "char **", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_void = {"_p_void", "void *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
-  &_swigt__p_CSRMatrixT_double_double_int_t,
-  &_swigt__p_CSRMatrixT_float_float_int_t,
-  &_swigt__p_CSRMatrixT_std__complexT_double_t_double_int_t,
-  &_swigt__p_CSRMatrixT_std__complexT_float_t_float_int_t,
+  &_swigt__p_SStrumpackSolver,
+  &_swigt__p_STRUMPACK_GRAM_SCHMIDT_TYPE,
+  &_swigt__p_STRUMPACK_INTERFACE,
+  &_swigt__p_STRUMPACK_KRYLOV_SOLVER,
+  &_swigt__p_STRUMPACK_PRECISION,
+  &_swigt__p_STRUMPACK_RANDOM_DISTRIBUTION,
+  &_swigt__p_STRUMPACK_RANDOM_ENGINE,
+  &_swigt__p_STRUMPACK_REORDERING_STRATEGY,
+  &_swigt__p_STRUMPACK_RETURN_CODE,
+  &_swigt__p_STRUMPACK_SparseSolver,
+  &_swigt__p_StrumpackSolverBase,
   &_swigt__p_char,
-  &_swigt__p_params__GramSchmidtType,
-  &_swigt__p_params__KrylovSolver,
-  &_swigt__p_params__MatrixReorderingStrategy,
-  &_swigt__p_params__RankPattern,
-  &_swigt__p_params__returnCode,
-  &_swigt__p_strumpack__StrumpackSparseSolverT_double_double_int_t,
-  &_swigt__p_strumpack__StrumpackSparseSolverT_float_float_int_t,
-  &_swigt__p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t,
-  &_swigt__p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t,
+  &_swigt__p_doublecomplex,
+  &_swigt__p_float,
+  &_swigt__p_floatcomplex,
+  &_swigt__p_int,
+  &_swigt__p_p_char,
+  &_swigt__p_void,
 };
 
-static swig_cast_info _swigc__p_CSRMatrixT_double_double_int_t[] = {  {&_swigt__p_CSRMatrixT_double_double_int_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_CSRMatrixT_float_float_int_t[] = {  {&_swigt__p_CSRMatrixT_float_float_int_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_CSRMatrixT_std__complexT_double_t_double_int_t[] = {  {&_swigt__p_CSRMatrixT_std__complexT_double_t_double_int_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_CSRMatrixT_std__complexT_float_t_float_int_t[] = {  {&_swigt__p_CSRMatrixT_std__complexT_float_t_float_int_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_SStrumpackSolver[] = {  {&_swigt__p_SStrumpackSolver, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_STRUMPACK_GRAM_SCHMIDT_TYPE[] = {  {&_swigt__p_STRUMPACK_GRAM_SCHMIDT_TYPE, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_STRUMPACK_INTERFACE[] = {  {&_swigt__p_STRUMPACK_INTERFACE, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_STRUMPACK_KRYLOV_SOLVER[] = {  {&_swigt__p_STRUMPACK_KRYLOV_SOLVER, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_STRUMPACK_PRECISION[] = {  {&_swigt__p_STRUMPACK_PRECISION, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_STRUMPACK_RANDOM_DISTRIBUTION[] = {  {&_swigt__p_STRUMPACK_RANDOM_DISTRIBUTION, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_STRUMPACK_RANDOM_ENGINE[] = {  {&_swigt__p_STRUMPACK_RANDOM_ENGINE, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_STRUMPACK_REORDERING_STRATEGY[] = {  {&_swigt__p_STRUMPACK_REORDERING_STRATEGY, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_STRUMPACK_RETURN_CODE[] = {  {&_swigt__p_STRUMPACK_RETURN_CODE, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_STRUMPACK_SparseSolver[] = {  {&_swigt__p_STRUMPACK_SparseSolver, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_StrumpackSolverBase[] = {  {&_swigt__p_StrumpackSolverBase, 0, 0, 0},  {&_swigt__p_SStrumpackSolver, _p_SStrumpackSolverTo_p_StrumpackSolverBase, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_params__GramSchmidtType[] = {  {&_swigt__p_params__GramSchmidtType, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_params__KrylovSolver[] = {  {&_swigt__p_params__KrylovSolver, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_params__MatrixReorderingStrategy[] = {  {&_swigt__p_params__MatrixReorderingStrategy, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_params__RankPattern[] = {  {&_swigt__p_params__RankPattern, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_params__returnCode[] = {  {&_swigt__p_params__returnCode, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_strumpack__StrumpackSparseSolverT_double_double_int_t[] = {  {&_swigt__p_strumpack__StrumpackSparseSolverT_double_double_int_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_strumpack__StrumpackSparseSolverT_float_float_int_t[] = {  {&_swigt__p_strumpack__StrumpackSparseSolverT_float_float_int_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t[] = {  {&_swigt__p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t[] = {  {&_swigt__p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_doublecomplex[] = {  {&_swigt__p_doublecomplex, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_float[] = {  {&_swigt__p_float, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_floatcomplex[] = {  {&_swigt__p_floatcomplex, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_int[] = {  {&_swigt__p_int, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_p_char[] = {  {&_swigt__p_p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_void[] = {  {&_swigt__p_void, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
-  _swigc__p_CSRMatrixT_double_double_int_t,
-  _swigc__p_CSRMatrixT_float_float_int_t,
-  _swigc__p_CSRMatrixT_std__complexT_double_t_double_int_t,
-  _swigc__p_CSRMatrixT_std__complexT_float_t_float_int_t,
+  _swigc__p_SStrumpackSolver,
+  _swigc__p_STRUMPACK_GRAM_SCHMIDT_TYPE,
+  _swigc__p_STRUMPACK_INTERFACE,
+  _swigc__p_STRUMPACK_KRYLOV_SOLVER,
+  _swigc__p_STRUMPACK_PRECISION,
+  _swigc__p_STRUMPACK_RANDOM_DISTRIBUTION,
+  _swigc__p_STRUMPACK_RANDOM_ENGINE,
+  _swigc__p_STRUMPACK_REORDERING_STRATEGY,
+  _swigc__p_STRUMPACK_RETURN_CODE,
+  _swigc__p_STRUMPACK_SparseSolver,
+  _swigc__p_StrumpackSolverBase,
   _swigc__p_char,
-  _swigc__p_params__GramSchmidtType,
-  _swigc__p_params__KrylovSolver,
-  _swigc__p_params__MatrixReorderingStrategy,
-  _swigc__p_params__RankPattern,
-  _swigc__p_params__returnCode,
-  _swigc__p_strumpack__StrumpackSparseSolverT_double_double_int_t,
-  _swigc__p_strumpack__StrumpackSparseSolverT_float_float_int_t,
-  _swigc__p_strumpack__StrumpackSparseSolverT_std__complexT_double_t_double_int_t,
-  _swigc__p_strumpack__StrumpackSparseSolverT_std__complexT_float_t_float_int_t,
+  _swigc__p_doublecomplex,
+  _swigc__p_float,
+  _swigc__p_floatcomplex,
+  _swigc__p_int,
+  _swigc__p_p_char,
+  _swigc__p_void,
 };
 
 
@@ -12509,6 +7766,39 @@ SWIG_init(void) {
   
   import_array();
   
+  SWIG_Python_SetConstant(d, "STRUMPACK_FLOAT",SWIG_From_int(static_cast< int >(STRUMPACK_FLOAT)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_DOUBLE",SWIG_From_int(static_cast< int >(STRUMPACK_DOUBLE)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_FLOATCOMPLEX",SWIG_From_int(static_cast< int >(STRUMPACK_FLOATCOMPLEX)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_DOUBLECOMPLEX",SWIG_From_int(static_cast< int >(STRUMPACK_DOUBLECOMPLEX)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_FLOAT_64",SWIG_From_int(static_cast< int >(STRUMPACK_FLOAT_64)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_DOUBLE_64",SWIG_From_int(static_cast< int >(STRUMPACK_DOUBLE_64)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_FLOATCOMPLEX_64",SWIG_From_int(static_cast< int >(STRUMPACK_FLOATCOMPLEX_64)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_DOUBLECOMPLEX_64",SWIG_From_int(static_cast< int >(STRUMPACK_DOUBLECOMPLEX_64)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_MT",SWIG_From_int(static_cast< int >(STRUMPACK_MT)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_MPI_DIST",SWIG_From_int(static_cast< int >(STRUMPACK_MPI_DIST)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_NATURAL",SWIG_From_int(static_cast< int >(STRUMPACK_NATURAL)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_METIS",SWIG_From_int(static_cast< int >(STRUMPACK_METIS)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_PARMETIS",SWIG_From_int(static_cast< int >(STRUMPACK_PARMETIS)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_SCOTCH",SWIG_From_int(static_cast< int >(STRUMPACK_SCOTCH)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_PTSCOTCH",SWIG_From_int(static_cast< int >(STRUMPACK_PTSCOTCH)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_RCM",SWIG_From_int(static_cast< int >(STRUMPACK_RCM)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_GEOMETRIC",SWIG_From_int(static_cast< int >(STRUMPACK_GEOMETRIC)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_CLASSICAL",SWIG_From_int(static_cast< int >(STRUMPACK_CLASSICAL)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_MODIFIED",SWIG_From_int(static_cast< int >(STRUMPACK_MODIFIED)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_NORMAL",SWIG_From_int(static_cast< int >(STRUMPACK_NORMAL)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_UNIFORM",SWIG_From_int(static_cast< int >(STRUMPACK_UNIFORM)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_LINEAR",SWIG_From_int(static_cast< int >(STRUMPACK_LINEAR)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_MERSENNE",SWIG_From_int(static_cast< int >(STRUMPACK_MERSENNE)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_AUTO",SWIG_From_int(static_cast< int >(STRUMPACK_AUTO)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_DIRECT",SWIG_From_int(static_cast< int >(STRUMPACK_DIRECT)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_REFINE",SWIG_From_int(static_cast< int >(STRUMPACK_REFINE)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_PREC_GMRES",SWIG_From_int(static_cast< int >(STRUMPACK_PREC_GMRES)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_GMRES",SWIG_From_int(static_cast< int >(STRUMPACK_GMRES)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_PREC_BICGSTAB",SWIG_From_int(static_cast< int >(STRUMPACK_PREC_BICGSTAB)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_BICGSTAB",SWIG_From_int(static_cast< int >(STRUMPACK_BICGSTAB)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_SUCCESS",SWIG_From_int(static_cast< int >(STRUMPACK_SUCCESS)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_MATRIX_NOT_SET",SWIG_From_int(static_cast< int >(STRUMPACK_MATRIX_NOT_SET)));
+  SWIG_Python_SetConstant(d, "STRUMPACK_REORDERING_ERROR",SWIG_From_int(static_cast< int >(STRUMPACK_REORDERING_ERROR)));
 #if PY_VERSION_HEX >= 0x03000000
   return m;
 #else

@@ -5,9 +5,7 @@
 """
 import os
 from os import path, listdir
-
 from setuptools import setup, find_packages, Extension
-
 # To use a consistent encoding
 from codecs import open
 
@@ -19,44 +17,51 @@ with open(path.join(here, 'README.md')) as f:
 import numpy
 numpy_include = numpy.get_include()
 
-include_dirs=["include",
-              numpy_include,
-              "/opt/local/include/mpich-mp",
-              "/Users/shiraiwa/sandbox/include",
-              "../scotch_6.0.4/include"]
-library_dirs = ["/Users/shiraiwa/sandbox/lib",]
-                              
-base = "Strumpack"
-sp_libraries = ['strumpack_sparse']
+try:
+    import mpi4py
+    mpi4py_include = mpi4py.get_include()
+except ImportError:
+    mpi4py_include = None
 
+strumpackincdir = os.getenv('STRUMPACKINCDIR')
+strumpacklnkdir = os.getenv('STRUMPACKLNKDIR')
 
-ext_modules = [Extension("_StrumpackSparseSolver",
-                        [path.join(base,"StrumpackSparseSolver_wrap.cxx"), ],
-                         include_dirs = include_dirs,
-                         extra_compile_args = ['-std=gnu++0x'],
-                         library_dirs = library_dirs,                         
-                         libraries = sp_libraries),
-               Extension("_StrumpackSparseSolverMPI",
-                        [path.join(base,"StrumpackSparseSolverMPI_wrap.cxx"), ],
-                         include_dirs = include_dirs,
-                         extra_compile_args = ['-std=gnu++0x'],
-                         library_dirs = library_dirs,                         
-                         libraries = sp_libraries),
-               Extension("_StrumpackSparseSolverMPIDist",
-                        [path.join(base,"StrumpackSparseSolverMPIDist_wrap.cxx"), ],
-                         include_dirs = include_dirs,
-                         extra_compile_args = ['-std=gnu++0x'],
-                         library_dirs = library_dirs,                         
-                         libraries = sp_libraries)]
+subs = ['HSS', 'BLR', 'dense', 'misc', 'sparse']
+strumpackincsubdirs = [os.path.join(strumpackincdir, x) for x in subs]
+include_dirs=([strumpackincdir,] + strumpackincsubdirs + 
+              [numpy_include,])
+library_dirs = [strumpacklnkdir,]
 
+include_dirs = [x for x in include_dirs if len(x) > 0]
+library_dirs = [x for x in library_dirs if len(x) > 0]
+print(library_dirs)
+print(include_dirs)
+
+base = "STRUMPACK"
+modules = ["StrumpackSparseSolver",]
+
+if  mpi4py_include is not None:
+    include_dirs.append(mpi4py_include)
+#    modules.extend(["StrumpackSparseSolverMPI",
+#                    "StrumpackSparseSolverMPIDist",])
+
+ 
+ext_modules = [Extension("_"+n,
+                        [path.join(base, n  + "_wrap.cxx"), ],
+                         include_dirs = include_dirs,
+                        # extra_compile_args = ['-std=c++11',],
+                         extra_link_args = ['-DSWIG_TYPE_TABLE=PySTRUMPACK'],
+                         library_dirs = library_dirs,
+                         libraries = ['strumpack',])
+               for n in modules]
 
 setup(
-    name='PyStrumpackSparse',
-    version='1.1.0',
+    name='PySTRUMPACK',
+    version='3.1.1',
 
-    description='PyStrumpackSparse',
+    description='PySTRUMPACK',
     long_description=long_description,
-    url='https://github.com/sshiraiwa/PyStrumpackSparse',
+    url='https://github.com/sshiraiwa/PySTRUMPAKC',
     author='S. Sihraiwa',
     author_email='shiraiwa@psfc.mit.edu',
     license='LGPL-2.1',

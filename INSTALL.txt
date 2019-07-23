@@ -1,0 +1,36 @@
+# PySTRUMPACK
+
+UnderConstruction. Please visit us a few days later. (2019/07/20)
+
+
+## install
+1) build strumpack as a shared library. Minimum option is
+
+    cmake .. -DBUILD_SHARED_LIBS=on
+
+   typically I do
+
+    cmake .. -DCMAKE_INSTALL_NAME_DIR=${TwoPiRoot}/lib \
+             -DCMAKE_INSTALL_PREFIX=${TwoPiRoot}       \
+             -DCMAKE_CXX_COMPILER=${MPICXX}            \
+             -DCMAKE_C_COMPILER=${MPICC}               \
+             -DCMAKE_Fortran_COMPILER=${MPIFC}         \
+             -DCMAKE_VERBOSE_MAKEFILE=1                \
+             -DBUILD_SHARED_LIBS=on                    \
+    	     -DTPL_ENABLE_PARMETIS=off                \
+             -DCMAKE_MACOSX_RPATH=false
+
+2-optional) build SWIG wrapper
+   default swig wrapper is built for STRUMPACK 3.1.1. C-interface is
+   wrapped.
+
+2) install package
+
+    export CC=${MPICC}
+    export CXX=${MPICXX}
+    export STRUMPACKINCDIR=${TwoPiRoot}/include
+    export STRUMPACKLNKDIR=${TwoPiRoot}/lib
+
+    $PYTHON setup.py install --prefix=${TwoPiRoot}
+
+

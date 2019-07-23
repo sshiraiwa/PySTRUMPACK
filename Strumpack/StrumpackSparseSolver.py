@@ -95,570 +95,478 @@ except __builtin__.Exception:
         pass
     _newclass = 0
 
-class SStrumpackSparseSolver(_object):
+class StrumpackSolverBase(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, SStrumpackSparseSolver, name, value)
+    __setattr__ = lambda self, name, value: _swig_setattr(self, StrumpackSolverBase, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, SStrumpackSparseSolver, name)
+    __getattr__ = lambda self, name: _swig_getattr(self, StrumpackSolverBase, name)
     __repr__ = _swig_repr
 
-    def __init__(self, argc, verb=True, root=True):
-        this = _StrumpackSparseSolver.new_SStrumpackSparseSolver(argc, verb, root)
+    def factor(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_factor(self)
+
+    def reorder(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_reorder(self)
+
+    def reorder_regular(self, nx, ny, nz):
+        return _StrumpackSparseSolver.StrumpackSolverBase_reorder_regular(self, nx, ny, nz)
+
+    def set_verbose(self, v):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_verbose(self, v)
+
+    def set_maxit(self, maxit):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_maxit(self, maxit)
+
+    def set_gmres_restart(self, m):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_gmres_restart(self, m)
+
+    def set_rel_tol(self, tol):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_rel_tol(self, tol)
+
+    def set_abs_tol(self, tol):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_abs_tol(self, tol)
+
+    def set_nd_param(self, nd_param):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_nd_param(self, nd_param)
+
+    def set_reordering_method(self, m):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_reordering_method(self, m)
+
+    def set_GramSchmidt_type(self, t):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_GramSchmidt_type(self, t)
+
+    def set_mc64job(self, job):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_mc64job(self, job)
+
+    def set_matching(self, job):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_matching(self, job)
+
+    def set_Krylov_solver(self, solver_type):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_Krylov_solver(self, solver_type)
+
+    def enable_HSS(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_enable_HSS(self)
+
+    def disable_HSS(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_disable_HSS(self)
+
+    def set_HSS_min_front_size(self, size):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_HSS_min_front_size(self, size)
+
+    def set_HSS_min_sep_size(self, size):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_HSS_min_sep_size(self, size)
+
+    def set_HSS_max_rank(self, max_rank):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_HSS_max_rank(self, max_rank)
+
+    def set_HSS_leaf_size(self, leaf_size):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_HSS_leaf_size(self, leaf_size)
+
+    def set_HSS_rel_tol(self, rctol):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_HSS_rel_tol(self, rctol)
+
+    def set_HSS_abs_tol(self, actol):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_HSS_abs_tol(self, actol)
+
+    def get_verbose(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_verbose(self)
+
+    def get_maxit(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_maxit(self)
+
+    def get_rel_tol(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_rel_tol(self)
+
+    def get_abs_tol(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_abs_tol(self)
+
+    def get_nd_param(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_nd_param(self)
+
+    def get_reordering_method(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_reordering_method(self)
+
+    def get_mc64job(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_mc64job(self)
+
+    def get_matching(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_matching(self)
+
+    def get_Krylov_solver(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_Krylov_solver(self)
+
+    def get_HSS_min_front_size(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_HSS_min_front_size(self)
+
+    def get_HSS_min_sep_size(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_HSS_min_sep_size(self)
+
+    def get_HSS_max_rank(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_HSS_max_rank(self)
+
+    def get_HSS_leaf_size(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_HSS_leaf_size(self)
+
+    def get_HSS_rel_tol(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_HSS_rel_tol(self)
+
+    def get_HSS_abs_tol(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_HSS_abs_tol(self)
+
+    def get_its(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_its(self)
+
+    def get_rank(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_rank(self)
+
+    def get_factor_nonzeros(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_factor_nonzeros(self)
+
+    def get_factor_memory(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_get_factor_memory(self)
+
+    def __init__(self):
+        this = _StrumpackSparseSolver.new_StrumpackSolverBase()
         try:
             self.this.append(this)
         except __builtin__.Exception:
             self.this = this
-    __swig_destroy__ = _StrumpackSparseSolver.delete_SStrumpackSparseSolver
+    __swig_destroy__ = _StrumpackSparseSolver.delete_StrumpackSolverBase
     __del__ = lambda self: None
+StrumpackSolverBase_swigregister = _StrumpackSparseSolver.StrumpackSolverBase_swigregister
+StrumpackSolverBase_swigregister(StrumpackSolverBase)
 
-    def set_from_options(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_from_options(self)
-
-    def set_from_options_no_warning_unrecognized(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_from_options_no_warning_unrecognized(self)
-
-    def set_matrix(self, A):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_matrix(self, A)
-
-    def set_csr_matrix(self, N, row_ptr, col_ind, values, symmetric_pattern=False):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_csr_matrix(self, N, row_ptr, col_ind, values, symmetric_pattern)
-
-    def reorder(self, nx=1, ny=1, nz=1):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_reorder(self, nx, ny, nz)
-
-    def factor(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_factor(self)
-
-    def solve(self, b, x, use_initial_guess=False):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_solve(self, b, x, use_initial_guess)
-
-    def set_maximum_Krylov_iterations(self, maxit):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_maximum_Krylov_iterations(self, maxit)
-
-    def set_gmres_restart(self, m):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_gmres_restart(self, m)
-
-    def set_relative_Krylov_tolerance(self, tol):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_relative_Krylov_tolerance(self, tol)
-
-    def set_absolute_Krylov_tolerance(self, tol):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_absolute_Krylov_tolerance(self, tol)
-
-    def set_scotch_strategy(self, strat):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_scotch_strategy(self, strat)
-
-    def set_nested_dissection_parameter(self, nd_param):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_nested_dissection_parameter(self, nd_param)
-
-    def set_matrix_reordering_method(self, m):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_matrix_reordering_method(self, m)
-
-    def set_GramSchmidt_type(self, t):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_GramSchmidt_type(self, t)
-
-    def set_mc64job(self, job):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_mc64job(self, job)
-
-    def set_Krylov_solver(self, solver_type):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_Krylov_solver(self, solver_type)
-
-    def set_minimum_HSS_size(self, s):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_minimum_HSS_size(self, s)
-
-    def set_relative_compression_tolerance(self, rctol):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_relative_compression_tolerance(self, rctol)
-
-    def set_absolute_compression_tolerance(self, actol):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_absolute_compression_tolerance(self, actol)
-
-    def set_rank_pattern(self, p):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_rank_pattern(self, p)
-
-    def set_verbose(self, v=True):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_set_verbose(self, v)
-
-    def get_maximum_Krylov_iterations(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_maximum_Krylov_iterations(self)
-
-    def get_gmres_restart(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_gmres_restart(self)
-
-    def get_relative_Krylov_tolerance(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_relative_Krylov_tolerance(self)
-
-    def get_absolute_Krylov_tolerance(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_absolute_Krylov_tolerance(self)
-
-    def get_scotch_strategy(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_scotch_strategy(self)
-
-    def get_nested_dissection_parameter(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_nested_dissection_parameter(self)
-
-    def get_matrix_reordering_method(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_matrix_reordering_method(self)
-
-    def get_GramSchmidt_type(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_GramSchmidt_type(self)
-
-    def get_maximum_rank(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_maximum_rank(self)
-
-    def get_factor_nonzeros(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_factor_nonzeros(self)
-
-    def get_factor_memory(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_factor_memory(self)
-
-    def get_Krylov_iterations(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_Krylov_iterations(self)
-
-    def get_mc64job(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_mc64job(self)
-
-    def use_HSS(self, *args):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_use_HSS(self, *args)
-
-    def get_minimum_HSS_size(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_minimum_HSS_size(self)
-
-    def get_relative_compression_tolerance(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_relative_compression_tolerance(self)
-
-    def get_absolute_compression_tolerance(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_absolute_compression_tolerance(self)
-
-    def get_Krylov_solver(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_Krylov_solver(self)
-
-    def get_rank_pattern(self):
-        return _StrumpackSparseSolver.SStrumpackSparseSolver_get_rank_pattern(self)
-SStrumpackSparseSolver_swigregister = _StrumpackSparseSolver.SStrumpackSparseSolver_swigregister
-SStrumpackSparseSolver_swigregister(SStrumpackSparseSolver)
-
-class DStrumpackSparseSolver(_object):
+class SStrumpackSolver(StrumpackSolverBase):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, DStrumpackSparseSolver, name, value)
+    for _s in [StrumpackSolverBase]:
+        __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, SStrumpackSolver, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, DStrumpackSparseSolver, name)
+    for _s in [StrumpackSolverBase]:
+        __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
+    __getattr__ = lambda self, name: _swig_getattr(self, SStrumpackSolver, name)
     __repr__ = _swig_repr
 
-    def __init__(self, argc, verb=True, root=True):
-        this = _StrumpackSparseSolver.new_DStrumpackSparseSolver(argc, verb, root)
+    def __init__(self):
+        this = _StrumpackSparseSolver.new_SStrumpackSolver()
         try:
             self.this.append(this)
         except __builtin__.Exception:
             self.this = this
-    __swig_destroy__ = _StrumpackSparseSolver.delete_DStrumpackSparseSolver
+    __swig_destroy__ = _StrumpackSparseSolver.delete_SStrumpackSolver
     __del__ = lambda self: None
 
-    def set_from_options(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_from_options(self)
+    def set_csr_matrix(self, N, row_ptr, col_ind, values, symmetric_pattern):
+        return _StrumpackSparseSolver.SStrumpackSolver_set_csr_matrix(self, N, row_ptr, col_ind, values, symmetric_pattern)
 
-    def set_from_options_no_warning_unrecognized(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_from_options_no_warning_unrecognized(self)
+    def solve(self, b, x, use_initial_guess):
+        return _StrumpackSparseSolver.SStrumpackSolver_solve(self, b, x, use_initial_guess)
+SStrumpackSolver_swigregister = _StrumpackSparseSolver.SStrumpackSolver_swigregister
+SStrumpackSolver_swigregister(SStrumpackSolver)
 
-    def set_matrix(self, A):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_matrix(self, A)
-
-    def set_csr_matrix(self, N, row_ptr, col_ind, values, symmetric_pattern=False):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_csr_matrix(self, N, row_ptr, col_ind, values, symmetric_pattern)
-
-    def reorder(self, nx=1, ny=1, nz=1):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_reorder(self, nx, ny, nz)
-
-    def factor(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_factor(self)
-
-    def solve(self, b, x, use_initial_guess=False):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_solve(self, b, x, use_initial_guess)
-
-    def set_maximum_Krylov_iterations(self, maxit):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_maximum_Krylov_iterations(self, maxit)
-
-    def set_gmres_restart(self, m):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_gmres_restart(self, m)
-
-    def set_relative_Krylov_tolerance(self, tol):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_relative_Krylov_tolerance(self, tol)
-
-    def set_absolute_Krylov_tolerance(self, tol):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_absolute_Krylov_tolerance(self, tol)
-
-    def set_scotch_strategy(self, strat):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_scotch_strategy(self, strat)
-
-    def set_nested_dissection_parameter(self, nd_param):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_nested_dissection_parameter(self, nd_param)
-
-    def set_matrix_reordering_method(self, m):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_matrix_reordering_method(self, m)
-
-    def set_GramSchmidt_type(self, t):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_GramSchmidt_type(self, t)
-
-    def set_mc64job(self, job):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_mc64job(self, job)
-
-    def set_Krylov_solver(self, solver_type):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_Krylov_solver(self, solver_type)
-
-    def set_minimum_HSS_size(self, s):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_minimum_HSS_size(self, s)
-
-    def set_relative_compression_tolerance(self, rctol):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_relative_compression_tolerance(self, rctol)
-
-    def set_absolute_compression_tolerance(self, actol):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_absolute_compression_tolerance(self, actol)
-
-    def set_rank_pattern(self, p):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_rank_pattern(self, p)
-
-    def set_verbose(self, v=True):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_set_verbose(self, v)
-
-    def get_maximum_Krylov_iterations(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_maximum_Krylov_iterations(self)
-
-    def get_gmres_restart(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_gmres_restart(self)
-
-    def get_relative_Krylov_tolerance(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_relative_Krylov_tolerance(self)
-
-    def get_absolute_Krylov_tolerance(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_absolute_Krylov_tolerance(self)
-
-    def get_scotch_strategy(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_scotch_strategy(self)
-
-    def get_nested_dissection_parameter(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_nested_dissection_parameter(self)
-
-    def get_matrix_reordering_method(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_matrix_reordering_method(self)
-
-    def get_GramSchmidt_type(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_GramSchmidt_type(self)
-
-    def get_maximum_rank(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_maximum_rank(self)
-
-    def get_factor_nonzeros(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_factor_nonzeros(self)
-
-    def get_factor_memory(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_factor_memory(self)
-
-    def get_Krylov_iterations(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_Krylov_iterations(self)
-
-    def get_mc64job(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_mc64job(self)
-
-    def use_HSS(self, *args):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_use_HSS(self, *args)
-
-    def get_minimum_HSS_size(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_minimum_HSS_size(self)
-
-    def get_relative_compression_tolerance(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_relative_compression_tolerance(self)
-
-    def get_absolute_compression_tolerance(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_absolute_compression_tolerance(self)
-
-    def get_Krylov_solver(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_Krylov_solver(self)
-
-    def get_rank_pattern(self):
-        return _StrumpackSparseSolver.DStrumpackSparseSolver_get_rank_pattern(self)
-DStrumpackSparseSolver_swigregister = _StrumpackSparseSolver.DStrumpackSparseSolver_swigregister
-DStrumpackSparseSolver_swigregister(DStrumpackSparseSolver)
-
-class CStrumpackSparseSolver(_object):
+STRUMPACK_FLOAT = _StrumpackSparseSolver.STRUMPACK_FLOAT
+STRUMPACK_DOUBLE = _StrumpackSparseSolver.STRUMPACK_DOUBLE
+STRUMPACK_FLOATCOMPLEX = _StrumpackSparseSolver.STRUMPACK_FLOATCOMPLEX
+STRUMPACK_DOUBLECOMPLEX = _StrumpackSparseSolver.STRUMPACK_DOUBLECOMPLEX
+STRUMPACK_FLOAT_64 = _StrumpackSparseSolver.STRUMPACK_FLOAT_64
+STRUMPACK_DOUBLE_64 = _StrumpackSparseSolver.STRUMPACK_DOUBLE_64
+STRUMPACK_FLOATCOMPLEX_64 = _StrumpackSparseSolver.STRUMPACK_FLOATCOMPLEX_64
+STRUMPACK_DOUBLECOMPLEX_64 = _StrumpackSparseSolver.STRUMPACK_DOUBLECOMPLEX_64
+STRUMPACK_MT = _StrumpackSparseSolver.STRUMPACK_MT
+STRUMPACK_MPI_DIST = _StrumpackSparseSolver.STRUMPACK_MPI_DIST
+class STRUMPACK_SparseSolver(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, CStrumpackSparseSolver, name, value)
+    __setattr__ = lambda self, name, value: _swig_setattr(self, STRUMPACK_SparseSolver, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, CStrumpackSparseSolver, name)
+    __getattr__ = lambda self, name: _swig_getattr(self, STRUMPACK_SparseSolver, name)
     __repr__ = _swig_repr
+    __swig_setmethods__["solver"] = _StrumpackSparseSolver.STRUMPACK_SparseSolver_solver_set
+    __swig_getmethods__["solver"] = _StrumpackSparseSolver.STRUMPACK_SparseSolver_solver_get
+    if _newclass:
+        solver = _swig_property(_StrumpackSparseSolver.STRUMPACK_SparseSolver_solver_get, _StrumpackSparseSolver.STRUMPACK_SparseSolver_solver_set)
+    __swig_setmethods__["precision"] = _StrumpackSparseSolver.STRUMPACK_SparseSolver_precision_set
+    __swig_getmethods__["precision"] = _StrumpackSparseSolver.STRUMPACK_SparseSolver_precision_get
+    if _newclass:
+        precision = _swig_property(_StrumpackSparseSolver.STRUMPACK_SparseSolver_precision_get, _StrumpackSparseSolver.STRUMPACK_SparseSolver_precision_set)
+    __swig_setmethods__["interface"] = _StrumpackSparseSolver.STRUMPACK_SparseSolver_interface_set
+    __swig_getmethods__["interface"] = _StrumpackSparseSolver.STRUMPACK_SparseSolver_interface_get
+    if _newclass:
+        interface = _swig_property(_StrumpackSparseSolver.STRUMPACK_SparseSolver_interface_get, _StrumpackSparseSolver.STRUMPACK_SparseSolver_interface_set)
 
-    def __init__(self, argc, verb=True, root=True):
-        this = _StrumpackSparseSolver.new_CStrumpackSparseSolver(argc, verb, root)
+    def __init__(self):
+        this = _StrumpackSparseSolver.new_STRUMPACK_SparseSolver()
         try:
             self.this.append(this)
         except __builtin__.Exception:
             self.this = this
-    __swig_destroy__ = _StrumpackSparseSolver.delete_CStrumpackSparseSolver
+    __swig_destroy__ = _StrumpackSparseSolver.delete_STRUMPACK_SparseSolver
     __del__ = lambda self: None
+STRUMPACK_SparseSolver_swigregister = _StrumpackSparseSolver.STRUMPACK_SparseSolver_swigregister
+STRUMPACK_SparseSolver_swigregister(STRUMPACK_SparseSolver)
 
-    def set_from_options(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_from_options(self)
-
-    def set_from_options_no_warning_unrecognized(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_from_options_no_warning_unrecognized(self)
-
-    def set_matrix(self, A):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_matrix(self, A)
-
-    def set_csr_matrix(self, N, row_ptr, col_ind, values, symmetric_pattern=False):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_csr_matrix(self, N, row_ptr, col_ind, values, symmetric_pattern)
-
-    def reorder(self, nx=1, ny=1, nz=1):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_reorder(self, nx, ny, nz)
-
-    def factor(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_factor(self)
-
-    def solve(self, b, x, use_initial_guess=False):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_solve(self, b, x, use_initial_guess)
-
-    def set_maximum_Krylov_iterations(self, maxit):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_maximum_Krylov_iterations(self, maxit)
-
-    def set_gmres_restart(self, m):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_gmres_restart(self, m)
-
-    def set_relative_Krylov_tolerance(self, tol):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_relative_Krylov_tolerance(self, tol)
-
-    def set_absolute_Krylov_tolerance(self, tol):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_absolute_Krylov_tolerance(self, tol)
-
-    def set_scotch_strategy(self, strat):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_scotch_strategy(self, strat)
-
-    def set_nested_dissection_parameter(self, nd_param):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_nested_dissection_parameter(self, nd_param)
-
-    def set_matrix_reordering_method(self, m):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_matrix_reordering_method(self, m)
-
-    def set_GramSchmidt_type(self, t):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_GramSchmidt_type(self, t)
-
-    def set_mc64job(self, job):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_mc64job(self, job)
-
-    def set_Krylov_solver(self, solver_type):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_Krylov_solver(self, solver_type)
-
-    def set_minimum_HSS_size(self, s):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_minimum_HSS_size(self, s)
-
-    def set_relative_compression_tolerance(self, rctol):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_relative_compression_tolerance(self, rctol)
-
-    def set_absolute_compression_tolerance(self, actol):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_absolute_compression_tolerance(self, actol)
-
-    def set_rank_pattern(self, p):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_rank_pattern(self, p)
-
-    def set_verbose(self, v=True):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_set_verbose(self, v)
-
-    def get_maximum_Krylov_iterations(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_maximum_Krylov_iterations(self)
-
-    def get_gmres_restart(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_gmres_restart(self)
-
-    def get_relative_Krylov_tolerance(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_relative_Krylov_tolerance(self)
-
-    def get_absolute_Krylov_tolerance(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_absolute_Krylov_tolerance(self)
-
-    def get_scotch_strategy(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_scotch_strategy(self)
-
-    def get_nested_dissection_parameter(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_nested_dissection_parameter(self)
-
-    def get_matrix_reordering_method(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_matrix_reordering_method(self)
-
-    def get_GramSchmidt_type(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_GramSchmidt_type(self)
-
-    def get_maximum_rank(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_maximum_rank(self)
-
-    def get_factor_nonzeros(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_factor_nonzeros(self)
-
-    def get_factor_memory(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_factor_memory(self)
-
-    def get_Krylov_iterations(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_Krylov_iterations(self)
-
-    def get_mc64job(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_mc64job(self)
-
-    def use_HSS(self, *args):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_use_HSS(self, *args)
-
-    def get_minimum_HSS_size(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_minimum_HSS_size(self)
-
-    def get_relative_compression_tolerance(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_relative_compression_tolerance(self)
-
-    def get_absolute_compression_tolerance(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_absolute_compression_tolerance(self)
-
-    def get_Krylov_solver(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_Krylov_solver(self)
-
-    def get_rank_pattern(self):
-        return _StrumpackSparseSolver.CStrumpackSparseSolver_get_rank_pattern(self)
-CStrumpackSparseSolver_swigregister = _StrumpackSparseSolver.CStrumpackSparseSolver_swigregister
-CStrumpackSparseSolver_swigregister(CStrumpackSparseSolver)
-
-class ZStrumpackSparseSolver(_object):
+class floatcomplex(_object):
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, ZStrumpackSparseSolver, name, value)
+    __setattr__ = lambda self, name, value: _swig_setattr(self, floatcomplex, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, ZStrumpackSparseSolver, name)
+    __getattr__ = lambda self, name: _swig_getattr(self, floatcomplex, name)
     __repr__ = _swig_repr
+    __swig_setmethods__["r"] = _StrumpackSparseSolver.floatcomplex_r_set
+    __swig_getmethods__["r"] = _StrumpackSparseSolver.floatcomplex_r_get
+    if _newclass:
+        r = _swig_property(_StrumpackSparseSolver.floatcomplex_r_get, _StrumpackSparseSolver.floatcomplex_r_set)
+    __swig_setmethods__["i"] = _StrumpackSparseSolver.floatcomplex_i_set
+    __swig_getmethods__["i"] = _StrumpackSparseSolver.floatcomplex_i_get
+    if _newclass:
+        i = _swig_property(_StrumpackSparseSolver.floatcomplex_i_get, _StrumpackSparseSolver.floatcomplex_i_set)
 
-    def __init__(self, argc, verb=True, root=True):
-        this = _StrumpackSparseSolver.new_ZStrumpackSparseSolver(argc, verb, root)
+    def __init__(self):
+        this = _StrumpackSparseSolver.new_floatcomplex()
         try:
             self.this.append(this)
         except __builtin__.Exception:
             self.this = this
-    __swig_destroy__ = _StrumpackSparseSolver.delete_ZStrumpackSparseSolver
+    __swig_destroy__ = _StrumpackSparseSolver.delete_floatcomplex
     __del__ = lambda self: None
+floatcomplex_swigregister = _StrumpackSparseSolver.floatcomplex_swigregister
+floatcomplex_swigregister(floatcomplex)
 
-    def set_from_options(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_from_options(self)
+class doublecomplex(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, doublecomplex, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, doublecomplex, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["r"] = _StrumpackSparseSolver.doublecomplex_r_set
+    __swig_getmethods__["r"] = _StrumpackSparseSolver.doublecomplex_r_get
+    if _newclass:
+        r = _swig_property(_StrumpackSparseSolver.doublecomplex_r_get, _StrumpackSparseSolver.doublecomplex_r_set)
+    __swig_setmethods__["i"] = _StrumpackSparseSolver.doublecomplex_i_set
+    __swig_getmethods__["i"] = _StrumpackSparseSolver.doublecomplex_i_get
+    if _newclass:
+        i = _swig_property(_StrumpackSparseSolver.doublecomplex_i_get, _StrumpackSparseSolver.doublecomplex_i_set)
 
-    def set_from_options_no_warning_unrecognized(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_from_options_no_warning_unrecognized(self)
+    def __init__(self):
+        this = _StrumpackSparseSolver.new_doublecomplex()
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _StrumpackSparseSolver.delete_doublecomplex
+    __del__ = lambda self: None
+doublecomplex_swigregister = _StrumpackSparseSolver.doublecomplex_swigregister
+doublecomplex_swigregister(doublecomplex)
 
-    def set_matrix(self, A):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_matrix(self, A)
+STRUMPACK_NATURAL = _StrumpackSparseSolver.STRUMPACK_NATURAL
+STRUMPACK_METIS = _StrumpackSparseSolver.STRUMPACK_METIS
+STRUMPACK_PARMETIS = _StrumpackSparseSolver.STRUMPACK_PARMETIS
+STRUMPACK_SCOTCH = _StrumpackSparseSolver.STRUMPACK_SCOTCH
+STRUMPACK_PTSCOTCH = _StrumpackSparseSolver.STRUMPACK_PTSCOTCH
+STRUMPACK_RCM = _StrumpackSparseSolver.STRUMPACK_RCM
+STRUMPACK_GEOMETRIC = _StrumpackSparseSolver.STRUMPACK_GEOMETRIC
+STRUMPACK_CLASSICAL = _StrumpackSparseSolver.STRUMPACK_CLASSICAL
+STRUMPACK_MODIFIED = _StrumpackSparseSolver.STRUMPACK_MODIFIED
+STRUMPACK_NORMAL = _StrumpackSparseSolver.STRUMPACK_NORMAL
+STRUMPACK_UNIFORM = _StrumpackSparseSolver.STRUMPACK_UNIFORM
+STRUMPACK_LINEAR = _StrumpackSparseSolver.STRUMPACK_LINEAR
+STRUMPACK_MERSENNE = _StrumpackSparseSolver.STRUMPACK_MERSENNE
+STRUMPACK_AUTO = _StrumpackSparseSolver.STRUMPACK_AUTO
+STRUMPACK_DIRECT = _StrumpackSparseSolver.STRUMPACK_DIRECT
+STRUMPACK_REFINE = _StrumpackSparseSolver.STRUMPACK_REFINE
+STRUMPACK_PREC_GMRES = _StrumpackSparseSolver.STRUMPACK_PREC_GMRES
+STRUMPACK_GMRES = _StrumpackSparseSolver.STRUMPACK_GMRES
+STRUMPACK_PREC_BICGSTAB = _StrumpackSparseSolver.STRUMPACK_PREC_BICGSTAB
+STRUMPACK_BICGSTAB = _StrumpackSparseSolver.STRUMPACK_BICGSTAB
+STRUMPACK_SUCCESS = _StrumpackSparseSolver.STRUMPACK_SUCCESS
+STRUMPACK_MATRIX_NOT_SET = _StrumpackSparseSolver.STRUMPACK_MATRIX_NOT_SET
+STRUMPACK_REORDERING_ERROR = _StrumpackSparseSolver.STRUMPACK_REORDERING_ERROR
 
-    def set_csr_matrix(self, N, row_ptr, col_ind, values, symmetric_pattern=False):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_csr_matrix(self, N, row_ptr, col_ind, values, symmetric_pattern)
+def STRUMPACK_init_mt(S, precision, interface, argc, argv, verbose):
+    return _StrumpackSparseSolver.STRUMPACK_init_mt(S, precision, interface, argc, argv, verbose)
+STRUMPACK_init_mt = _StrumpackSparseSolver.STRUMPACK_init_mt
 
-    def reorder(self, nx=1, ny=1, nz=1):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_reorder(self, nx, ny, nz)
+def STRUMPACK_destroy(S):
+    return _StrumpackSparseSolver.STRUMPACK_destroy(S)
+STRUMPACK_destroy = _StrumpackSparseSolver.STRUMPACK_destroy
 
-    def factor(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_factor(self)
+def STRUMPACK_set_csr_matrix(S, N, row_ptr, col_ind, values, symmetric_pattern):
+    return _StrumpackSparseSolver.STRUMPACK_set_csr_matrix(S, N, row_ptr, col_ind, values, symmetric_pattern)
+STRUMPACK_set_csr_matrix = _StrumpackSparseSolver.STRUMPACK_set_csr_matrix
 
-    def solve(self, b, x, use_initial_guess=False):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_solve(self, b, x, use_initial_guess)
+def STRUMPACK_solve(S, b, x, use_initial_guess):
+    return _StrumpackSparseSolver.STRUMPACK_solve(S, b, x, use_initial_guess)
+STRUMPACK_solve = _StrumpackSparseSolver.STRUMPACK_solve
 
-    def set_maximum_Krylov_iterations(self, maxit):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_maximum_Krylov_iterations(self, maxit)
+def STRUMPACK_set_from_options(S):
+    return _StrumpackSparseSolver.STRUMPACK_set_from_options(S)
+STRUMPACK_set_from_options = _StrumpackSparseSolver.STRUMPACK_set_from_options
 
-    def set_gmres_restart(self, m):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_gmres_restart(self, m)
+def STRUMPACK_reorder(S):
+    return _StrumpackSparseSolver.STRUMPACK_reorder(S)
+STRUMPACK_reorder = _StrumpackSparseSolver.STRUMPACK_reorder
 
-    def set_relative_Krylov_tolerance(self, tol):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_relative_Krylov_tolerance(self, tol)
+def STRUMPACK_reorder_regular(S, nx, ny, nz):
+    return _StrumpackSparseSolver.STRUMPACK_reorder_regular(S, nx, ny, nz)
+STRUMPACK_reorder_regular = _StrumpackSparseSolver.STRUMPACK_reorder_regular
 
-    def set_absolute_Krylov_tolerance(self, tol):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_absolute_Krylov_tolerance(self, tol)
+def STRUMPACK_factor(S):
+    return _StrumpackSparseSolver.STRUMPACK_factor(S)
+STRUMPACK_factor = _StrumpackSparseSolver.STRUMPACK_factor
 
-    def set_scotch_strategy(self, strat):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_scotch_strategy(self, strat)
+def STRUMPACK_set_verbose(S, v):
+    return _StrumpackSparseSolver.STRUMPACK_set_verbose(S, v)
+STRUMPACK_set_verbose = _StrumpackSparseSolver.STRUMPACK_set_verbose
 
-    def set_nested_dissection_parameter(self, nd_param):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_nested_dissection_parameter(self, nd_param)
+def STRUMPACK_set_maxit(S, maxit):
+    return _StrumpackSparseSolver.STRUMPACK_set_maxit(S, maxit)
+STRUMPACK_set_maxit = _StrumpackSparseSolver.STRUMPACK_set_maxit
 
-    def set_matrix_reordering_method(self, m):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_matrix_reordering_method(self, m)
+def STRUMPACK_set_gmres_restart(S, m):
+    return _StrumpackSparseSolver.STRUMPACK_set_gmres_restart(S, m)
+STRUMPACK_set_gmres_restart = _StrumpackSparseSolver.STRUMPACK_set_gmres_restart
 
-    def set_GramSchmidt_type(self, t):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_GramSchmidt_type(self, t)
+def STRUMPACK_set_rel_tol(S, tol):
+    return _StrumpackSparseSolver.STRUMPACK_set_rel_tol(S, tol)
+STRUMPACK_set_rel_tol = _StrumpackSparseSolver.STRUMPACK_set_rel_tol
 
-    def set_mc64job(self, job):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_mc64job(self, job)
+def STRUMPACK_set_abs_tol(S, tol):
+    return _StrumpackSparseSolver.STRUMPACK_set_abs_tol(S, tol)
+STRUMPACK_set_abs_tol = _StrumpackSparseSolver.STRUMPACK_set_abs_tol
 
-    def set_Krylov_solver(self, solver_type):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_Krylov_solver(self, solver_type)
+def STRUMPACK_set_nd_param(S, nd_param):
+    return _StrumpackSparseSolver.STRUMPACK_set_nd_param(S, nd_param)
+STRUMPACK_set_nd_param = _StrumpackSparseSolver.STRUMPACK_set_nd_param
 
-    def set_minimum_HSS_size(self, s):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_minimum_HSS_size(self, s)
+def STRUMPACK_set_reordering_method(S, m):
+    return _StrumpackSparseSolver.STRUMPACK_set_reordering_method(S, m)
+STRUMPACK_set_reordering_method = _StrumpackSparseSolver.STRUMPACK_set_reordering_method
 
-    def set_relative_compression_tolerance(self, rctol):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_relative_compression_tolerance(self, rctol)
+def STRUMPACK_set_GramSchmidt_type(S, t):
+    return _StrumpackSparseSolver.STRUMPACK_set_GramSchmidt_type(S, t)
+STRUMPACK_set_GramSchmidt_type = _StrumpackSparseSolver.STRUMPACK_set_GramSchmidt_type
 
-    def set_absolute_compression_tolerance(self, actol):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_absolute_compression_tolerance(self, actol)
+def STRUMPACK_set_mc64job(S, job):
+    return _StrumpackSparseSolver.STRUMPACK_set_mc64job(S, job)
+STRUMPACK_set_mc64job = _StrumpackSparseSolver.STRUMPACK_set_mc64job
 
-    def set_rank_pattern(self, p):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_rank_pattern(self, p)
+def STRUMPACK_set_matching(S, job):
+    return _StrumpackSparseSolver.STRUMPACK_set_matching(S, job)
+STRUMPACK_set_matching = _StrumpackSparseSolver.STRUMPACK_set_matching
 
-    def set_verbose(self, v=True):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_set_verbose(self, v)
+def STRUMPACK_set_Krylov_solver(S, solver_type):
+    return _StrumpackSparseSolver.STRUMPACK_set_Krylov_solver(S, solver_type)
+STRUMPACK_set_Krylov_solver = _StrumpackSparseSolver.STRUMPACK_set_Krylov_solver
 
-    def get_maximum_Krylov_iterations(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_maximum_Krylov_iterations(self)
+def STRUMPACK_enable_HSS(S):
+    return _StrumpackSparseSolver.STRUMPACK_enable_HSS(S)
+STRUMPACK_enable_HSS = _StrumpackSparseSolver.STRUMPACK_enable_HSS
 
-    def get_gmres_restart(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_gmres_restart(self)
+def STRUMPACK_disable_HSS(S):
+    return _StrumpackSparseSolver.STRUMPACK_disable_HSS(S)
+STRUMPACK_disable_HSS = _StrumpackSparseSolver.STRUMPACK_disable_HSS
 
-    def get_relative_Krylov_tolerance(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_relative_Krylov_tolerance(self)
+def STRUMPACK_set_HSS_min_front_size(S, size):
+    return _StrumpackSparseSolver.STRUMPACK_set_HSS_min_front_size(S, size)
+STRUMPACK_set_HSS_min_front_size = _StrumpackSparseSolver.STRUMPACK_set_HSS_min_front_size
 
-    def get_absolute_Krylov_tolerance(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_absolute_Krylov_tolerance(self)
+def STRUMPACK_set_HSS_min_sep_size(S, size):
+    return _StrumpackSparseSolver.STRUMPACK_set_HSS_min_sep_size(S, size)
+STRUMPACK_set_HSS_min_sep_size = _StrumpackSparseSolver.STRUMPACK_set_HSS_min_sep_size
 
-    def get_scotch_strategy(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_scotch_strategy(self)
+def STRUMPACK_set_HSS_max_rank(S, max_rank):
+    return _StrumpackSparseSolver.STRUMPACK_set_HSS_max_rank(S, max_rank)
+STRUMPACK_set_HSS_max_rank = _StrumpackSparseSolver.STRUMPACK_set_HSS_max_rank
 
-    def get_nested_dissection_parameter(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_nested_dissection_parameter(self)
+def STRUMPACK_set_HSS_leaf_size(S, leaf_size):
+    return _StrumpackSparseSolver.STRUMPACK_set_HSS_leaf_size(S, leaf_size)
+STRUMPACK_set_HSS_leaf_size = _StrumpackSparseSolver.STRUMPACK_set_HSS_leaf_size
 
-    def get_matrix_reordering_method(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_matrix_reordering_method(self)
+def STRUMPACK_set_HSS_rel_tol(S, rctol):
+    return _StrumpackSparseSolver.STRUMPACK_set_HSS_rel_tol(S, rctol)
+STRUMPACK_set_HSS_rel_tol = _StrumpackSparseSolver.STRUMPACK_set_HSS_rel_tol
 
-    def get_GramSchmidt_type(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_GramSchmidt_type(self)
+def STRUMPACK_set_HSS_abs_tol(S, actol):
+    return _StrumpackSparseSolver.STRUMPACK_set_HSS_abs_tol(S, actol)
+STRUMPACK_set_HSS_abs_tol = _StrumpackSparseSolver.STRUMPACK_set_HSS_abs_tol
 
-    def get_maximum_rank(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_maximum_rank(self)
+def STRUMPACK_verbose(S):
+    return _StrumpackSparseSolver.STRUMPACK_verbose(S)
+STRUMPACK_verbose = _StrumpackSparseSolver.STRUMPACK_verbose
 
-    def get_factor_nonzeros(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_factor_nonzeros(self)
+def STRUMPACK_maxit(S):
+    return _StrumpackSparseSolver.STRUMPACK_maxit(S)
+STRUMPACK_maxit = _StrumpackSparseSolver.STRUMPACK_maxit
 
-    def get_factor_memory(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_factor_memory(self)
+def STRUMPACK_rel_tol(S):
+    return _StrumpackSparseSolver.STRUMPACK_rel_tol(S)
+STRUMPACK_rel_tol = _StrumpackSparseSolver.STRUMPACK_rel_tol
 
-    def get_Krylov_iterations(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_Krylov_iterations(self)
+def STRUMPACK_abs_tol(S):
+    return _StrumpackSparseSolver.STRUMPACK_abs_tol(S)
+STRUMPACK_abs_tol = _StrumpackSparseSolver.STRUMPACK_abs_tol
 
-    def get_mc64job(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_mc64job(self)
+def STRUMPACK_nd_param(S):
+    return _StrumpackSparseSolver.STRUMPACK_nd_param(S)
+STRUMPACK_nd_param = _StrumpackSparseSolver.STRUMPACK_nd_param
 
-    def use_HSS(self, *args):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_use_HSS(self, *args)
+def STRUMPACK_reordering_method(S):
+    return _StrumpackSparseSolver.STRUMPACK_reordering_method(S)
+STRUMPACK_reordering_method = _StrumpackSparseSolver.STRUMPACK_reordering_method
 
-    def get_minimum_HSS_size(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_minimum_HSS_size(self)
+def STRUMPACK_GramSchmidt_type(S):
+    return _StrumpackSparseSolver.STRUMPACK_GramSchmidt_type(S)
+STRUMPACK_GramSchmidt_type = _StrumpackSparseSolver.STRUMPACK_GramSchmidt_type
 
-    def get_relative_compression_tolerance(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_relative_compression_tolerance(self)
+def STRUMPACK_mc64job(S):
+    return _StrumpackSparseSolver.STRUMPACK_mc64job(S)
+STRUMPACK_mc64job = _StrumpackSparseSolver.STRUMPACK_mc64job
 
-    def get_absolute_compression_tolerance(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_absolute_compression_tolerance(self)
+def STRUMPACK_matching(S):
+    return _StrumpackSparseSolver.STRUMPACK_matching(S)
+STRUMPACK_matching = _StrumpackSparseSolver.STRUMPACK_matching
 
-    def get_Krylov_solver(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_Krylov_solver(self)
+def STRUMPACK_Krylov_solver(S):
+    return _StrumpackSparseSolver.STRUMPACK_Krylov_solver(S)
+STRUMPACK_Krylov_solver = _StrumpackSparseSolver.STRUMPACK_Krylov_solver
 
-    def get_rank_pattern(self):
-        return _StrumpackSparseSolver.ZStrumpackSparseSolver_get_rank_pattern(self)
-ZStrumpackSparseSolver_swigregister = _StrumpackSparseSolver.ZStrumpackSparseSolver_swigregister
-ZStrumpackSparseSolver_swigregister(ZStrumpackSparseSolver)
+def STRUMPACK_HSS_min_front_size(S):
+    return _StrumpackSparseSolver.STRUMPACK_HSS_min_front_size(S)
+STRUMPACK_HSS_min_front_size = _StrumpackSparseSolver.STRUMPACK_HSS_min_front_size
 
+def STRUMPACK_HSS_min_sep_size(S):
+    return _StrumpackSparseSolver.STRUMPACK_HSS_min_sep_size(S)
+STRUMPACK_HSS_min_sep_size = _StrumpackSparseSolver.STRUMPACK_HSS_min_sep_size
+
+def STRUMPACK_HSS_max_rank(S):
+    return _StrumpackSparseSolver.STRUMPACK_HSS_max_rank(S)
+STRUMPACK_HSS_max_rank = _StrumpackSparseSolver.STRUMPACK_HSS_max_rank
+
+def STRUMPACK_HSS_leaf_size(S):
+    return _StrumpackSparseSolver.STRUMPACK_HSS_leaf_size(S)
+STRUMPACK_HSS_leaf_size = _StrumpackSparseSolver.STRUMPACK_HSS_leaf_size
+
+def STRUMPACK_HSS_rel_tol(S):
+    return _StrumpackSparseSolver.STRUMPACK_HSS_rel_tol(S)
+STRUMPACK_HSS_rel_tol = _StrumpackSparseSolver.STRUMPACK_HSS_rel_tol
+
+def STRUMPACK_HSS_abs_tol(S):
+    return _StrumpackSparseSolver.STRUMPACK_HSS_abs_tol(S)
+STRUMPACK_HSS_abs_tol = _StrumpackSparseSolver.STRUMPACK_HSS_abs_tol
+
+def STRUMPACK_its(S):
+    return _StrumpackSparseSolver.STRUMPACK_its(S)
+STRUMPACK_its = _StrumpackSparseSolver.STRUMPACK_its
+
+def STRUMPACK_rank(S):
+    return _StrumpackSparseSolver.STRUMPACK_rank(S)
+STRUMPACK_rank = _StrumpackSparseSolver.STRUMPACK_rank
+
+def STRUMPACK_factor_nonzeros(S):
+    return _StrumpackSparseSolver.STRUMPACK_factor_nonzeros(S)
+STRUMPACK_factor_nonzeros = _StrumpackSparseSolver.STRUMPACK_factor_nonzeros
+
+def STRUMPACK_factor_memory(S):
+    return _StrumpackSparseSolver.STRUMPACK_factor_memory(S)
+STRUMPACK_factor_memory = _StrumpackSparseSolver.STRUMPACK_factor_memory
 # This file is compatible with both classic and new-style classes.
 
 

@@ -1,1 +1,1 @@
-from .SparseSolver import Sp
+from STRUMPACK.StrumpackSparseSolver import *        

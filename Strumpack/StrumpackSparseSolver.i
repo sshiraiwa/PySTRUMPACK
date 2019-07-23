@@ -1,34 +1,115 @@
-%module StrumpackSparseSolver
+%module(package="STRUMPACK") StrumpackSparseSolver
 %{
-#include <atomic>
-#include <tuple>
-#include <vector>
-#include <sstream>
-#include <new>
-#include <cmath>
-#include <complex>
-#include <iostream>  
+#include <stdio.h>
+#include <stdlib.h>
 #include "numpy/arrayobject.h"
-#include "StrumpackSparseSolver.hpp"
-#include "CSRMatrixMPI.hpp"
-using namespace strumpack;
-using namespace strumpack::params; 
+#include "StrumpackSparseSolver.h"
 %}
 
 %init %{
 import_array();
 %}
 
+/*
 %import "common_interface/int_scalar_t.i"
 %import "common_interface/argc_argv.i"
+%import "StrumpackParameters.i"
+%ignore strumpack::StrumpackSparseSolver::solve(const DenseM_t& b, DenseM_t& x, bool use_initial_guess=false);
+*/
 
-%include "StrumpackSparseSolver.hpp"
+/* these two methods are declared but not implemented anywhere in STRUMPACK??? */
+%ignore  STRUMPACK_get_gmres_restart;
+%ignore  use_HSS;
 
-%template(SStrumpackSparseSolver) strumpack::StrumpackSparseSolver<float, float, int>;
-%template(DStrumpackSparseSolver) strumpack::StrumpackSparseSolver<double, double, int>;
-%template(CStrumpackSparseSolver) strumpack::StrumpackSparseSolver<std::complex<float>, float, int>;
-%template(ZStrumpackSparseSolver) strumpack::StrumpackSparseSolver<std::complex<double>, double, int>;
+%inline %{
+class StrumpackSolverBase
+{
+ protected:
+  STRUMPACK_SparseSolver spss;
+ public:
 
+  STRUMPACK_RETURN_CODE factor(void){return STRUMPACK_factor(spss);}
+  STRUMPACK_RETURN_CODE reorder(void){return STRUMPACK_reorder(spss);}
+  STRUMPACK_RETURN_CODE reorder_regular(int nx, int ny, int nz){return STRUMPACK_reorder_regular(spss, nx, ny, nz);}
+  
+  void set_verbose(int v){STRUMPACK_set_verbose(spss, v);}
+  void set_maxit(int  maxit){STRUMPACK_set_maxit(spss, maxit);}
+  void set_gmres_restart(int m){STRUMPACK_set_gmres_restart(spss, m);}
+  void set_rel_tol(double tol){STRUMPACK_set_rel_tol(spss, tol);}
+  void set_abs_tol(double tol){STRUMPACK_set_abs_tol(spss, tol);}
+  void set_nd_param(int nd_param){STRUMPACK_set_nd_param(spss, nd_param);}
+  void set_reordering_method(STRUMPACK_REORDERING_STRATEGY m){STRUMPACK_set_reordering_method(spss, m);}
+  void set_GramSchmidt_type(STRUMPACK_GRAM_SCHMIDT_TYPE t){STRUMPACK_set_GramSchmidt_type(spss, t);}
+  void set_mc64job(int job){STRUMPACK_set_mc64job(spss, job);}
+  void set_matching(int job){STRUMPACK_set_matching(spss, job);}
+  void set_Krylov_solver(STRUMPACK_KRYLOV_SOLVER solver_type){STRUMPACK_set_Krylov_solver(spss, solver_type);}
+  void enable_HSS(void){STRUMPACK_enable_HSS(spss);}
+  void disable_HSS(void){STRUMPACK_disable_HSS(spss);}
+  void set_HSS_min_front_size(int size){STRUMPACK_set_HSS_min_front_size(spss, size);}
+  void set_HSS_min_sep_size(int size){STRUMPACK_set_HSS_min_sep_size(spss, size);}
+  void set_HSS_max_rank(int max_rank){STRUMPACK_set_HSS_max_rank(spss, max_rank);}
+  void set_HSS_leaf_size(int leaf_size){STRUMPACK_set_HSS_leaf_size(spss, leaf_size);}
+  void set_HSS_rel_tol(double rctol){STRUMPACK_set_HSS_rel_tol(spss, rctol);}
+  void set_HSS_abs_tol(double actol){STRUMPACK_set_HSS_abs_tol(spss, actol);}  
+  
+  int  get_verbose(void){return STRUMPACK_verbose(spss);}
+  int  get_maxit(void){return STRUMPACK_maxit(spss);}
+  double get_rel_tol(void){return STRUMPACK_rel_tol(spss);}
+  double get_abs_tol(void){return STRUMPACK_abs_tol(spss);}
+  int get_nd_param(void){return STRUMPACK_nd_param(spss);}
+  STRUMPACK_REORDERING_STRATEGY get_reordering_method(void){return STRUMPACK_reordering_method(spss);}
+  int get_mc64job(void){return STRUMPACK_mc64job(spss);}
+  int get_matching(void){return STRUMPACK_matching(spss);}
+  STRUMPACK_KRYLOV_SOLVER get_Krylov_solver(void){return STRUMPACK_Krylov_solver(spss);}
+  int get_HSS_min_front_size(void){return STRUMPACK_HSS_min_front_size(spss);}
+  int get_HSS_min_sep_size(void){return STRUMPACK_HSS_min_sep_size(spss);}
+  int get_HSS_max_rank(void){return STRUMPACK_HSS_max_rank(spss);}
+  int get_HSS_leaf_size(void){return STRUMPACK_HSS_leaf_size(spss);}
+  double get_HSS_rel_tol(void){return STRUMPACK_HSS_rel_tol(spss);}
+  double get_HSS_abs_tol(void){return STRUMPACK_HSS_abs_tol(spss);}
+  int get_its(void){return STRUMPACK_its(spss);}
+  int get_rank(void){return STRUMPACK_rank(spss);}
+  long get_factor_nonzeros(void){return STRUMPACK_factor_nonzeros(spss);}
+  long get_factor_memory(void){return STRUMPACK_factor_memory(spss);}
+};
 
+class SStrumpackSolver : public StrumpackSolverBase
+{
+ public:
+    SStrumpackSolver(){
+       char *argv[] = {NULL};
+       STRUMPACK_init_mt(&spss, STRUMPACK_FLOAT, STRUMPACK_MT, 1, argv, 0);
+    }
+    #if defined(STRUMPACK_USE_MPI)
+    SStrumpackSolver(MPI_Comm comm){
+       char *argv[] = {NULL};      
+       STRUMPACK_init(&spss, comm, STRUMPACK_FLOAT, STRUMPACK_MPI_DIST, 0, argv, 0);
+    }
+    #endif
+    ~SStrumpackSolver(){
+       STRUMPACK_destroy(&spss);
+    }
+    void set_csr_matrix(int N, int *row_ptr, int *col_ind, float *values, int symmetric_pattern){
+       STRUMPACK_set_csr_matrix(spss,  &N, (void*) row_ptr,(void*) col_ind,
+				(void*) values, symmetric_pattern);
+    }
+   #if defined(STRUMPACK_USE_MPI)
+     void set_distributed_csr_matrix(int local_rows, const int* row_ptr,
+                                     const int* col_ind, const float* values,
+				     const void* dist,   int symmetric_pattern){
+
+          STRUMPACK_set_distributed_csr_matrix(spss,
+					       &local_rows, (const void*) row_ptr,
+					       (const void*) col_ind, (const void*) values,
+						dist, symmetric_pattern);
+     }
+   #endif
+    
+    STRUMPACK_RETURN_CODE solve(float *b, float *x, int use_initial_guess){
+       return STRUMPACK_solve(spss, (const void*) b, (void*) x, use_initial_guess);
+    }
+   };
+%}
+%include "StrumpackSparseSolver.h"
 
 

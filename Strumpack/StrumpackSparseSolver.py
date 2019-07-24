@@ -247,8 +247,8 @@ class SStrumpackSolver(StrumpackSolverBase):
     __getattr__ = lambda self, name: _swig_getattr(self, SStrumpackSolver, name)
     __repr__ = _swig_repr
 
-    def __init__(self):
-        this = _StrumpackSparseSolver.new_SStrumpackSolver()
+    def __init__(self, *args):
+        this = _StrumpackSparseSolver.new_SStrumpackSolver(*args)
         try:
             self.this.append(this)
         except __builtin__.Exception:
@@ -258,6 +258,9 @@ class SStrumpackSolver(StrumpackSolverBase):
 
     def set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern):
         return _StrumpackSparseSolver.SStrumpackSolver_set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern)
+
+    def set_distributed_csr_matrix0(self, local_rows, row_ptr, col_ind, values, dist, symmetric_pattern):
+        return _StrumpackSparseSolver.SStrumpackSolver_set_distributed_csr_matrix0(self, local_rows, row_ptr, col_ind, values, dist, symmetric_pattern)
 
     def solve(self, b, x, use_initial_guess):
         return _StrumpackSparseSolver.SStrumpackSolver_solve(self, b, x, use_initial_guess)
@@ -275,8 +278,8 @@ class DStrumpackSolver(StrumpackSolverBase):
     __getattr__ = lambda self, name: _swig_getattr(self, DStrumpackSolver, name)
     __repr__ = _swig_repr
 
-    def __init__(self):
-        this = _StrumpackSparseSolver.new_DStrumpackSolver()
+    def __init__(self, *args):
+        this = _StrumpackSparseSolver.new_DStrumpackSolver(*args)
         try:
             self.this.append(this)
         except __builtin__.Exception:
@@ -286,6 +289,9 @@ class DStrumpackSolver(StrumpackSolverBase):
 
     def set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern):
         return _StrumpackSparseSolver.DStrumpackSolver_set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern)
+
+    def set_distributed_csr_matrix0(self, local_rows, row_ptr, col_ind, values, dist, symmetric_pattern):
+        return _StrumpackSparseSolver.DStrumpackSolver_set_distributed_csr_matrix0(self, local_rows, row_ptr, col_ind, values, dist, symmetric_pattern)
 
     def solve(self, b, x, use_initial_guess):
         return _StrumpackSparseSolver.DStrumpackSolver_solve(self, b, x, use_initial_guess)
@@ -303,8 +309,8 @@ class CStrumpackSolver(StrumpackSolverBase):
     __getattr__ = lambda self, name: _swig_getattr(self, CStrumpackSolver, name)
     __repr__ = _swig_repr
 
-    def __init__(self):
-        this = _StrumpackSparseSolver.new_CStrumpackSolver()
+    def __init__(self, *args):
+        this = _StrumpackSparseSolver.new_CStrumpackSolver(*args)
         try:
             self.this.append(this)
         except __builtin__.Exception:
@@ -314,6 +320,9 @@ class CStrumpackSolver(StrumpackSolverBase):
 
     def set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern):
         return _StrumpackSparseSolver.CStrumpackSolver_set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern)
+
+    def set_distributed_csr_matrix0(self, local_rows, row_ptr, col_ind, values, dist, symmetric_pattern):
+        return _StrumpackSparseSolver.CStrumpackSolver_set_distributed_csr_matrix0(self, local_rows, row_ptr, col_ind, values, dist, symmetric_pattern)
 
     def solve(self, b, x, use_initial_guess):
         return _StrumpackSparseSolver.CStrumpackSolver_solve(self, b, x, use_initial_guess)
@@ -331,8 +340,8 @@ class ZStrumpackSolver(StrumpackSolverBase):
     __getattr__ = lambda self, name: _swig_getattr(self, ZStrumpackSolver, name)
     __repr__ = _swig_repr
 
-    def __init__(self):
-        this = _StrumpackSparseSolver.new_ZStrumpackSolver()
+    def __init__(self, *args):
+        this = _StrumpackSparseSolver.new_ZStrumpackSolver(*args)
         try:
             self.this.append(this)
         except __builtin__.Exception:
@@ -342,6 +351,9 @@ class ZStrumpackSolver(StrumpackSolverBase):
 
     def set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern):
         return _StrumpackSparseSolver.ZStrumpackSolver_set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern)
+
+    def set_distributed_csr_matrix0(self, local_rows, row_ptr, col_ind, values, dist, symmetric_pattern):
+        return _StrumpackSparseSolver.ZStrumpackSolver_set_distributed_csr_matrix0(self, local_rows, row_ptr, col_ind, values, dist, symmetric_pattern)
 
     def solve(self, b, x, use_initial_guess):
         return _StrumpackSparseSolver.ZStrumpackSolver_solve(self, b, x, use_initial_guess)
@@ -376,8 +388,8 @@ def make_set_distributed_csr_matrix(mat_type):
   col_ind = A.indices.astype(np.int32, copy=False)
 
   from mpi4py import MPI
-  dist = np.hstack(([np.int32(0)], np.cumsum(MPI.allgather(local_rows)))).astype(np.int32, copy=False)
-
+  dist = np.hstack(([np.int32(0)], np.cumsum(MPI.COMM_WORLD.allgather(local_rows)))).astype(np.int32, copy=False)
+  print(dist)    
   return self.set_distributed_csr_matrix0(local_rows, row_ptr, col_ind, values, dist, symmetric)
  return set_distributed_csr_matrix
 

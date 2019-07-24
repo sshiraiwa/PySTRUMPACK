@@ -13,6 +13,9 @@
 import_array();
 %}
 
+%include mpi4py/mpi4py.i
+%mpi4py_typemap(Comm, MPI_Comm);
+
 /* these two methods are declared but not implemented anywhere in STRUMPACK??? */
 %ignore  STRUMPACK_get_gmres_restart;
 %ignore  use_HSS;
@@ -75,6 +78,7 @@ class StrumpackSolverBase
 
 %define MakeSolver(PREFIX, TYPE, TYPE_C)
 %inline %{
+
 class PREFIX##StrumpackSolver : public StrumpackSolverBase
 {
  public:
@@ -83,12 +87,10 @@ class PREFIX##StrumpackSolver : public StrumpackSolverBase
        STRUMPACK_init_mt(&spss, TYPE, STRUMPACK_MT, 1, argv, 0);
     }
     
-    #ifdef STRUMPACK_USE_MPI
     PREFIX##StrumpackSolver(MPI_Comm comm){
        char *argv[] = {NULL};      
        STRUMPACK_init(&spss, comm, TYPE, STRUMPACK_MPI_DIST, 0, argv, 0);
     }
-    #endif
 
     ~PREFIX##StrumpackSolver(){
        STRUMPACK_destroy(&spss);
@@ -97,17 +99,16 @@ class PREFIX##StrumpackSolver : public StrumpackSolverBase
        STRUMPACK_set_csr_matrix(spss,  &N, (void*) row_ptr,(void*) col_ind,
 				(void*) values, symmetric_pattern);
     }
-    #ifdef STRUMPACK_USE_MPI
+
     void set_distributed_csr_matrix0(int local_rows, const int* row_ptr,
                                      const int* col_ind, const TYPE_C *values,
-				     const void* dist,   int symmetric_pattern){
+				     const int* dist,   int symmetric_pattern){
 
           STRUMPACK_set_distributed_csr_matrix(spss,
 					       &local_rows, (const void*) row_ptr,
 					       (const void*) col_ind, (const void*) values,
-						dist, symmetric_pattern);
+					       (const void*) dist, symmetric_pattern);
      }
-    #endif
     
     STRUMPACK_RETURN_CODE solve(TYPE_C *b, TYPE_C *x, int use_initial_guess){
        return STRUMPACK_solve(spss, (const void*) b, (void*) x, use_initial_guess);
@@ -150,8 +151,8 @@ def make_set_distributed_csr_matrix(mat_type):
   col_ind = A.indices.astype(np.int32, copy=False)
 
   from mpi4py import MPI
-  dist = np.hstack(([np.int32(0)], np.cumsum(MPI.allgather(local_rows)))).astype(np.int32, copy=False)
-      
+  dist = np.hstack(([np.int32(0)], np.cumsum(MPI.COMM_WORLD.allgather(local_rows)))).astype(np.int32, copy=False)
+  print(dist)    
   return self.set_distributed_csr_matrix0(local_rows, row_ptr, col_ind, values, dist, symmetric)
  return set_distributed_csr_matrix
 

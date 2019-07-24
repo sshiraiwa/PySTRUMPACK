@@ -3005,23 +3005,24 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 
 #define SWIGTYPE_p_CStrumpackSolver swig_types[0]
 #define SWIGTYPE_p_DStrumpackSolver swig_types[1]
-#define SWIGTYPE_p_SStrumpackSolver swig_types[2]
-#define SWIGTYPE_p_STRUMPACK_GRAM_SCHMIDT_TYPE swig_types[3]
-#define SWIGTYPE_p_STRUMPACK_INTERFACE swig_types[4]
-#define SWIGTYPE_p_STRUMPACK_KRYLOV_SOLVER swig_types[5]
-#define SWIGTYPE_p_STRUMPACK_PRECISION swig_types[6]
-#define SWIGTYPE_p_STRUMPACK_RANDOM_DISTRIBUTION swig_types[7]
-#define SWIGTYPE_p_STRUMPACK_RANDOM_ENGINE swig_types[8]
-#define SWIGTYPE_p_STRUMPACK_REORDERING_STRATEGY swig_types[9]
-#define SWIGTYPE_p_STRUMPACK_RETURN_CODE swig_types[10]
-#define SWIGTYPE_p_STRUMPACK_SparseSolver swig_types[11]
-#define SWIGTYPE_p_StrumpackSolverBase swig_types[12]
-#define SWIGTYPE_p_ZStrumpackSolver swig_types[13]
-#define SWIGTYPE_p_char swig_types[14]
-#define SWIGTYPE_p_doublecomplex swig_types[15]
-#define SWIGTYPE_p_floatcomplex swig_types[16]
-static swig_type_info *swig_types[18];
-static swig_module_info swig_module = {swig_types, 17, 0, 0, 0, 0};
+#define SWIGTYPE_p_MPI_Comm swig_types[2]
+#define SWIGTYPE_p_SStrumpackSolver swig_types[3]
+#define SWIGTYPE_p_STRUMPACK_GRAM_SCHMIDT_TYPE swig_types[4]
+#define SWIGTYPE_p_STRUMPACK_INTERFACE swig_types[5]
+#define SWIGTYPE_p_STRUMPACK_KRYLOV_SOLVER swig_types[6]
+#define SWIGTYPE_p_STRUMPACK_PRECISION swig_types[7]
+#define SWIGTYPE_p_STRUMPACK_RANDOM_DISTRIBUTION swig_types[8]
+#define SWIGTYPE_p_STRUMPACK_RANDOM_ENGINE swig_types[9]
+#define SWIGTYPE_p_STRUMPACK_REORDERING_STRATEGY swig_types[10]
+#define SWIGTYPE_p_STRUMPACK_RETURN_CODE swig_types[11]
+#define SWIGTYPE_p_STRUMPACK_SparseSolver swig_types[12]
+#define SWIGTYPE_p_StrumpackSolverBase swig_types[13]
+#define SWIGTYPE_p_ZStrumpackSolver swig_types[14]
+#define SWIGTYPE_p_char swig_types[15]
+#define SWIGTYPE_p_doublecomplex swig_types[16]
+#define SWIGTYPE_p_floatcomplex swig_types[17]
+static swig_type_info *swig_types[19];
+static swig_module_info swig_module = {swig_types, 18, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3133,6 +3134,9 @@ namespace swig {
 #include "numpy/arrayobject.h"
 #include "StrumpackSparseSolver.h"
 #include "StrumpackConfig.hpp"
+
+
+#include "mpi4py/mpi4py.h"
 
 
 class StrumpackSolverBase
@@ -3351,6 +3355,7 @@ SWIG_AsVal_int (PyObject * obj, int *val)
   #define SWIG_From_long   PyInt_FromLong 
 
 
+
 class SStrumpackSolver : public StrumpackSolverBase
 {
  public:
@@ -3359,12 +3364,10 @@ class SStrumpackSolver : public StrumpackSolverBase
        STRUMPACK_init_mt(&spss, STRUMPACK_FLOAT, STRUMPACK_MT, 1, argv, 0);
     }
     
-#ifdef STRUMPACK_USE_MPI
     SStrumpackSolver(MPI_Comm comm){
        char *argv[] = {NULL};      
        STRUMPACK_init(&spss, comm, STRUMPACK_FLOAT, STRUMPACK_MPI_DIST, 0, argv, 0);
     }
-#endif
 
     ~SStrumpackSolver(){
        STRUMPACK_destroy(&spss);
@@ -3373,23 +3376,42 @@ class SStrumpackSolver : public StrumpackSolverBase
        STRUMPACK_set_csr_matrix(spss,  &N, (void*) row_ptr,(void*) col_ind,
 				(void*) values, symmetric_pattern);
     }
-#ifdef STRUMPACK_USE_MPI
+
     void set_distributed_csr_matrix0(int local_rows, const int* row_ptr,
                                      const int* col_ind, const float *values,
-				     const void* dist,   int symmetric_pattern){
+				     const int* dist,   int symmetric_pattern){
 
           STRUMPACK_set_distributed_csr_matrix(spss,
 					       &local_rows, (const void*) row_ptr,
 					       (const void*) col_ind, (const void*) values,
-						dist, symmetric_pattern);
+					       (const void*) dist, symmetric_pattern);
      }
-#endif
     
     STRUMPACK_RETURN_CODE solve(float *b, float *x, int use_initial_guess){
        return STRUMPACK_solve(spss, (const void*) b, (void*) x, use_initial_guess);
     }  
   
    };
+
+
+SWIGINTERN int
+SWIG_AsPtr_MPI_Comm (PyObject * input, MPI_Comm **p) {
+  if (input == Py_None) {
+    if (p) *p = NULL;
+    return SWIG_OK;
+  } else if (PyObject_TypeCheck(input,&PyMPIComm_Type)) {
+    if (p) *p = PyMPIComm_Get(input);
+    return SWIG_OK;
+  } else {
+    void *argp = NULL;
+    int res = SWIG_ConvertPtr(input,&argp,SWIGTYPE_p_MPI_Comm, 0);
+    if (!SWIG_IsOK(res)) return res;
+    if (!argp) return SWIG_ValueError;
+    if (p) *p = static_cast< MPI_Comm* >(argp);
+    return SWIG_OK;
+  }
+}
+
 
 
 class DStrumpackSolver : public StrumpackSolverBase
@@ -3400,12 +3422,10 @@ class DStrumpackSolver : public StrumpackSolverBase
        STRUMPACK_init_mt(&spss, STRUMPACK_DOUBLE, STRUMPACK_MT, 1, argv, 0);
     }
     
-#ifdef STRUMPACK_USE_MPI
     DStrumpackSolver(MPI_Comm comm){
        char *argv[] = {NULL};      
        STRUMPACK_init(&spss, comm, STRUMPACK_DOUBLE, STRUMPACK_MPI_DIST, 0, argv, 0);
     }
-#endif
 
     ~DStrumpackSolver(){
        STRUMPACK_destroy(&spss);
@@ -3414,23 +3434,23 @@ class DStrumpackSolver : public StrumpackSolverBase
        STRUMPACK_set_csr_matrix(spss,  &N, (void*) row_ptr,(void*) col_ind,
 				(void*) values, symmetric_pattern);
     }
-#ifdef STRUMPACK_USE_MPI
+
     void set_distributed_csr_matrix0(int local_rows, const int* row_ptr,
                                      const int* col_ind, const double *values,
-				     const void* dist,   int symmetric_pattern){
+				     const int* dist,   int symmetric_pattern){
 
           STRUMPACK_set_distributed_csr_matrix(spss,
 					       &local_rows, (const void*) row_ptr,
 					       (const void*) col_ind, (const void*) values,
-						dist, symmetric_pattern);
+					       (const void*) dist, symmetric_pattern);
      }
-#endif
     
     STRUMPACK_RETURN_CODE solve(double *b, double *x, int use_initial_guess){
        return STRUMPACK_solve(spss, (const void*) b, (void*) x, use_initial_guess);
     }  
   
    };
+
 
 
 class CStrumpackSolver : public StrumpackSolverBase
@@ -3441,12 +3461,10 @@ class CStrumpackSolver : public StrumpackSolverBase
        STRUMPACK_init_mt(&spss, STRUMPACK_FLOATCOMPLEX, STRUMPACK_MT, 1, argv, 0);
     }
     
-#ifdef STRUMPACK_USE_MPI
     CStrumpackSolver(MPI_Comm comm){
        char *argv[] = {NULL};      
        STRUMPACK_init(&spss, comm, STRUMPACK_FLOATCOMPLEX, STRUMPACK_MPI_DIST, 0, argv, 0);
     }
-#endif
 
     ~CStrumpackSolver(){
        STRUMPACK_destroy(&spss);
@@ -3455,23 +3473,23 @@ class CStrumpackSolver : public StrumpackSolverBase
        STRUMPACK_set_csr_matrix(spss,  &N, (void*) row_ptr,(void*) col_ind,
 				(void*) values, symmetric_pattern);
     }
-#ifdef STRUMPACK_USE_MPI
+
     void set_distributed_csr_matrix0(int local_rows, const int* row_ptr,
                                      const int* col_ind, const std::complex<float> *values,
-				     const void* dist,   int symmetric_pattern){
+				     const int* dist,   int symmetric_pattern){
 
           STRUMPACK_set_distributed_csr_matrix(spss,
 					       &local_rows, (const void*) row_ptr,
 					       (const void*) col_ind, (const void*) values,
-						dist, symmetric_pattern);
+					       (const void*) dist, symmetric_pattern);
      }
-#endif
     
     STRUMPACK_RETURN_CODE solve(std::complex<float> *b, std::complex<float> *x, int use_initial_guess){
        return STRUMPACK_solve(spss, (const void*) b, (void*) x, use_initial_guess);
     }  
   
    };
+
 
 
 class ZStrumpackSolver : public StrumpackSolverBase
@@ -3482,12 +3500,10 @@ class ZStrumpackSolver : public StrumpackSolverBase
        STRUMPACK_init_mt(&spss, STRUMPACK_DOUBLECOMPLEX, STRUMPACK_MT, 1, argv, 0);
     }
     
-#ifdef STRUMPACK_USE_MPI
     ZStrumpackSolver(MPI_Comm comm){
        char *argv[] = {NULL};      
        STRUMPACK_init(&spss, comm, STRUMPACK_DOUBLECOMPLEX, STRUMPACK_MPI_DIST, 0, argv, 0);
     }
-#endif
 
     ~ZStrumpackSolver(){
        STRUMPACK_destroy(&spss);
@@ -3496,17 +3512,16 @@ class ZStrumpackSolver : public StrumpackSolverBase
        STRUMPACK_set_csr_matrix(spss,  &N, (void*) row_ptr,(void*) col_ind,
 				(void*) values, symmetric_pattern);
     }
-#ifdef STRUMPACK_USE_MPI
+
     void set_distributed_csr_matrix0(int local_rows, const int* row_ptr,
                                      const int* col_ind, const std::complex<double> *values,
-				     const void* dist,   int symmetric_pattern){
+				     const int* dist,   int symmetric_pattern){
 
           STRUMPACK_set_distributed_csr_matrix(spss,
 					       &local_rows, (const void*) row_ptr,
 					       (const void*) col_ind, (const void*) values,
-						dist, symmetric_pattern);
+					       (const void*) dist, symmetric_pattern);
      }
-#endif
     
     STRUMPACK_RETURN_CODE solve(std::complex<double> *b, std::complex<double> *x, int use_initial_guess){
        return STRUMPACK_solve(spss, (const void*) b, (void*) x, use_initial_guess);
@@ -4621,7 +4636,7 @@ SWIGINTERN PyObject *StrumpackSolverBase_swigregister(PyObject *SWIGUNUSEDPARM(s
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_SStrumpackSolver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_SStrumpackSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SStrumpackSolver *result = 0 ;
   
@@ -4631,6 +4646,63 @@ SWIGINTERN PyObject *_wrap_new_SStrumpackSolver(PyObject *SWIGUNUSEDPARM(self), 
   return resultobj;
 fail:
   return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_SStrumpackSolver__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MPI_Comm arg1 ;
+  PyObject * obj0 = 0 ;
+  SStrumpackSolver *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_SStrumpackSolver",&obj0)) SWIG_fail;
+  {
+    MPI_Comm *ptr = (MPI_Comm *)0;
+    int res = SWIG_AsPtr_MPI_Comm(obj0, &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "new_SStrumpackSolver" "', argument " "1"" of type '" "MPI_Comm""'"); 
+    }
+    arg1 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (SStrumpackSolver *)new SStrumpackSolver(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SStrumpackSolver, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_SStrumpackSolver(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[2] = {
+    0
+  };
+  Py_ssize_t ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = args ? PyObject_Length(args) : 0;
+  for (ii = 0; (ii < 1) && (ii < argc); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 0) {
+    return _wrap_new_SStrumpackSolver__SWIG_0(self, args);
+  }
+  if (argc == 1) {
+    int _v;
+    int res = SWIG_AsPtr_MPI_Comm(argv[0], (MPI_Comm**)(0));
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_new_SStrumpackSolver__SWIG_1(self, args);
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_SStrumpackSolver'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    SStrumpackSolver::SStrumpackSolver()\n"
+    "    SStrumpackSolver::SStrumpackSolver(MPI_Comm)\n");
+  return 0;
 }
 
 
@@ -4760,6 +4832,133 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SStrumpackSolver_set_distributed_csr_matrix0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SStrumpackSolver *arg1 = (SStrumpackSolver *) 0 ;
+  int arg2 ;
+  int *arg3 = (int *) 0 ;
+  int *arg4 = (int *) 0 ;
+  float *arg5 = (float *) 0 ;
+  int *arg6 = (int *) 0 ;
+  int arg7 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyArrayObject *tempobj3 = 0 ;
+  PyArrayObject *tempobj4 = 0 ;
+  PyArrayObject *tempobj5 = 0 ;
+  PyArrayObject *tempobj6 = 0 ;
+  int val7 ;
+  int ecode7 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  PyObject * obj6 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOOO:SStrumpackSolver_set_distributed_csr_matrix0",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SStrumpackSolver, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SStrumpackSolver_set_distributed_csr_matrix0" "', argument " "1"" of type '" "SStrumpackSolver *""'"); 
+  }
+  arg1 = reinterpret_cast< SStrumpackSolver * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SStrumpackSolver_set_distributed_csr_matrix0" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  {
+    if (PyArray_Check(obj2)){
+      tempobj3 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj2);  
+      arg3 = (int *) PyArray_DATA( (PyArrayObject *)tempobj3);
+    }
+    else {
+      return NULL;
+    }
+  }
+  {
+    if (PyArray_Check(obj3)){
+      tempobj4 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj3);  
+      arg4 = (int *) PyArray_DATA( (PyArrayObject *)tempobj4);
+    }
+    else {
+      return NULL;
+    }
+  }
+  {
+    if (PyArray_Check(obj4)){
+      tempobj5 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj4);  
+      arg5 = (float *) PyArray_DATA( (PyArrayObject *)tempobj5);
+    }
+    else {
+      return NULL;
+    }
+  }
+  {
+    if (PyArray_Check(obj5)){
+      tempobj6 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj5);  
+      arg6 = (int *) PyArray_DATA( (PyArrayObject *)tempobj6);
+    }
+    else {
+      return NULL;
+    }
+  }
+  ecode7 = SWIG_AsVal_int(obj6, &val7);
+  if (!SWIG_IsOK(ecode7)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode7), "in method '" "SStrumpackSolver_set_distributed_csr_matrix0" "', argument " "7"" of type '" "int""'");
+  } 
+  arg7 = static_cast< int >(val7);
+  (arg1)->set_distributed_csr_matrix0(arg2,(int const *)arg3,(int const *)arg4,(float const *)arg5,(int const *)arg6,arg7);
+  resultobj = SWIG_Py_Void();
+  {
+    if (tempobj3){
+      Py_DECREF(tempobj3);
+    }
+  }
+  {
+    if (tempobj4){
+      Py_DECREF(tempobj4);
+    }
+  }
+  {
+    if (tempobj5){
+      Py_DECREF(tempobj5);
+    }
+  }
+  {
+    if (tempobj6){
+      Py_DECREF(tempobj6);
+    }
+  }
+  return resultobj;
+fail:
+  {
+    if (tempobj3){
+      Py_DECREF(tempobj3);
+    }
+  }
+  {
+    if (tempobj4){
+      Py_DECREF(tempobj4);
+    }
+  }
+  {
+    if (tempobj5){
+      Py_DECREF(tempobj5);
+    }
+  }
+  {
+    if (tempobj6){
+      Py_DECREF(tempobj6);
+    }
+  }
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_SStrumpackSolver_solve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SStrumpackSolver *arg1 = (SStrumpackSolver *) 0 ;
@@ -4842,7 +5041,7 @@ SWIGINTERN PyObject *SStrumpackSolver_swigregister(PyObject *SWIGUNUSEDPARM(self
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_DStrumpackSolver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_DStrumpackSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DStrumpackSolver *result = 0 ;
   
@@ -4852,6 +5051,63 @@ SWIGINTERN PyObject *_wrap_new_DStrumpackSolver(PyObject *SWIGUNUSEDPARM(self), 
   return resultobj;
 fail:
   return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_DStrumpackSolver__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MPI_Comm arg1 ;
+  PyObject * obj0 = 0 ;
+  DStrumpackSolver *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_DStrumpackSolver",&obj0)) SWIG_fail;
+  {
+    MPI_Comm *ptr = (MPI_Comm *)0;
+    int res = SWIG_AsPtr_MPI_Comm(obj0, &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "new_DStrumpackSolver" "', argument " "1"" of type '" "MPI_Comm""'"); 
+    }
+    arg1 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (DStrumpackSolver *)new DStrumpackSolver(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DStrumpackSolver, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_DStrumpackSolver(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[2] = {
+    0
+  };
+  Py_ssize_t ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = args ? PyObject_Length(args) : 0;
+  for (ii = 0; (ii < 1) && (ii < argc); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 0) {
+    return _wrap_new_DStrumpackSolver__SWIG_0(self, args);
+  }
+  if (argc == 1) {
+    int _v;
+    int res = SWIG_AsPtr_MPI_Comm(argv[0], (MPI_Comm**)(0));
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_new_DStrumpackSolver__SWIG_1(self, args);
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_DStrumpackSolver'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    DStrumpackSolver::DStrumpackSolver()\n"
+    "    DStrumpackSolver::DStrumpackSolver(MPI_Comm)\n");
+  return 0;
 }
 
 
@@ -4981,6 +5237,133 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DStrumpackSolver_set_distributed_csr_matrix0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DStrumpackSolver *arg1 = (DStrumpackSolver *) 0 ;
+  int arg2 ;
+  int *arg3 = (int *) 0 ;
+  int *arg4 = (int *) 0 ;
+  double *arg5 = (double *) 0 ;
+  int *arg6 = (int *) 0 ;
+  int arg7 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyArrayObject *tempobj3 = 0 ;
+  PyArrayObject *tempobj4 = 0 ;
+  PyArrayObject *tempobj5 = 0 ;
+  PyArrayObject *tempobj6 = 0 ;
+  int val7 ;
+  int ecode7 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  PyObject * obj6 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOOO:DStrumpackSolver_set_distributed_csr_matrix0",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DStrumpackSolver, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DStrumpackSolver_set_distributed_csr_matrix0" "', argument " "1"" of type '" "DStrumpackSolver *""'"); 
+  }
+  arg1 = reinterpret_cast< DStrumpackSolver * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DStrumpackSolver_set_distributed_csr_matrix0" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  {
+    if (PyArray_Check(obj2)){
+      tempobj3 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj2);  
+      arg3 = (int *) PyArray_DATA( (PyArrayObject *)tempobj3);
+    }
+    else {
+      return NULL;
+    }
+  }
+  {
+    if (PyArray_Check(obj3)){
+      tempobj4 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj3);  
+      arg4 = (int *) PyArray_DATA( (PyArrayObject *)tempobj4);
+    }
+    else {
+      return NULL;
+    }
+  }
+  {
+    if (PyArray_Check(obj4)){
+      tempobj5 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj4);  
+      arg5 = (double *) PyArray_DATA( (PyArrayObject *)tempobj5);
+    }
+    else {
+      return NULL;
+    }
+  }
+  {
+    if (PyArray_Check(obj5)){
+      tempobj6 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj5);  
+      arg6 = (int *) PyArray_DATA( (PyArrayObject *)tempobj6);
+    }
+    else {
+      return NULL;
+    }
+  }
+  ecode7 = SWIG_AsVal_int(obj6, &val7);
+  if (!SWIG_IsOK(ecode7)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode7), "in method '" "DStrumpackSolver_set_distributed_csr_matrix0" "', argument " "7"" of type '" "int""'");
+  } 
+  arg7 = static_cast< int >(val7);
+  (arg1)->set_distributed_csr_matrix0(arg2,(int const *)arg3,(int const *)arg4,(double const *)arg5,(int const *)arg6,arg7);
+  resultobj = SWIG_Py_Void();
+  {
+    if (tempobj3){
+      Py_DECREF(tempobj3);
+    }
+  }
+  {
+    if (tempobj4){
+      Py_DECREF(tempobj4);
+    }
+  }
+  {
+    if (tempobj5){
+      Py_DECREF(tempobj5);
+    }
+  }
+  {
+    if (tempobj6){
+      Py_DECREF(tempobj6);
+    }
+  }
+  return resultobj;
+fail:
+  {
+    if (tempobj3){
+      Py_DECREF(tempobj3);
+    }
+  }
+  {
+    if (tempobj4){
+      Py_DECREF(tempobj4);
+    }
+  }
+  {
+    if (tempobj5){
+      Py_DECREF(tempobj5);
+    }
+  }
+  {
+    if (tempobj6){
+      Py_DECREF(tempobj6);
+    }
+  }
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DStrumpackSolver_solve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DStrumpackSolver *arg1 = (DStrumpackSolver *) 0 ;
@@ -5063,7 +5446,7 @@ SWIGINTERN PyObject *DStrumpackSolver_swigregister(PyObject *SWIGUNUSEDPARM(self
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_CStrumpackSolver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_CStrumpackSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   CStrumpackSolver *result = 0 ;
   
@@ -5073,6 +5456,63 @@ SWIGINTERN PyObject *_wrap_new_CStrumpackSolver(PyObject *SWIGUNUSEDPARM(self), 
   return resultobj;
 fail:
   return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_CStrumpackSolver__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MPI_Comm arg1 ;
+  PyObject * obj0 = 0 ;
+  CStrumpackSolver *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_CStrumpackSolver",&obj0)) SWIG_fail;
+  {
+    MPI_Comm *ptr = (MPI_Comm *)0;
+    int res = SWIG_AsPtr_MPI_Comm(obj0, &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "new_CStrumpackSolver" "', argument " "1"" of type '" "MPI_Comm""'"); 
+    }
+    arg1 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (CStrumpackSolver *)new CStrumpackSolver(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_CStrumpackSolver, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_CStrumpackSolver(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[2] = {
+    0
+  };
+  Py_ssize_t ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = args ? PyObject_Length(args) : 0;
+  for (ii = 0; (ii < 1) && (ii < argc); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 0) {
+    return _wrap_new_CStrumpackSolver__SWIG_0(self, args);
+  }
+  if (argc == 1) {
+    int _v;
+    int res = SWIG_AsPtr_MPI_Comm(argv[0], (MPI_Comm**)(0));
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_new_CStrumpackSolver__SWIG_1(self, args);
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_CStrumpackSolver'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    CStrumpackSolver::CStrumpackSolver()\n"
+    "    CStrumpackSolver::CStrumpackSolver(MPI_Comm)\n");
+  return 0;
 }
 
 
@@ -5202,6 +5642,133 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_CStrumpackSolver_set_distributed_csr_matrix0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CStrumpackSolver *arg1 = (CStrumpackSolver *) 0 ;
+  int arg2 ;
+  int *arg3 = (int *) 0 ;
+  int *arg4 = (int *) 0 ;
+  std::complex< float > *arg5 = (std::complex< float > *) 0 ;
+  int *arg6 = (int *) 0 ;
+  int arg7 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyArrayObject *tempobj3 = 0 ;
+  PyArrayObject *tempobj4 = 0 ;
+  PyArrayObject *tempobj5 = 0 ;
+  PyArrayObject *tempobj6 = 0 ;
+  int val7 ;
+  int ecode7 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  PyObject * obj6 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOOO:CStrumpackSolver_set_distributed_csr_matrix0",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CStrumpackSolver, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CStrumpackSolver_set_distributed_csr_matrix0" "', argument " "1"" of type '" "CStrumpackSolver *""'"); 
+  }
+  arg1 = reinterpret_cast< CStrumpackSolver * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CStrumpackSolver_set_distributed_csr_matrix0" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  {
+    if (PyArray_Check(obj2)){
+      tempobj3 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj2);  
+      arg3 = (int *) PyArray_DATA( (PyArrayObject *)tempobj3);
+    }
+    else {
+      return NULL;
+    }
+  }
+  {
+    if (PyArray_Check(obj3)){
+      tempobj4 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj3);  
+      arg4 = (int *) PyArray_DATA( (PyArrayObject *)tempobj4);
+    }
+    else {
+      return NULL;
+    }
+  }
+  {
+    if (PyArray_Check(obj4)){
+      tempobj5 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj4);  
+      arg5 = (std::complex<float> *) PyArray_DATA( (PyArrayObject *)tempobj5);
+    }
+    else {
+      return NULL;
+    }
+  }
+  {
+    if (PyArray_Check(obj5)){
+      tempobj6 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj5);  
+      arg6 = (int *) PyArray_DATA( (PyArrayObject *)tempobj6);
+    }
+    else {
+      return NULL;
+    }
+  }
+  ecode7 = SWIG_AsVal_int(obj6, &val7);
+  if (!SWIG_IsOK(ecode7)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode7), "in method '" "CStrumpackSolver_set_distributed_csr_matrix0" "', argument " "7"" of type '" "int""'");
+  } 
+  arg7 = static_cast< int >(val7);
+  (arg1)->set_distributed_csr_matrix0(arg2,(int const *)arg3,(int const *)arg4,(std::complex< float > const *)arg5,(int const *)arg6,arg7);
+  resultobj = SWIG_Py_Void();
+  {
+    if (tempobj3){
+      Py_DECREF(tempobj3);
+    }
+  }
+  {
+    if (tempobj4){
+      Py_DECREF(tempobj4);
+    }
+  }
+  {
+    if (tempobj5){
+      Py_DECREF(tempobj5);
+    }
+  }
+  {
+    if (tempobj6){
+      Py_DECREF(tempobj6);
+    }
+  }
+  return resultobj;
+fail:
+  {
+    if (tempobj3){
+      Py_DECREF(tempobj3);
+    }
+  }
+  {
+    if (tempobj4){
+      Py_DECREF(tempobj4);
+    }
+  }
+  {
+    if (tempobj5){
+      Py_DECREF(tempobj5);
+    }
+  }
+  {
+    if (tempobj6){
+      Py_DECREF(tempobj6);
+    }
+  }
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_CStrumpackSolver_solve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   CStrumpackSolver *arg1 = (CStrumpackSolver *) 0 ;
@@ -5284,7 +5851,7 @@ SWIGINTERN PyObject *CStrumpackSolver_swigregister(PyObject *SWIGUNUSEDPARM(self
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_ZStrumpackSolver(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_ZStrumpackSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ZStrumpackSolver *result = 0 ;
   
@@ -5294,6 +5861,63 @@ SWIGINTERN PyObject *_wrap_new_ZStrumpackSolver(PyObject *SWIGUNUSEDPARM(self), 
   return resultobj;
 fail:
   return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_ZStrumpackSolver__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MPI_Comm arg1 ;
+  PyObject * obj0 = 0 ;
+  ZStrumpackSolver *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_ZStrumpackSolver",&obj0)) SWIG_fail;
+  {
+    MPI_Comm *ptr = (MPI_Comm *)0;
+    int res = SWIG_AsPtr_MPI_Comm(obj0, &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "new_ZStrumpackSolver" "', argument " "1"" of type '" "MPI_Comm""'"); 
+    }
+    arg1 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (ZStrumpackSolver *)new ZStrumpackSolver(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ZStrumpackSolver, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_ZStrumpackSolver(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[2] = {
+    0
+  };
+  Py_ssize_t ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = args ? PyObject_Length(args) : 0;
+  for (ii = 0; (ii < 1) && (ii < argc); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 0) {
+    return _wrap_new_ZStrumpackSolver__SWIG_0(self, args);
+  }
+  if (argc == 1) {
+    int _v;
+    int res = SWIG_AsPtr_MPI_Comm(argv[0], (MPI_Comm**)(0));
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_new_ZStrumpackSolver__SWIG_1(self, args);
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_ZStrumpackSolver'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    ZStrumpackSolver::ZStrumpackSolver()\n"
+    "    ZStrumpackSolver::ZStrumpackSolver(MPI_Comm)\n");
+  return 0;
 }
 
 
@@ -5417,6 +6041,133 @@ fail:
   {
     if (tempobj5){
       Py_DECREF(tempobj5);
+    }
+  }
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ZStrumpackSolver_set_distributed_csr_matrix0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ZStrumpackSolver *arg1 = (ZStrumpackSolver *) 0 ;
+  int arg2 ;
+  int *arg3 = (int *) 0 ;
+  int *arg4 = (int *) 0 ;
+  std::complex< double > *arg5 = (std::complex< double > *) 0 ;
+  int *arg6 = (int *) 0 ;
+  int arg7 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyArrayObject *tempobj3 = 0 ;
+  PyArrayObject *tempobj4 = 0 ;
+  PyArrayObject *tempobj5 = 0 ;
+  PyArrayObject *tempobj6 = 0 ;
+  int val7 ;
+  int ecode7 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  PyObject * obj6 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOOO:ZStrumpackSolver_set_distributed_csr_matrix0",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ZStrumpackSolver, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ZStrumpackSolver_set_distributed_csr_matrix0" "', argument " "1"" of type '" "ZStrumpackSolver *""'"); 
+  }
+  arg1 = reinterpret_cast< ZStrumpackSolver * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ZStrumpackSolver_set_distributed_csr_matrix0" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  {
+    if (PyArray_Check(obj2)){
+      tempobj3 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj2);  
+      arg3 = (int *) PyArray_DATA( (PyArrayObject *)tempobj3);
+    }
+    else {
+      return NULL;
+    }
+  }
+  {
+    if (PyArray_Check(obj3)){
+      tempobj4 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj3);  
+      arg4 = (int *) PyArray_DATA( (PyArrayObject *)tempobj4);
+    }
+    else {
+      return NULL;
+    }
+  }
+  {
+    if (PyArray_Check(obj4)){
+      tempobj5 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj4);  
+      arg5 = (std::complex<double> *) PyArray_DATA( (PyArrayObject *)tempobj5);
+    }
+    else {
+      return NULL;
+    }
+  }
+  {
+    if (PyArray_Check(obj5)){
+      tempobj6 =  (PyArrayObject *) PyArray_GETCONTIGUOUS( (PyArrayObject *) obj5);  
+      arg6 = (int *) PyArray_DATA( (PyArrayObject *)tempobj6);
+    }
+    else {
+      return NULL;
+    }
+  }
+  ecode7 = SWIG_AsVal_int(obj6, &val7);
+  if (!SWIG_IsOK(ecode7)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode7), "in method '" "ZStrumpackSolver_set_distributed_csr_matrix0" "', argument " "7"" of type '" "int""'");
+  } 
+  arg7 = static_cast< int >(val7);
+  (arg1)->set_distributed_csr_matrix0(arg2,(int const *)arg3,(int const *)arg4,(std::complex< double > const *)arg5,(int const *)arg6,arg7);
+  resultobj = SWIG_Py_Void();
+  {
+    if (tempobj3){
+      Py_DECREF(tempobj3);
+    }
+  }
+  {
+    if (tempobj4){
+      Py_DECREF(tempobj4);
+    }
+  }
+  {
+    if (tempobj5){
+      Py_DECREF(tempobj5);
+    }
+  }
+  {
+    if (tempobj6){
+      Py_DECREF(tempobj6);
+    }
+  }
+  return resultobj;
+fail:
+  {
+    if (tempobj3){
+      Py_DECREF(tempobj3);
+    }
+  }
+  {
+    if (tempobj4){
+      Py_DECREF(tempobj4);
+    }
+  }
+  {
+    if (tempobj5){
+      Py_DECREF(tempobj5);
+    }
+  }
+  {
+    if (tempobj6){
+      Py_DECREF(tempobj6);
     }
   }
   return NULL;
@@ -5554,21 +6305,25 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"new_SStrumpackSolver", _wrap_new_SStrumpackSolver, METH_VARARGS, NULL},
 	 { (char *)"delete_SStrumpackSolver", _wrap_delete_SStrumpackSolver, METH_VARARGS, NULL},
 	 { (char *)"SStrumpackSolver_set_csr_matrix0", _wrap_SStrumpackSolver_set_csr_matrix0, METH_VARARGS, NULL},
+	 { (char *)"SStrumpackSolver_set_distributed_csr_matrix0", _wrap_SStrumpackSolver_set_distributed_csr_matrix0, METH_VARARGS, NULL},
 	 { (char *)"SStrumpackSolver_solve", _wrap_SStrumpackSolver_solve, METH_VARARGS, NULL},
 	 { (char *)"SStrumpackSolver_swigregister", SStrumpackSolver_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_DStrumpackSolver", _wrap_new_DStrumpackSolver, METH_VARARGS, NULL},
 	 { (char *)"delete_DStrumpackSolver", _wrap_delete_DStrumpackSolver, METH_VARARGS, NULL},
 	 { (char *)"DStrumpackSolver_set_csr_matrix0", _wrap_DStrumpackSolver_set_csr_matrix0, METH_VARARGS, NULL},
+	 { (char *)"DStrumpackSolver_set_distributed_csr_matrix0", _wrap_DStrumpackSolver_set_distributed_csr_matrix0, METH_VARARGS, NULL},
 	 { (char *)"DStrumpackSolver_solve", _wrap_DStrumpackSolver_solve, METH_VARARGS, NULL},
 	 { (char *)"DStrumpackSolver_swigregister", DStrumpackSolver_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_CStrumpackSolver", _wrap_new_CStrumpackSolver, METH_VARARGS, NULL},
 	 { (char *)"delete_CStrumpackSolver", _wrap_delete_CStrumpackSolver, METH_VARARGS, NULL},
 	 { (char *)"CStrumpackSolver_set_csr_matrix0", _wrap_CStrumpackSolver_set_csr_matrix0, METH_VARARGS, NULL},
+	 { (char *)"CStrumpackSolver_set_distributed_csr_matrix0", _wrap_CStrumpackSolver_set_distributed_csr_matrix0, METH_VARARGS, NULL},
 	 { (char *)"CStrumpackSolver_solve", _wrap_CStrumpackSolver_solve, METH_VARARGS, NULL},
 	 { (char *)"CStrumpackSolver_swigregister", CStrumpackSolver_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_ZStrumpackSolver", _wrap_new_ZStrumpackSolver, METH_VARARGS, NULL},
 	 { (char *)"delete_ZStrumpackSolver", _wrap_delete_ZStrumpackSolver, METH_VARARGS, NULL},
 	 { (char *)"ZStrumpackSolver_set_csr_matrix0", _wrap_ZStrumpackSolver_set_csr_matrix0, METH_VARARGS, NULL},
+	 { (char *)"ZStrumpackSolver_set_distributed_csr_matrix0", _wrap_ZStrumpackSolver_set_distributed_csr_matrix0, METH_VARARGS, NULL},
 	 { (char *)"ZStrumpackSolver_solve", _wrap_ZStrumpackSolver_solve, METH_VARARGS, NULL},
 	 { (char *)"ZStrumpackSolver_swigregister", ZStrumpackSolver_swigregister, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
@@ -5591,6 +6346,7 @@ static void *_p_ZStrumpackSolverTo_p_StrumpackSolverBase(void *x, int *SWIGUNUSE
 }
 static swig_type_info _swigt__p_CStrumpackSolver = {"_p_CStrumpackSolver", "CStrumpackSolver *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DStrumpackSolver = {"_p_DStrumpackSolver", "DStrumpackSolver *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_MPI_Comm = {"_p_MPI_Comm", "MPI_Comm *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SStrumpackSolver = {"_p_SStrumpackSolver", "SStrumpackSolver *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_STRUMPACK_GRAM_SCHMIDT_TYPE = {"_p_STRUMPACK_GRAM_SCHMIDT_TYPE", "enum STRUMPACK_GRAM_SCHMIDT_TYPE *|STRUMPACK_GRAM_SCHMIDT_TYPE *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_STRUMPACK_INTERFACE = {"_p_STRUMPACK_INTERFACE", "enum STRUMPACK_INTERFACE *|STRUMPACK_INTERFACE *", 0, 0, (void*)0, 0};
@@ -5610,6 +6366,7 @@ static swig_type_info _swigt__p_floatcomplex = {"_p_floatcomplex", "floatcomplex
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_CStrumpackSolver,
   &_swigt__p_DStrumpackSolver,
+  &_swigt__p_MPI_Comm,
   &_swigt__p_SStrumpackSolver,
   &_swigt__p_STRUMPACK_GRAM_SCHMIDT_TYPE,
   &_swigt__p_STRUMPACK_INTERFACE,
@@ -5629,6 +6386,7 @@ static swig_type_info *swig_type_initial[] = {
 
 static swig_cast_info _swigc__p_CStrumpackSolver[] = {  {&_swigt__p_CStrumpackSolver, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DStrumpackSolver[] = {  {&_swigt__p_DStrumpackSolver, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_MPI_Comm[] = {  {&_swigt__p_MPI_Comm, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SStrumpackSolver[] = {  {&_swigt__p_SStrumpackSolver, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_STRUMPACK_GRAM_SCHMIDT_TYPE[] = {  {&_swigt__p_STRUMPACK_GRAM_SCHMIDT_TYPE, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_STRUMPACK_INTERFACE[] = {  {&_swigt__p_STRUMPACK_INTERFACE, 0, 0, 0},{0, 0, 0, 0}};
@@ -5648,6 +6406,7 @@ static swig_cast_info _swigc__p_floatcomplex[] = {  {&_swigt__p_floatcomplex, 0,
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_CStrumpackSolver,
   _swigc__p_DStrumpackSolver,
+  _swigc__p_MPI_Comm,
   _swigc__p_SStrumpackSolver,
   _swigc__p_STRUMPACK_GRAM_SCHMIDT_TYPE,
   _swigc__p_STRUMPACK_INTERFACE,
@@ -6355,6 +7114,14 @@ SWIG_init(void) {
   
   
   import_array();
+  
+  
+  if (import_mpi4py() < 0)
+#if PY_MAJOR_VERSION >= 3
+  return NULL;
+#else
+  return;
+#endif
   
   SWIG_Python_SetConstant(d, "STRUMPACK_FLOAT",SWIG_From_int(static_cast< int >(STRUMPACK_FLOAT)));
   SWIG_Python_SetConstant(d, "STRUMPACK_DOUBLE",SWIG_From_int(static_cast< int >(STRUMPACK_DOUBLE)));

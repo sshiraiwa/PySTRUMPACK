@@ -152,7 +152,6 @@ def make_set_distributed_csr_matrix(mat_type):
 
   from mpi4py import MPI
   dist = np.hstack(([np.int32(0)], np.cumsum(MPI.COMM_WORLD.allgather(local_rows)))).astype(np.int32, copy=False)
-  print(dist)    
   return self.set_distributed_csr_matrix0(local_rows, row_ptr, col_ind, values, dist, symmetric)
  return set_distributed_csr_matrix
 

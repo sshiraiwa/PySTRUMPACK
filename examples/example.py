@@ -20,7 +20,7 @@ n = 30
 
 if len(sys.argv) > 1:
     if sys.argv[1] == 'D':
-        dtype = np.float46
+        dtype = np.float64
         spss = DStrumpackSolver()                
     elif sys.argv[1] == 'S':
         dtype = np.float32
@@ -35,7 +35,7 @@ if len(sys.argv) > 1:
         assert False, "unknown dtype"
         
     if len(sys.argv) > 2:
-        n = sys.argv[2]
+        n = int(sys.argv[2])
 else:
     dtype = np.float32
     spss = SStrumpackSolver()
@@ -51,10 +51,10 @@ for row in range(n):
     for col in range(n):
         ind =  col + n*row
         m[ind, ind] = 4.0
-        if col > 0:   m[ind-1, ind] = -1
-        if col < n-1: m[ind+1, ind] = -1
-        if row > 0:   m[ind-n, ind] = -1
-        if row < n-1: m[ind+n, ind] = -1
+        if col > 0:   m[ind, ind-1] = -1
+        if col < n-1: m[ind, ind+1] = -1
+        if row > 0:   m[ind, ind-n] = -1
+        if row < n-1: m[ind, ind+n] = -1
 
 A = m.tocsr()        
     

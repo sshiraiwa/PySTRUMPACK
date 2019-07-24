@@ -2,7 +2,7 @@
 
    test program to compare 5x5 matrix inverse with scipy
 
-   mpirun -np 2 python -u test_MPI_Dist.py
+   mpirun -np 2 python -u test_MPI.py
 
 '''
 from __future__ import print_function
@@ -45,11 +45,10 @@ def solve_ln(spss, A, b, x, dtype):
        A = A + 0.1*1j*A
        b = b - 0.1*1j*b
 
-   if myid == 0:
-       spss.set_csr_matrix(A)
-       spss.solve(b, x, 0)
-       print(list(x))       
-       print(np.array(np.dot(inv(A.tocsc()).todense(), b)).flatten())
+   spss.set_csr_matrix(A)
+   spss.solve(b, x, 0)
+   print("ans1", list(x))       
+   print("ans2", np.array(np.dot(inv(A.tocsc()).todense(), b)).flatten())
 
 b = np.ones(N, dtype=dtype)
 x = np.zeros(N, dtype=dtype)
@@ -69,3 +68,4 @@ solve_ln(spss, A, b, x, np.complex64)
 print("zcomplex")
 spss = ZStrumpackSolver()
 solve_ln(spss, A, b, x, np.complex128)
+

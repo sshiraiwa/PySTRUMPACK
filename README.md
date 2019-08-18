@@ -18,7 +18,7 @@ define enviromental variable. See more detail in Install.txt
 
 ## Usage
 
-STRUMPACK.<PREFIX>StrumpackSolver where "S", "D", "C", "Z" corresponds to
+STRUMPACK.`<PREFIX>`StrumpackSolver where "S", "D", "C", "Z" corresponds to
 precision of float32, float64, complex64, complex128, respectively.
      
 
@@ -42,7 +42,7 @@ precision of float32, float64, complex64, complex128, respectively.
      spss.solve(b, x, 0)
      
      
- STRUMPACK.<PREFIX>StrumpackSolver has methods to access all functions defined in STRUMPACK
+ STRUMPACK.`<PREFIX>`StrumpackSolver has methods to access functions defined in STRUMPACK
  C interface (StrumpackSparseSolver.hpp). For example, 
      
      from STRUMPACK import *

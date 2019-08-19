@@ -11,7 +11,8 @@ mpi compilers
 STRUMPACK installed as a shared library
 
 ## Install
-     $ CC=mpicc CXX=mpicxx python setup.py install
+     $ export SCALAPACKLINK="-L...."  ### to specify link to scalapack
+     $ CC=mpicc CXX=mpicxx python setup.py instal
 
 If include/library files are not in the standard path, you may need to
 define enviromental variable. See more detail in Install.txt

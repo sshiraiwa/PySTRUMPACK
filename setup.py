@@ -30,21 +30,28 @@ subs = ['HSS', 'BLR', 'dense', 'misc', 'sparse']
 strumpackincsubdirs = [os.path.join(strumpackincdir, x) for x in subs]
 include_dirs=([strumpackincdir,] + strumpackincsubdirs + 
               [numpy_include,])
-library_dirs = [strumpacklnkdir,]
+library_dirs = [strumpacklnkdir,"/home/software/intel/2018-01/compilers_and_libraries_2018.1.163/linux/mkl/lib/intel64"]
 
 include_dirs = [x for x in include_dirs if len(x) > 0]
 library_dirs = [x for x in library_dirs if len(x) > 0]
-print(library_dirs)
-print(include_dirs)
+libraries = ['strumpack']
 
 base = "STRUMPACK"
 modules = ["StrumpackSparseSolver",]
 
 if  mpi4py_include is not None:
     include_dirs.append(mpi4py_include)
-#    modules.extend(["StrumpackSparseSolverMPI",
-#                    "StrumpackSparseSolverMPIDist",])
 
+sclpk = os.getenv("SCALAPACKLINK")
+if sclpk is not None:
+    print("SCALAPAK flag is given:" + sclpk)
+    for x in sclpk.split():
+        if x.startswith('-L'): 
+            library_dirs.append(x[2:])
+        elif x.startswith('-l'):
+            libraries.append(x[2:])
+        else:
+            assert False, "unsupported option :" + x
  
 ext_modules = [Extension("_"+n,
                         [path.join(base, n  + "_wrap.cxx"), ],
@@ -52,7 +59,7 @@ ext_modules = [Extension("_"+n,
                         # extra_compile_args = ['-std=c++11',],
                          extra_link_args = ['-DSWIG_TYPE_TABLE=PySTRUMPACK'],
                          library_dirs = library_dirs,
-                         libraries = ['strumpack',])
+                         libraries = libraries)
                for n in modules]
 
 setup(

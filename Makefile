@@ -57,5 +57,6 @@ cleancxx:
 	rm -f STRUMPACK/*.cxx
 clean:
 	rm -f STRUMPACK/*.o
-	rm -f setup_local.py
+	rm -rf build
+	rm -rf dist
 

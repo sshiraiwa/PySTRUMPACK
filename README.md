@@ -1,5 +1,10 @@
 # PySTRUMPACK
-   UnderConstruction. Please visit us a few days later. 
+   Python wrapper for STRUPACK. It currently supports
+   
+   * single/double precision real/complex input matrix
+   * 32bit integer for matirx indices
+   * all C-interface routines for solver configuration
+   * note: HHS compression is not tested
 
 # News
   2019/07/23: C-interface SWIG wrapper works in serial mode (tested with Python3.7)

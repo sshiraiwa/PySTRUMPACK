@@ -4,7 +4,6 @@
    * single/double precision real/complex input matrix
    * 32bit integer for matirx indices
    * all C-interface routines for solver configuration
-   * note: HHS compression is not tested
 
 # News
 * 2020/12/17: Strumpack 5.0.0 Support
@@ -30,6 +29,8 @@ define enviromental variable. See more detail in Install.txt
   or
   $ mpirun -np 2 python example_MPI_DIST.py  
 ```
+This solves a linear system correspoinding to  a diffusion equation in 2D, and plot
+the following image
 ![](https://raw.githubusercontent.com/sshiraiwa/PySTRUMPACK/master/docs/example_img.png)
 
 ## Usage

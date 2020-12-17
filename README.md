@@ -7,8 +7,8 @@
    * note: HHS compression is not tested
 
 # News
-  2020/12/17: Strumpack 5.0.0 Support
-  2019/07/23: C-interface SWIG wrapper works in serial mode (tested with Python3.7)
+* 2020/12/17: Strumpack 5.0.0 Support
+* 2019/07/23: C-interface SWIG wrapper works in serial mode (tested with Python3.7)
      
 # Installation:
 ##  Prerequisite:
@@ -30,6 +30,8 @@ define enviromental variable. See more detail in Install.txt
   or
   $ mpirun -np 2 python example_MPI_DIST.py  
 ```
+![](https://raw.githubusercontent.com/sshiraiwa/PySTRUMPACK/master/docs/example_img.png)
+
 ## Usage
 
 STRUMPACK.`<PREFIX>`StrumpackSolver where "S", "D", "C", "Z" corresponds to

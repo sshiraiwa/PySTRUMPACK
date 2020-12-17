@@ -40,37 +40,53 @@ class StrumpackSolverBase
   void set_nd_param(int nd_param){STRUMPACK_set_nd_param(spss, nd_param);}
   void set_reordering_method(STRUMPACK_REORDERING_STRATEGY m){STRUMPACK_set_reordering_method(spss, m);}
   void set_GramSchmidt_type(STRUMPACK_GRAM_SCHMIDT_TYPE t){STRUMPACK_set_GramSchmidt_type(spss, t);}
-  void set_mc64job(int job){STRUMPACK_set_mc64job(spss, job);}
-  void set_matching(int job){STRUMPACK_set_matching(spss, job);}
+  void set_matching(STRUMPACK_MATCHING_JOB job){STRUMPACK_set_matching(spss, job);}
   void set_Krylov_solver(STRUMPACK_KRYLOV_SOLVER solver_type){STRUMPACK_set_Krylov_solver(spss, solver_type);}
-  void enable_HSS(void){STRUMPACK_enable_HSS(spss);}
-  void disable_HSS(void){STRUMPACK_disable_HSS(spss);}
-  void set_HSS_min_front_size(int size){STRUMPACK_set_HSS_min_front_size(spss, size);}
-  void set_HSS_min_sep_size(int size){STRUMPACK_set_HSS_min_sep_size(spss, size);}
-  void set_HSS_max_rank(int max_rank){STRUMPACK_set_HSS_max_rank(spss, max_rank);}
-  void set_HSS_leaf_size(int leaf_size){STRUMPACK_set_HSS_leaf_size(spss, leaf_size);}
-  void set_HSS_rel_tol(double rctol){STRUMPACK_set_HSS_rel_tol(spss, rctol);}
-  void set_HSS_abs_tol(double actol){STRUMPACK_set_HSS_abs_tol(spss, actol);}  
+  void enable_gpu(){STRUMPACK_enable_gpu(spss);}
+  void disable_gpu(){STRUMPACK_disable_gpu(spss);}  
+  void set_compression_min_sep_size(int size){STRUMPACK_set_compression_min_sep_size(spss, size);}
+  void set_compression_min_front_size(int size){STRUMPACK_set_compression_min_front_size(spss, size);}
+  void set_compression_leaf_size(int size){STRUMPACK_set_compression_leaf_size(spss, size);}
+  void set_compression_rel_tol(double rctol){STRUMPACK_set_compression_rel_tol(spss, rctol);}
+  void set_compression_abs_tol(double actol){STRUMPACK_set_compression_abs_tol(spss, actol);}
+  void set_compression_butterfly_levels(int l){STRUMPACK_set_compression_butterfly_levels(spss, l);}
   
   int  get_verbose(void){return STRUMPACK_verbose(spss);}
   int  get_maxit(void){return STRUMPACK_maxit(spss);}
+  //int gmres_restart(void){return STRUMPACK_get_gmres_restart(spss);}
+
   double get_rel_tol(void){return STRUMPACK_rel_tol(spss);}
   double get_abs_tol(void){return STRUMPACK_abs_tol(spss);}
   int get_nd_param(void){return STRUMPACK_nd_param(spss);}
-  STRUMPACK_REORDERING_STRATEGY get_reordering_method(void){return STRUMPACK_reordering_method(spss);}
-  int get_mc64job(void){return STRUMPACK_mc64job(spss);}
-  int get_matching(void){return STRUMPACK_matching(spss);}
-  STRUMPACK_KRYLOV_SOLVER get_Krylov_solver(void){return STRUMPACK_Krylov_solver(spss);}
-  int get_HSS_min_front_size(void){return STRUMPACK_HSS_min_front_size(spss);}
-  int get_HSS_min_sep_size(void){return STRUMPACK_HSS_min_sep_size(spss);}
-  int get_HSS_max_rank(void){return STRUMPACK_HSS_max_rank(spss);}
-  int get_HSS_leaf_size(void){return STRUMPACK_HSS_leaf_size(spss);}
-  double get_HSS_rel_tol(void){return STRUMPACK_HSS_rel_tol(spss);}
-  double get_HSS_abs_tol(void){return STRUMPACK_HSS_abs_tol(spss);}
-  int get_its(void){return STRUMPACK_its(spss);}
-  int get_rank(void){return STRUMPACK_rank(spss);}
-  long get_factor_nonzeros(void){return STRUMPACK_factor_nonzeros(spss);}
-  long get_factor_memory(void){return STRUMPACK_factor_memory(spss);}
+  STRUMPACK_REORDERING_STRATEGY reordering_method(void){return STRUMPACK_reordering_method(spss);}
+  STRUMPACK_GRAM_SCHMIDT_TYPE GramSchmidt_type(void){return STRUMPACK_GramSchmidt_type(spss);}
+  STRUMPACK_MATCHING_JOB matching(void){return STRUMPACK_matching(spss);}
+  STRUMPACK_KRYLOV_SOLVER Krylov_solver(void){return STRUMPACK_Krylov_solver(spss);}
+  //bool use_gpu(void){return bool(STRUMPACK_use_gpu(spss));}
+  STRUMPACK_COMPRESSION_TYPE compression(void){return STRUMPACK_compression(spss);}
+  int compression_min_sep_size(void){return STRUMPACK_compression_min_sep_size(spss);}
+  int compression_min_front_size(void){return STRUMPACK_compression_min_front_size(spss);}
+  int compression_leaf_size(void){return STRUMPACK_compression_leaf_size(spss);}
+  double compression_rel_tol(void){return STRUMPACK_compression_rel_tol(spss);}
+  double compression_abs_tol(void){return STRUMPACK_compression_abs_tol(spss);}
+  int compression_butterfly_levels(void){return STRUMPACK_compression_butterfly_levels(spss);}
+
+  int its(void){return STRUMPACK_its(spss);}
+  int rank(void){return STRUMPACK_rank(spss);}
+  long factor_nonzeros(void){return STRUMPACK_factor_nonzeros(spss);}
+  long factor_memory(void){return STRUMPACK_factor_memory(spss);}
+
+  /*** deprecated ***/
+  // void set_mc64job(int job){STRUMPACK_set_mc64job(spss, job);}
+  // void enable_HSS(void){STRUMPACK_enable_HSS(spss);}
+  // void disable_HSS(void){STRUMPACK_disable_HSS(spss);}
+  // void set_HSS_min_front_size(int size){STRUMPACK_set_HSS_min_front_size(spss, size);}
+  // void set_HSS_min_sep_size(int size){STRUMPACK_set_HSS_min_sep_size(spss, size);}
+  // void set_HSS_max_rank(int max_rank){STRUMPACK_set_HSS_max_rank(spss, max_rank);}
+  // void set_HSS_leaf_size(int leaf_size){STRUMPACK_set_HSS_leaf_size(spss, leaf_size);}
+  // void set_HSS_rel_tol(double rctol){STRUMPACK_set_HSS_rel_tol(spss, rctol);}
+  // void set_HSS_abs_tol(double actol){STRUMPACK_set_HSS_abs_tol(spss, actol);}  
+  
 };
 %}
 

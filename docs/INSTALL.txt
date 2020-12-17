@@ -1,0 +1,26 @@
+# INSTALL
+
+# The package requires that STRUMPACK is already installed.
+  If it is under regular compiler search path. You can do
+  
+  $ python setup.py install
+
+# setup script takes a couple of options. Use --help 
+ 
+  $ python setup.py install --help
+  
+  --swig                               Run Swig
+  --strumpack-prefix                   prefix of strumpack
+  --CC                                 c compiler
+  --CXX                                c++ compiler
+  --MPICC                              mpic compiler
+  --MPICXX                             mpic++ compile
+
+  strumpack-prefix specifies the location of your STRUMPACK
+  solver
+  
+
+
+
+
+

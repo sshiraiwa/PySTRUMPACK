@@ -64,3 +64,14 @@ x = np.zeros(N, dtype=dtype)
 spss.set_csr_matrix(A)
 spss.reorder_regular(n, n, 1)
 spss.solve(b, x, 0)
+
+x = x.reshape((n, n))
+
+import matplotlib.pyplot as plt
+import matplotlib.tri as tri
+
+fig1, ax1 = plt.subplots()
+ax1.set_aspect('equal')
+im = ax1.imshow(x)
+fig1.colorbar(im)
+plt.show()

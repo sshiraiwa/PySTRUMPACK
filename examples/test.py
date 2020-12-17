@@ -35,8 +35,20 @@ def solve_ln(spss, A, b, x, dtype):
 
    spss.set_csr_matrix(A)
    spss.solve(b, x, 0)
-   print(list(x))
-   print(np.array(np.dot(inv(A.tocsc()).todense(), b)).flatten())
+   #print(list(x))
+   #print(np.array(np.dot(inv(A.tocsc()).todense(), b)).flatten())
+   err = (np.array(np.dot(inv(A.tocsc()).todense(), b)).flatten() - x)
+   th = 1e-7 if dtype==np.float32 or dtype==np.complex64 else 1e-16
+       
+   print("x: ", list(x))
+   print("x (ref):", list(np.array(np.dot(inv(A.tocsc()).todense(), b)).flatten()))
+   print("err:", np.abs(err))
+       
+   if np.max(np.abs(err)) > th:
+       assert False, "error is too large"
+   else:
+       print("max err:", np.max(np.abs(err)))
+       
 
 b = np.ones(N, dtype=dtype)
 x = np.zeros(N, dtype=dtype)

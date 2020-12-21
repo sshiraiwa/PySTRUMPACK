@@ -2813,7 +2813,8 @@ namespace swig {
 
 
 #include <stdio.h>
-#include <stdlib.h> 
+#include <stdlib.h>
+#include <iostream>
 #include <cmath>    
 #include <complex> 
 #include "numpy/arrayobject.h"
@@ -2833,6 +2834,11 @@ class StrumpackSolverBase
   STRUMPACK_RETURN_CODE factor(void){return STRUMPACK_factor(spss);}
   STRUMPACK_RETURN_CODE reorder(void){return STRUMPACK_reorder(spss);}
   STRUMPACK_RETURN_CODE reorder_regular(int nx, int ny, int nz){return STRUMPACK_reorder_regular(spss, nx, ny, nz);}
+
+  void set_from_options(void){return STRUMPACK_set_from_options(spss);}
+  //void move_to_gpu(void){return STRUMPACK_move_to_gpu(spss);}
+  //void remove_from_gpu(void){return STRUMPACK_remove_from_gpu(spss);}
+  //void delete_factors(void){return STRUMPACK_delete_factors(spss);}
   
   void set_verbose(int v){STRUMPACK_set_verbose(spss, v);}
   void set_maxit(int  maxit){STRUMPACK_set_maxit(spss, maxit);}
@@ -3060,14 +3066,14 @@ SWIG_AsVal_int (PyObject * obj, int *val)
 class SStrumpackSolver : public StrumpackSolverBase
 {
  public:
-    SStrumpackSolver(){
-       char *argv[] = {NULL};
-       STRUMPACK_init_mt(&spss, STRUMPACK_FLOAT, STRUMPACK_MT, 1, argv, 0);
+    SStrumpackSolver(int argc, char *argv[], bool verbose){
+       STRUMPACK_init_mt(&spss, STRUMPACK_FLOAT, STRUMPACK_MT, argc, argv, verbose);
+       STRUMPACK_set_from_options(spss);
     }
-    
-    SStrumpackSolver(MPI_Comm comm){
-       char *argv[] = {NULL};      
-       STRUMPACK_init(&spss, comm, STRUMPACK_FLOAT, STRUMPACK_MPI_DIST, 0, argv, 0);
+
+    SStrumpackSolver(MPI_Comm comm, int argc, char *argv[], bool verbose){
+       STRUMPACK_init(&spss, comm, STRUMPACK_FLOAT, STRUMPACK_MPI_DIST, argc, argv, verbose);
+       STRUMPACK_set_from_options(spss);       
     }
 
     ~SStrumpackSolver(){
@@ -3096,6 +3102,20 @@ class SStrumpackSolver : public StrumpackSolverBase
 
 
 SWIGINTERN int
+SWIG_AsVal_bool (PyObject *obj, bool *val)
+{
+  int r;
+  if (!PyBool_Check(obj))
+    return SWIG_ERROR;
+  r = PyObject_IsTrue(obj);
+  if (r == -1)
+    return SWIG_ERROR;
+  if (val) *val = r ? true : false;
+  return SWIG_OK;
+}
+
+
+SWIGINTERN int
 SWIG_AsPtr_MPI_Comm (PyObject * input, MPI_Comm **p) {
   if (input == Py_None) {
     if (p) *p = NULL;
@@ -3118,14 +3138,14 @@ SWIG_AsPtr_MPI_Comm (PyObject * input, MPI_Comm **p) {
 class DStrumpackSolver : public StrumpackSolverBase
 {
  public:
-    DStrumpackSolver(){
-       char *argv[] = {NULL};
-       STRUMPACK_init_mt(&spss, STRUMPACK_DOUBLE, STRUMPACK_MT, 1, argv, 0);
+    DStrumpackSolver(int argc, char *argv[], bool verbose){
+       STRUMPACK_init_mt(&spss, STRUMPACK_DOUBLE, STRUMPACK_MT, argc, argv, verbose);
+       STRUMPACK_set_from_options(spss);
     }
-    
-    DStrumpackSolver(MPI_Comm comm){
-       char *argv[] = {NULL};      
-       STRUMPACK_init(&spss, comm, STRUMPACK_DOUBLE, STRUMPACK_MPI_DIST, 0, argv, 0);
+
+    DStrumpackSolver(MPI_Comm comm, int argc, char *argv[], bool verbose){
+       STRUMPACK_init(&spss, comm, STRUMPACK_DOUBLE, STRUMPACK_MPI_DIST, argc, argv, verbose);
+       STRUMPACK_set_from_options(spss);       
     }
 
     ~DStrumpackSolver(){
@@ -3157,14 +3177,14 @@ class DStrumpackSolver : public StrumpackSolverBase
 class CStrumpackSolver : public StrumpackSolverBase
 {
  public:
-    CStrumpackSolver(){
-       char *argv[] = {NULL};
-       STRUMPACK_init_mt(&spss, STRUMPACK_FLOATCOMPLEX, STRUMPACK_MT, 1, argv, 0);
+    CStrumpackSolver(int argc, char *argv[], bool verbose){
+       STRUMPACK_init_mt(&spss, STRUMPACK_FLOATCOMPLEX, STRUMPACK_MT, argc, argv, verbose);
+       STRUMPACK_set_from_options(spss);
     }
-    
-    CStrumpackSolver(MPI_Comm comm){
-       char *argv[] = {NULL};      
-       STRUMPACK_init(&spss, comm, STRUMPACK_FLOATCOMPLEX, STRUMPACK_MPI_DIST, 0, argv, 0);
+
+    CStrumpackSolver(MPI_Comm comm, int argc, char *argv[], bool verbose){
+       STRUMPACK_init(&spss, comm, STRUMPACK_FLOATCOMPLEX, STRUMPACK_MPI_DIST, argc, argv, verbose);
+       STRUMPACK_set_from_options(spss);       
     }
 
     ~CStrumpackSolver(){
@@ -3196,14 +3216,14 @@ class CStrumpackSolver : public StrumpackSolverBase
 class ZStrumpackSolver : public StrumpackSolverBase
 {
  public:
-    ZStrumpackSolver(){
-       char *argv[] = {NULL};
-       STRUMPACK_init_mt(&spss, STRUMPACK_DOUBLECOMPLEX, STRUMPACK_MT, 1, argv, 0);
+    ZStrumpackSolver(int argc, char *argv[], bool verbose){
+       STRUMPACK_init_mt(&spss, STRUMPACK_DOUBLECOMPLEX, STRUMPACK_MT, argc, argv, verbose);
+       STRUMPACK_set_from_options(spss);
     }
-    
-    ZStrumpackSolver(MPI_Comm comm){
-       char *argv[] = {NULL};      
-       STRUMPACK_init(&spss, comm, STRUMPACK_DOUBLECOMPLEX, STRUMPACK_MPI_DIST, 0, argv, 0);
+
+    ZStrumpackSolver(MPI_Comm comm, int argc, char *argv[], bool verbose){
+       STRUMPACK_init(&spss, comm, STRUMPACK_DOUBLECOMPLEX, STRUMPACK_MPI_DIST, argc, argv, verbose);
+       STRUMPACK_set_from_options(spss);       
     }
 
     ~ZStrumpackSolver(){
@@ -3325,6 +3345,28 @@ SWIGINTERN PyObject *_wrap_StrumpackSolverBase_reorder_regular(PyObject *SWIGUNU
   arg4 = static_cast< int >(val4);
   result = (STRUMPACK_RETURN_CODE)(arg1)->reorder_regular(arg2,arg3,arg4);
   resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_StrumpackSolverBase_set_from_options(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  StrumpackSolverBase *arg1 = (StrumpackSolverBase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_StrumpackSolverBase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StrumpackSolverBase_set_from_options" "', argument " "1"" of type '" "StrumpackSolverBase *""'"); 
+  }
+  arg1 = reinterpret_cast< StrumpackSolverBase * >(argp1);
+  (arg1)->set_from_options();
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
   return NULL;
@@ -4409,15 +4451,59 @@ SWIGINTERN PyObject *StrumpackSolverBase_swiginit(PyObject *SWIGUNUSEDPARM(self)
   return SWIG_Python_InitShadowInstance(args);
 }
 
-SWIGINTERN PyObject *_wrap_new_SStrumpackSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **SWIGUNUSEDPARM(swig_obj)) {
+SWIGINTERN PyObject *_wrap_new_SStrumpackSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
+  int arg1 ;
+  char **arg2 ;
+  bool arg3 ;
+  bool val3 ;
+  int ecode3 = 0 ;
   SStrumpackSolver *result = 0 ;
   
-  if ((nobjs < 0) || (nobjs > 0)) SWIG_fail;
-  result = (SStrumpackSolver *)new SStrumpackSolver();
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  {
+    int i;
+    if (!PyList_Check(swig_obj[0])) {
+      PyErr_SetString(PyExc_ValueError, "Expecting a list");
+      return NULL;
+    }
+    arg1 = PyList_Size(swig_obj[0]);
+    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
+    arg2[0] = "program";
+    for (i = 0; i < arg1; i++) {
+      PyObject *s = PyList_GetItem(swig_obj[0],i);
+      PyObject *ss;
+      if( PyUnicode_Check(s) ) {
+        // python3 has unicode, but we convert to bytes
+        ss = PyUnicode_AsUTF8String(s);
+      } else if( PyBytes_Check(s) ) {
+        // python2 has bytes already
+        ss = PyObject_Bytes(s);
+      } else {
+        free(arg2);
+        PyErr_SetString(PyExc_ValueError, "List items must be strings");
+        return NULL;
+      }    
+      arg2[i+1] = PyString_AsString(ss);
+      //std::cout << arg2[i+1] << " \n";
+    }
+    arg1 = arg1 + 1;
+  }
+  ecode3 = SWIG_AsVal_bool(swig_obj[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_SStrumpackSolver" "', argument " "3"" of type '" "bool""'");
+  } 
+  arg3 = static_cast< bool >(val3);
+  result = (SStrumpackSolver *)new SStrumpackSolver(arg1,arg2,arg3);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SStrumpackSolver, SWIG_POINTER_NEW |  0 );
+  {
+    if (arg2) free(arg2);
+  }
   return resultobj;
 fail:
+  {
+    if (arg2) free(arg2);
+  }
   return NULL;
 }
 
@@ -4425,9 +4511,14 @@ fail:
 SWIGINTERN PyObject *_wrap_new_SStrumpackSolver__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   MPI_Comm arg1 ;
+  int arg2 ;
+  char **arg3 ;
+  bool arg4 ;
+  bool val4 ;
+  int ecode4 = 0 ;
   SStrumpackSolver *result = 0 ;
   
-  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
   {
     MPI_Comm *ptr = (MPI_Comm *)0;
     int res = SWIG_AsPtr_MPI_Comm(swig_obj[0], &ptr);
@@ -4437,39 +4528,101 @@ SWIGINTERN PyObject *_wrap_new_SStrumpackSolver__SWIG_1(PyObject *SWIGUNUSEDPARM
     arg1 = *ptr;
     if (SWIG_IsNewObj(res)) delete ptr;
   }
-  result = (SStrumpackSolver *)new SStrumpackSolver(arg1);
+  {
+    int i;
+    if (!PyList_Check(swig_obj[1])) {
+      PyErr_SetString(PyExc_ValueError, "Expecting a list");
+      return NULL;
+    }
+    arg2 = PyList_Size(swig_obj[1]);
+    arg3 = (char **) malloc((arg2+1)*sizeof(char *));
+    arg3[0] = "program";
+    for (i = 0; i < arg2; i++) {
+      PyObject *s = PyList_GetItem(swig_obj[1],i);
+      PyObject *ss;
+      if( PyUnicode_Check(s) ) {
+        // python3 has unicode, but we convert to bytes
+        ss = PyUnicode_AsUTF8String(s);
+      } else if( PyBytes_Check(s) ) {
+        // python2 has bytes already
+        ss = PyObject_Bytes(s);
+      } else {
+        free(arg3);
+        PyErr_SetString(PyExc_ValueError, "List items must be strings");
+        return NULL;
+      }    
+      arg3[i+1] = PyString_AsString(ss);
+      //std::cout << arg3[i+1] << " \n";
+    }
+    arg2 = arg2 + 1;
+  }
+  ecode4 = SWIG_AsVal_bool(swig_obj[2], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "new_SStrumpackSolver" "', argument " "4"" of type '" "bool""'");
+  } 
+  arg4 = static_cast< bool >(val4);
+  result = (SStrumpackSolver *)new SStrumpackSolver(arg1,arg2,arg3,arg4);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SStrumpackSolver, SWIG_POINTER_NEW |  0 );
+  {
+    if (arg3) free(arg3);
+  }
   return resultobj;
 fail:
+  {
+    if (arg3) free(arg3);
+  }
   return NULL;
 }
 
 
 SWIGINTERN PyObject *_wrap_new_SStrumpackSolver(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
-  PyObject *argv[2] = {
+  PyObject *argv[4] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args, "new_SStrumpackSolver", 0, 1, argv))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args, "new_SStrumpackSolver", 0, 3, argv))) SWIG_fail;
   --argc;
-  if (argc == 0) {
-    return _wrap_new_SStrumpackSolver__SWIG_0(self, argc, argv);
+  if (argc == 2) {
+    int _v;
+    {
+      _v = PyList_Check(argv[0]) ? 1 : 0;
+    }
+    if (_v) {
+      {
+        int res = SWIG_AsVal_bool(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_new_SStrumpackSolver__SWIG_0(self, argc, argv);
+      }
+    }
   }
-  if (argc == 1) {
+  if (argc == 3) {
     int _v;
     int res = SWIG_AsPtr_MPI_Comm(argv[0], (MPI_Comm**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_SStrumpackSolver__SWIG_1(self, argc, argv);
+      {
+        _v = PyList_Check(argv[1]) ? 1 : 0;
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_bool(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_new_SStrumpackSolver__SWIG_1(self, argc, argv);
+        }
+      }
     }
   }
   
 fail:
   SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'new_SStrumpackSolver'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    SStrumpackSolver::SStrumpackSolver()\n"
-    "    SStrumpackSolver::SStrumpackSolver(MPI_Comm)\n");
+    "    SStrumpackSolver::SStrumpackSolver(int,char *[],bool)\n"
+    "    SStrumpackSolver::SStrumpackSolver(MPI_Comm,int,char *[],bool)\n");
   return 0;
 }
 
@@ -4823,15 +4976,59 @@ SWIGINTERN PyObject *SStrumpackSolver_swiginit(PyObject *SWIGUNUSEDPARM(self), P
   return SWIG_Python_InitShadowInstance(args);
 }
 
-SWIGINTERN PyObject *_wrap_new_DStrumpackSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **SWIGUNUSEDPARM(swig_obj)) {
+SWIGINTERN PyObject *_wrap_new_DStrumpackSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
+  int arg1 ;
+  char **arg2 ;
+  bool arg3 ;
+  bool val3 ;
+  int ecode3 = 0 ;
   DStrumpackSolver *result = 0 ;
   
-  if ((nobjs < 0) || (nobjs > 0)) SWIG_fail;
-  result = (DStrumpackSolver *)new DStrumpackSolver();
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  {
+    int i;
+    if (!PyList_Check(swig_obj[0])) {
+      PyErr_SetString(PyExc_ValueError, "Expecting a list");
+      return NULL;
+    }
+    arg1 = PyList_Size(swig_obj[0]);
+    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
+    arg2[0] = "program";
+    for (i = 0; i < arg1; i++) {
+      PyObject *s = PyList_GetItem(swig_obj[0],i);
+      PyObject *ss;
+      if( PyUnicode_Check(s) ) {
+        // python3 has unicode, but we convert to bytes
+        ss = PyUnicode_AsUTF8String(s);
+      } else if( PyBytes_Check(s) ) {
+        // python2 has bytes already
+        ss = PyObject_Bytes(s);
+      } else {
+        free(arg2);
+        PyErr_SetString(PyExc_ValueError, "List items must be strings");
+        return NULL;
+      }    
+      arg2[i+1] = PyString_AsString(ss);
+      //std::cout << arg2[i+1] << " \n";
+    }
+    arg1 = arg1 + 1;
+  }
+  ecode3 = SWIG_AsVal_bool(swig_obj[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_DStrumpackSolver" "', argument " "3"" of type '" "bool""'");
+  } 
+  arg3 = static_cast< bool >(val3);
+  result = (DStrumpackSolver *)new DStrumpackSolver(arg1,arg2,arg3);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DStrumpackSolver, SWIG_POINTER_NEW |  0 );
+  {
+    if (arg2) free(arg2);
+  }
   return resultobj;
 fail:
+  {
+    if (arg2) free(arg2);
+  }
   return NULL;
 }
 
@@ -4839,9 +5036,14 @@ fail:
 SWIGINTERN PyObject *_wrap_new_DStrumpackSolver__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   MPI_Comm arg1 ;
+  int arg2 ;
+  char **arg3 ;
+  bool arg4 ;
+  bool val4 ;
+  int ecode4 = 0 ;
   DStrumpackSolver *result = 0 ;
   
-  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
   {
     MPI_Comm *ptr = (MPI_Comm *)0;
     int res = SWIG_AsPtr_MPI_Comm(swig_obj[0], &ptr);
@@ -4851,39 +5053,101 @@ SWIGINTERN PyObject *_wrap_new_DStrumpackSolver__SWIG_1(PyObject *SWIGUNUSEDPARM
     arg1 = *ptr;
     if (SWIG_IsNewObj(res)) delete ptr;
   }
-  result = (DStrumpackSolver *)new DStrumpackSolver(arg1);
+  {
+    int i;
+    if (!PyList_Check(swig_obj[1])) {
+      PyErr_SetString(PyExc_ValueError, "Expecting a list");
+      return NULL;
+    }
+    arg2 = PyList_Size(swig_obj[1]);
+    arg3 = (char **) malloc((arg2+1)*sizeof(char *));
+    arg3[0] = "program";
+    for (i = 0; i < arg2; i++) {
+      PyObject *s = PyList_GetItem(swig_obj[1],i);
+      PyObject *ss;
+      if( PyUnicode_Check(s) ) {
+        // python3 has unicode, but we convert to bytes
+        ss = PyUnicode_AsUTF8String(s);
+      } else if( PyBytes_Check(s) ) {
+        // python2 has bytes already
+        ss = PyObject_Bytes(s);
+      } else {
+        free(arg3);
+        PyErr_SetString(PyExc_ValueError, "List items must be strings");
+        return NULL;
+      }    
+      arg3[i+1] = PyString_AsString(ss);
+      //std::cout << arg3[i+1] << " \n";
+    }
+    arg2 = arg2 + 1;
+  }
+  ecode4 = SWIG_AsVal_bool(swig_obj[2], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "new_DStrumpackSolver" "', argument " "4"" of type '" "bool""'");
+  } 
+  arg4 = static_cast< bool >(val4);
+  result = (DStrumpackSolver *)new DStrumpackSolver(arg1,arg2,arg3,arg4);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DStrumpackSolver, SWIG_POINTER_NEW |  0 );
+  {
+    if (arg3) free(arg3);
+  }
   return resultobj;
 fail:
+  {
+    if (arg3) free(arg3);
+  }
   return NULL;
 }
 
 
 SWIGINTERN PyObject *_wrap_new_DStrumpackSolver(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
-  PyObject *argv[2] = {
+  PyObject *argv[4] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args, "new_DStrumpackSolver", 0, 1, argv))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args, "new_DStrumpackSolver", 0, 3, argv))) SWIG_fail;
   --argc;
-  if (argc == 0) {
-    return _wrap_new_DStrumpackSolver__SWIG_0(self, argc, argv);
+  if (argc == 2) {
+    int _v;
+    {
+      _v = PyList_Check(argv[0]) ? 1 : 0;
+    }
+    if (_v) {
+      {
+        int res = SWIG_AsVal_bool(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_new_DStrumpackSolver__SWIG_0(self, argc, argv);
+      }
+    }
   }
-  if (argc == 1) {
+  if (argc == 3) {
     int _v;
     int res = SWIG_AsPtr_MPI_Comm(argv[0], (MPI_Comm**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_DStrumpackSolver__SWIG_1(self, argc, argv);
+      {
+        _v = PyList_Check(argv[1]) ? 1 : 0;
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_bool(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_new_DStrumpackSolver__SWIG_1(self, argc, argv);
+        }
+      }
     }
   }
   
 fail:
   SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'new_DStrumpackSolver'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    DStrumpackSolver::DStrumpackSolver()\n"
-    "    DStrumpackSolver::DStrumpackSolver(MPI_Comm)\n");
+    "    DStrumpackSolver::DStrumpackSolver(int,char *[],bool)\n"
+    "    DStrumpackSolver::DStrumpackSolver(MPI_Comm,int,char *[],bool)\n");
   return 0;
 }
 
@@ -5237,15 +5501,59 @@ SWIGINTERN PyObject *DStrumpackSolver_swiginit(PyObject *SWIGUNUSEDPARM(self), P
   return SWIG_Python_InitShadowInstance(args);
 }
 
-SWIGINTERN PyObject *_wrap_new_CStrumpackSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **SWIGUNUSEDPARM(swig_obj)) {
+SWIGINTERN PyObject *_wrap_new_CStrumpackSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
+  int arg1 ;
+  char **arg2 ;
+  bool arg3 ;
+  bool val3 ;
+  int ecode3 = 0 ;
   CStrumpackSolver *result = 0 ;
   
-  if ((nobjs < 0) || (nobjs > 0)) SWIG_fail;
-  result = (CStrumpackSolver *)new CStrumpackSolver();
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  {
+    int i;
+    if (!PyList_Check(swig_obj[0])) {
+      PyErr_SetString(PyExc_ValueError, "Expecting a list");
+      return NULL;
+    }
+    arg1 = PyList_Size(swig_obj[0]);
+    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
+    arg2[0] = "program";
+    for (i = 0; i < arg1; i++) {
+      PyObject *s = PyList_GetItem(swig_obj[0],i);
+      PyObject *ss;
+      if( PyUnicode_Check(s) ) {
+        // python3 has unicode, but we convert to bytes
+        ss = PyUnicode_AsUTF8String(s);
+      } else if( PyBytes_Check(s) ) {
+        // python2 has bytes already
+        ss = PyObject_Bytes(s);
+      } else {
+        free(arg2);
+        PyErr_SetString(PyExc_ValueError, "List items must be strings");
+        return NULL;
+      }    
+      arg2[i+1] = PyString_AsString(ss);
+      //std::cout << arg2[i+1] << " \n";
+    }
+    arg1 = arg1 + 1;
+  }
+  ecode3 = SWIG_AsVal_bool(swig_obj[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_CStrumpackSolver" "', argument " "3"" of type '" "bool""'");
+  } 
+  arg3 = static_cast< bool >(val3);
+  result = (CStrumpackSolver *)new CStrumpackSolver(arg1,arg2,arg3);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_CStrumpackSolver, SWIG_POINTER_NEW |  0 );
+  {
+    if (arg2) free(arg2);
+  }
   return resultobj;
 fail:
+  {
+    if (arg2) free(arg2);
+  }
   return NULL;
 }
 
@@ -5253,9 +5561,14 @@ fail:
 SWIGINTERN PyObject *_wrap_new_CStrumpackSolver__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   MPI_Comm arg1 ;
+  int arg2 ;
+  char **arg3 ;
+  bool arg4 ;
+  bool val4 ;
+  int ecode4 = 0 ;
   CStrumpackSolver *result = 0 ;
   
-  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
   {
     MPI_Comm *ptr = (MPI_Comm *)0;
     int res = SWIG_AsPtr_MPI_Comm(swig_obj[0], &ptr);
@@ -5265,39 +5578,101 @@ SWIGINTERN PyObject *_wrap_new_CStrumpackSolver__SWIG_1(PyObject *SWIGUNUSEDPARM
     arg1 = *ptr;
     if (SWIG_IsNewObj(res)) delete ptr;
   }
-  result = (CStrumpackSolver *)new CStrumpackSolver(arg1);
+  {
+    int i;
+    if (!PyList_Check(swig_obj[1])) {
+      PyErr_SetString(PyExc_ValueError, "Expecting a list");
+      return NULL;
+    }
+    arg2 = PyList_Size(swig_obj[1]);
+    arg3 = (char **) malloc((arg2+1)*sizeof(char *));
+    arg3[0] = "program";
+    for (i = 0; i < arg2; i++) {
+      PyObject *s = PyList_GetItem(swig_obj[1],i);
+      PyObject *ss;
+      if( PyUnicode_Check(s) ) {
+        // python3 has unicode, but we convert to bytes
+        ss = PyUnicode_AsUTF8String(s);
+      } else if( PyBytes_Check(s) ) {
+        // python2 has bytes already
+        ss = PyObject_Bytes(s);
+      } else {
+        free(arg3);
+        PyErr_SetString(PyExc_ValueError, "List items must be strings");
+        return NULL;
+      }    
+      arg3[i+1] = PyString_AsString(ss);
+      //std::cout << arg3[i+1] << " \n";
+    }
+    arg2 = arg2 + 1;
+  }
+  ecode4 = SWIG_AsVal_bool(swig_obj[2], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "new_CStrumpackSolver" "', argument " "4"" of type '" "bool""'");
+  } 
+  arg4 = static_cast< bool >(val4);
+  result = (CStrumpackSolver *)new CStrumpackSolver(arg1,arg2,arg3,arg4);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_CStrumpackSolver, SWIG_POINTER_NEW |  0 );
+  {
+    if (arg3) free(arg3);
+  }
   return resultobj;
 fail:
+  {
+    if (arg3) free(arg3);
+  }
   return NULL;
 }
 
 
 SWIGINTERN PyObject *_wrap_new_CStrumpackSolver(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
-  PyObject *argv[2] = {
+  PyObject *argv[4] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args, "new_CStrumpackSolver", 0, 1, argv))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args, "new_CStrumpackSolver", 0, 3, argv))) SWIG_fail;
   --argc;
-  if (argc == 0) {
-    return _wrap_new_CStrumpackSolver__SWIG_0(self, argc, argv);
+  if (argc == 2) {
+    int _v;
+    {
+      _v = PyList_Check(argv[0]) ? 1 : 0;
+    }
+    if (_v) {
+      {
+        int res = SWIG_AsVal_bool(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_new_CStrumpackSolver__SWIG_0(self, argc, argv);
+      }
+    }
   }
-  if (argc == 1) {
+  if (argc == 3) {
     int _v;
     int res = SWIG_AsPtr_MPI_Comm(argv[0], (MPI_Comm**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_CStrumpackSolver__SWIG_1(self, argc, argv);
+      {
+        _v = PyList_Check(argv[1]) ? 1 : 0;
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_bool(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_new_CStrumpackSolver__SWIG_1(self, argc, argv);
+        }
+      }
     }
   }
   
 fail:
   SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'new_CStrumpackSolver'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    CStrumpackSolver::CStrumpackSolver()\n"
-    "    CStrumpackSolver::CStrumpackSolver(MPI_Comm)\n");
+    "    CStrumpackSolver::CStrumpackSolver(int,char *[],bool)\n"
+    "    CStrumpackSolver::CStrumpackSolver(MPI_Comm,int,char *[],bool)\n");
   return 0;
 }
 
@@ -5651,15 +6026,59 @@ SWIGINTERN PyObject *CStrumpackSolver_swiginit(PyObject *SWIGUNUSEDPARM(self), P
   return SWIG_Python_InitShadowInstance(args);
 }
 
-SWIGINTERN PyObject *_wrap_new_ZStrumpackSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **SWIGUNUSEDPARM(swig_obj)) {
+SWIGINTERN PyObject *_wrap_new_ZStrumpackSolver__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
+  int arg1 ;
+  char **arg2 ;
+  bool arg3 ;
+  bool val3 ;
+  int ecode3 = 0 ;
   ZStrumpackSolver *result = 0 ;
   
-  if ((nobjs < 0) || (nobjs > 0)) SWIG_fail;
-  result = (ZStrumpackSolver *)new ZStrumpackSolver();
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  {
+    int i;
+    if (!PyList_Check(swig_obj[0])) {
+      PyErr_SetString(PyExc_ValueError, "Expecting a list");
+      return NULL;
+    }
+    arg1 = PyList_Size(swig_obj[0]);
+    arg2 = (char **) malloc((arg1+1)*sizeof(char *));
+    arg2[0] = "program";
+    for (i = 0; i < arg1; i++) {
+      PyObject *s = PyList_GetItem(swig_obj[0],i);
+      PyObject *ss;
+      if( PyUnicode_Check(s) ) {
+        // python3 has unicode, but we convert to bytes
+        ss = PyUnicode_AsUTF8String(s);
+      } else if( PyBytes_Check(s) ) {
+        // python2 has bytes already
+        ss = PyObject_Bytes(s);
+      } else {
+        free(arg2);
+        PyErr_SetString(PyExc_ValueError, "List items must be strings");
+        return NULL;
+      }    
+      arg2[i+1] = PyString_AsString(ss);
+      //std::cout << arg2[i+1] << " \n";
+    }
+    arg1 = arg1 + 1;
+  }
+  ecode3 = SWIG_AsVal_bool(swig_obj[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_ZStrumpackSolver" "', argument " "3"" of type '" "bool""'");
+  } 
+  arg3 = static_cast< bool >(val3);
+  result = (ZStrumpackSolver *)new ZStrumpackSolver(arg1,arg2,arg3);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ZStrumpackSolver, SWIG_POINTER_NEW |  0 );
+  {
+    if (arg2) free(arg2);
+  }
   return resultobj;
 fail:
+  {
+    if (arg2) free(arg2);
+  }
   return NULL;
 }
 
@@ -5667,9 +6086,14 @@ fail:
 SWIGINTERN PyObject *_wrap_new_ZStrumpackSolver__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   MPI_Comm arg1 ;
+  int arg2 ;
+  char **arg3 ;
+  bool arg4 ;
+  bool val4 ;
+  int ecode4 = 0 ;
   ZStrumpackSolver *result = 0 ;
   
-  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
   {
     MPI_Comm *ptr = (MPI_Comm *)0;
     int res = SWIG_AsPtr_MPI_Comm(swig_obj[0], &ptr);
@@ -5679,39 +6103,101 @@ SWIGINTERN PyObject *_wrap_new_ZStrumpackSolver__SWIG_1(PyObject *SWIGUNUSEDPARM
     arg1 = *ptr;
     if (SWIG_IsNewObj(res)) delete ptr;
   }
-  result = (ZStrumpackSolver *)new ZStrumpackSolver(arg1);
+  {
+    int i;
+    if (!PyList_Check(swig_obj[1])) {
+      PyErr_SetString(PyExc_ValueError, "Expecting a list");
+      return NULL;
+    }
+    arg2 = PyList_Size(swig_obj[1]);
+    arg3 = (char **) malloc((arg2+1)*sizeof(char *));
+    arg3[0] = "program";
+    for (i = 0; i < arg2; i++) {
+      PyObject *s = PyList_GetItem(swig_obj[1],i);
+      PyObject *ss;
+      if( PyUnicode_Check(s) ) {
+        // python3 has unicode, but we convert to bytes
+        ss = PyUnicode_AsUTF8String(s);
+      } else if( PyBytes_Check(s) ) {
+        // python2 has bytes already
+        ss = PyObject_Bytes(s);
+      } else {
+        free(arg3);
+        PyErr_SetString(PyExc_ValueError, "List items must be strings");
+        return NULL;
+      }    
+      arg3[i+1] = PyString_AsString(ss);
+      //std::cout << arg3[i+1] << " \n";
+    }
+    arg2 = arg2 + 1;
+  }
+  ecode4 = SWIG_AsVal_bool(swig_obj[2], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "new_ZStrumpackSolver" "', argument " "4"" of type '" "bool""'");
+  } 
+  arg4 = static_cast< bool >(val4);
+  result = (ZStrumpackSolver *)new ZStrumpackSolver(arg1,arg2,arg3,arg4);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ZStrumpackSolver, SWIG_POINTER_NEW |  0 );
+  {
+    if (arg3) free(arg3);
+  }
   return resultobj;
 fail:
+  {
+    if (arg3) free(arg3);
+  }
   return NULL;
 }
 
 
 SWIGINTERN PyObject *_wrap_new_ZStrumpackSolver(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
-  PyObject *argv[2] = {
+  PyObject *argv[4] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args, "new_ZStrumpackSolver", 0, 1, argv))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args, "new_ZStrumpackSolver", 0, 3, argv))) SWIG_fail;
   --argc;
-  if (argc == 0) {
-    return _wrap_new_ZStrumpackSolver__SWIG_0(self, argc, argv);
+  if (argc == 2) {
+    int _v;
+    {
+      _v = PyList_Check(argv[0]) ? 1 : 0;
+    }
+    if (_v) {
+      {
+        int res = SWIG_AsVal_bool(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_new_ZStrumpackSolver__SWIG_0(self, argc, argv);
+      }
+    }
   }
-  if (argc == 1) {
+  if (argc == 3) {
     int _v;
     int res = SWIG_AsPtr_MPI_Comm(argv[0], (MPI_Comm**)(0));
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_ZStrumpackSolver__SWIG_1(self, argc, argv);
+      {
+        _v = PyList_Check(argv[1]) ? 1 : 0;
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_bool(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_new_ZStrumpackSolver__SWIG_1(self, argc, argv);
+        }
+      }
     }
   }
   
 fail:
   SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'new_ZStrumpackSolver'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    ZStrumpackSolver::ZStrumpackSolver()\n"
-    "    ZStrumpackSolver::ZStrumpackSolver(MPI_Comm)\n");
+    "    ZStrumpackSolver::ZStrumpackSolver(int,char *[],bool)\n"
+    "    ZStrumpackSolver::ZStrumpackSolver(MPI_Comm,int,char *[],bool)\n");
   return 0;
 }
 
@@ -6071,6 +6557,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "StrumpackSolverBase_factor", _wrap_StrumpackSolverBase_factor, METH_O, NULL},
 	 { "StrumpackSolverBase_reorder", _wrap_StrumpackSolverBase_reorder, METH_O, NULL},
 	 { "StrumpackSolverBase_reorder_regular", (PyCFunction)(void(*)(void))_wrap_StrumpackSolverBase_reorder_regular, METH_VARARGS|METH_KEYWORDS, NULL},
+	 { "StrumpackSolverBase_set_from_options", _wrap_StrumpackSolverBase_set_from_options, METH_O, NULL},
 	 { "StrumpackSolverBase_set_verbose", (PyCFunction)(void(*)(void))_wrap_StrumpackSolverBase_set_verbose, METH_VARARGS|METH_KEYWORDS, NULL},
 	 { "StrumpackSolverBase_set_maxit", (PyCFunction)(void(*)(void))_wrap_StrumpackSolverBase_set_maxit, METH_VARARGS|METH_KEYWORDS, NULL},
 	 { "StrumpackSolverBase_set_gmres_restart", (PyCFunction)(void(*)(void))_wrap_StrumpackSolverBase_set_gmres_restart, METH_VARARGS|METH_KEYWORDS, NULL},
@@ -6150,6 +6637,7 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 	 { "StrumpackSolverBase_factor", _wrap_StrumpackSolverBase_factor, METH_O, NULL},
 	 { "StrumpackSolverBase_reorder", _wrap_StrumpackSolverBase_reorder, METH_O, NULL},
 	 { "StrumpackSolverBase_reorder_regular", (PyCFunction)(void(*)(void))_wrap_StrumpackSolverBase_reorder_regular, METH_VARARGS|METH_KEYWORDS, NULL},
+	 { "StrumpackSolverBase_set_from_options", _wrap_StrumpackSolverBase_set_from_options, METH_O, NULL},
 	 { "StrumpackSolverBase_set_verbose", (PyCFunction)(void(*)(void))_wrap_StrumpackSolverBase_set_verbose, METH_VARARGS|METH_KEYWORDS, NULL},
 	 { "StrumpackSolverBase_set_maxit", (PyCFunction)(void(*)(void))_wrap_StrumpackSolverBase_set_maxit, METH_VARARGS|METH_KEYWORDS, NULL},
 	 { "StrumpackSolverBase_set_gmres_restart", (PyCFunction)(void(*)(void))_wrap_StrumpackSolverBase_set_gmres_restart, METH_VARARGS|METH_KEYWORDS, NULL},

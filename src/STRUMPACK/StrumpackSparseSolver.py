@@ -80,6 +80,10 @@ class StrumpackSolverBase(object):
         return _StrumpackSparseSolver.StrumpackSolverBase_reorder_regular(self, nx, ny, nz)
     reorder_regular = _swig_new_instance_method(_StrumpackSparseSolver.StrumpackSolverBase_reorder_regular)
 
+    def set_from_options(self):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_from_options(self)
+    set_from_options = _swig_new_instance_method(_StrumpackSparseSolver.StrumpackSolverBase_set_from_options)
+
     def set_verbose(self, v):
         return _StrumpackSparseSolver.StrumpackSolverBase_set_verbose(self, v)
     set_verbose = _swig_new_instance_method(_StrumpackSparseSolver.StrumpackSolverBase_set_verbose)

@@ -55,6 +55,10 @@ precision of float32, float64, complex64, complex128, respectively.
    x = np.zeros(N, dtype=dtype)
 
    spss = SStrumpackSolver()
+   # Note: command line argument can be passed as a list
+   #       it calls set_from_options internally.
+   #    spss = SStrumpackSolver(["--sp_enable_gpu", ])
+   #
    spss.set_csr_matrix(A)
    spss.solve(b, x, 0)
 ```

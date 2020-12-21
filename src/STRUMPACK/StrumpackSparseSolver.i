@@ -1,7 +1,8 @@
 %module(package="STRUMPACK") StrumpackSparseSolver
 %{
 #include <stdio.h>
-#include <stdlib.h> 
+#include <stdlib.h>
+#include <iostream>
 #include <cmath>    
 #include <complex> 
 #include "numpy/arrayobject.h"
@@ -31,6 +32,11 @@ class StrumpackSolverBase
   STRUMPACK_RETURN_CODE factor(void){return STRUMPACK_factor(spss);}
   STRUMPACK_RETURN_CODE reorder(void){return STRUMPACK_reorder(spss);}
   STRUMPACK_RETURN_CODE reorder_regular(int nx, int ny, int nz){return STRUMPACK_reorder_regular(spss, nx, ny, nz);}
+
+  void set_from_options(void){return STRUMPACK_set_from_options(spss);}
+  //void move_to_gpu(void){return STRUMPACK_move_to_gpu(spss);}
+  //void remove_from_gpu(void){return STRUMPACK_remove_from_gpu(spss);}
+  //void delete_factors(void){return STRUMPACK_delete_factors(spss);}
   
   void set_verbose(int v){STRUMPACK_set_verbose(spss, v);}
   void set_maxit(int  maxit){STRUMPACK_set_maxit(spss, maxit);}
@@ -92,20 +98,55 @@ class StrumpackSolverBase
 
 %import "common_interface/pointer_array.i"
 
+%typemap(in) (int argc, char *argv[]) {
+  int i;
+  if (!PyList_Check($input)) {
+    PyErr_SetString(PyExc_ValueError, "Expecting a list");
+    return NULL;
+  }
+  $1 = PyList_Size($input);
+  $2 = (char **) malloc(($1+1)*sizeof(char *));
+  $2[0] = "program";
+  for (i = 0; i < $1; i++) {
+    PyObject *s = PyList_GetItem($input,i);
+    PyObject *ss;
+    if( PyUnicode_Check(s) ) {  // python3 has unicode, but we convert to bytes
+      ss = PyUnicode_AsUTF8String(s);
+    } else if( PyBytes_Check(s) ) {  // python2 has bytes already
+      ss = PyObject_Bytes(s);
+    } else {
+      free($2);
+      PyErr_SetString(PyExc_ValueError, "List items must be strings");
+      return NULL;
+   }    
+   $2[i+1] = PyString_AsString(ss);
+   //std::cout << $2[i+1] << " \n";
+  }
+  $1 = $1 + 1;
+}
+
+%typemap(freearg) (int argc, char *argv[]) {
+  if ($2) free($2);
+}
+
+%typemap(typecheck)(int argc, char *argv[]) {
+  $1 = PyList_Check($input) ? 1 : 0;
+}
+  
 %define MakeSolver(PREFIX, TYPE, TYPE_C)
 %inline %{
 
 class PREFIX##StrumpackSolver : public StrumpackSolverBase
 {
  public:
-    PREFIX##StrumpackSolver(){
-       char *argv[] = {NULL};
-       STRUMPACK_init_mt(&spss, TYPE, STRUMPACK_MT, 1, argv, 0);
+    PREFIX##StrumpackSolver(int argc, char *argv[], bool verbose){
+       STRUMPACK_init_mt(&spss, TYPE, STRUMPACK_MT, argc, argv, verbose);
+       STRUMPACK_set_from_options(spss);
     }
-    
-    PREFIX##StrumpackSolver(MPI_Comm comm){
-       char *argv[] = {NULL};      
-       STRUMPACK_init(&spss, comm, TYPE, STRUMPACK_MPI_DIST, 0, argv, 0);
+
+    PREFIX##StrumpackSolver(MPI_Comm comm, int argc, char *argv[], bool verbose){
+       STRUMPACK_init(&spss, comm, TYPE, STRUMPACK_MPI_DIST, argc, argv, verbose);
+       STRUMPACK_set_from_options(spss);       
     }
 
     ~PREFIX##StrumpackSolver(){

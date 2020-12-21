@@ -339,7 +339,7 @@ class BuildExt(_build_ext):
 
         include_dirs = [x for x in include_dirs if len(x) > 0]
         library_dirs = [x for x in library_dirs if len(x) > 0]
-        libraries = ['strumpack']
+        libraries = ['strumpack', 'stdc++']
 
         sclpk = os.getenv("SCALAPACKLINK")
         if sclpk is not None:
@@ -357,7 +357,8 @@ class BuildExt(_build_ext):
             x.library_dirs.extend(library_dirs)
             x.libraries.extend(libraries)
 
-        os.environ['CC'] = mpicc_command
+        #os.environ['CC'] = mpicc_command
+        os.environ['CC'] = mpicxx_command
         os.environ['CXX'] = mpicxx_command
 
         self.inplace = 0

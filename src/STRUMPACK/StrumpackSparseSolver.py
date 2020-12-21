@@ -132,6 +132,10 @@ class StrumpackSolverBase(object):
         return _StrumpackSparseSolver.StrumpackSolverBase_disable_gpu(self)
     disable_gpu = _swig_new_instance_method(_StrumpackSparseSolver.StrumpackSolverBase_disable_gpu)
 
+    def set_compression(self, t):
+        return _StrumpackSparseSolver.StrumpackSolverBase_set_compression(self, t)
+    set_compression = _swig_new_instance_method(_StrumpackSparseSolver.StrumpackSolverBase_set_compression)
+
     def set_compression_min_sep_size(self, size):
         return _StrumpackSparseSolver.StrumpackSolverBase_set_compression_min_sep_size(self, size)
     set_compression_min_sep_size = _swig_new_instance_method(_StrumpackSparseSolver.StrumpackSolverBase_set_compression_min_sep_size)
@@ -251,6 +255,14 @@ class SStrumpackSolver(StrumpackSolverBase):
         _StrumpackSparseSolver.SStrumpackSolver_swiginit(self, _StrumpackSparseSolver.new_SStrumpackSolver(*args))
     __swig_destroy__ = _StrumpackSparseSolver.delete_SStrumpackSolver
 
+    def proc_options(self, options):
+        return _StrumpackSparseSolver.SStrumpackSolver_proc_options(self, options)
+    proc_options = _swig_new_instance_method(_StrumpackSparseSolver.SStrumpackSolver_proc_options)
+
+    def isValid(self):
+        return _StrumpackSparseSolver.SStrumpackSolver_isValid(self)
+    isValid = _swig_new_instance_method(_StrumpackSparseSolver.SStrumpackSolver_isValid)
+
     def set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern):
         return _StrumpackSparseSolver.SStrumpackSolver_set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern)
     set_csr_matrix0 = _swig_new_instance_method(_StrumpackSparseSolver.SStrumpackSolver_set_csr_matrix0)
@@ -273,6 +285,14 @@ class DStrumpackSolver(StrumpackSolverBase):
     def __init__(self, *args):
         _StrumpackSparseSolver.DStrumpackSolver_swiginit(self, _StrumpackSparseSolver.new_DStrumpackSolver(*args))
     __swig_destroy__ = _StrumpackSparseSolver.delete_DStrumpackSolver
+
+    def proc_options(self, options):
+        return _StrumpackSparseSolver.DStrumpackSolver_proc_options(self, options)
+    proc_options = _swig_new_instance_method(_StrumpackSparseSolver.DStrumpackSolver_proc_options)
+
+    def isValid(self):
+        return _StrumpackSparseSolver.DStrumpackSolver_isValid(self)
+    isValid = _swig_new_instance_method(_StrumpackSparseSolver.DStrumpackSolver_isValid)
 
     def set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern):
         return _StrumpackSparseSolver.DStrumpackSolver_set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern)
@@ -297,6 +317,14 @@ class CStrumpackSolver(StrumpackSolverBase):
         _StrumpackSparseSolver.CStrumpackSolver_swiginit(self, _StrumpackSparseSolver.new_CStrumpackSolver(*args))
     __swig_destroy__ = _StrumpackSparseSolver.delete_CStrumpackSolver
 
+    def proc_options(self, options):
+        return _StrumpackSparseSolver.CStrumpackSolver_proc_options(self, options)
+    proc_options = _swig_new_instance_method(_StrumpackSparseSolver.CStrumpackSolver_proc_options)
+
+    def isValid(self):
+        return _StrumpackSparseSolver.CStrumpackSolver_isValid(self)
+    isValid = _swig_new_instance_method(_StrumpackSparseSolver.CStrumpackSolver_isValid)
+
     def set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern):
         return _StrumpackSparseSolver.CStrumpackSolver_set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern)
     set_csr_matrix0 = _swig_new_instance_method(_StrumpackSparseSolver.CStrumpackSolver_set_csr_matrix0)
@@ -319,6 +347,14 @@ class ZStrumpackSolver(StrumpackSolverBase):
     def __init__(self, *args):
         _StrumpackSparseSolver.ZStrumpackSolver_swiginit(self, _StrumpackSparseSolver.new_ZStrumpackSolver(*args))
     __swig_destroy__ = _StrumpackSparseSolver.delete_ZStrumpackSolver
+
+    def proc_options(self, options):
+        return _StrumpackSparseSolver.ZStrumpackSolver_proc_options(self, options)
+    proc_options = _swig_new_instance_method(_StrumpackSparseSolver.ZStrumpackSolver_proc_options)
+
+    def isValid(self):
+        return _StrumpackSparseSolver.ZStrumpackSolver_isValid(self)
+    isValid = _swig_new_instance_method(_StrumpackSparseSolver.ZStrumpackSolver_isValid)
 
     def set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern):
         return _StrumpackSparseSolver.ZStrumpackSolver_set_csr_matrix0(self, N, row_ptr, col_ind, values, symmetric_pattern)

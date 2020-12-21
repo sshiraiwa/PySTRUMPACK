@@ -49,7 +49,8 @@ class StrumpackSolverBase
   void set_matching(STRUMPACK_MATCHING_JOB job){STRUMPACK_set_matching(spss, job);}
   void set_Krylov_solver(STRUMPACK_KRYLOV_SOLVER solver_type){STRUMPACK_set_Krylov_solver(spss, solver_type);}
   void enable_gpu(){STRUMPACK_enable_gpu(spss);}
-  void disable_gpu(){STRUMPACK_disable_gpu(spss);}  
+  void disable_gpu(){STRUMPACK_disable_gpu(spss);}
+  void set_compression(STRUMPACK_COMPRESSION_TYPE t){STRUMPACK_set_compression(spss, t);}
   void set_compression_min_sep_size(int size){STRUMPACK_set_compression_min_sep_size(spss, size);}
   void set_compression_min_front_size(int size){STRUMPACK_set_compression_min_front_size(spss, size);}
   void set_compression_leaf_size(int size){STRUMPACK_set_compression_leaf_size(spss, size);}
@@ -98,60 +99,76 @@ class StrumpackSolverBase
 
 %import "common_interface/pointer_array.i"
 
-%typemap(in) (int argc, char *argv[]) {
-  int i;
-  if (!PyList_Check($input)) {
-    PyErr_SetString(PyExc_ValueError, "Expecting a list");
-    return NULL;
-  }
-  $1 = PyList_Size($input);
-  $2 = (char **) malloc(($1+1)*sizeof(char *));
-  $2[0] = "program";
-  for (i = 0; i < $1; i++) {
-    PyObject *s = PyList_GetItem($input,i);
-    PyObject *ss;
-    if( PyUnicode_Check(s) ) {  // python3 has unicode, but we convert to bytes
-      ss = PyUnicode_AsUTF8String(s);
-    } else if( PyBytes_Check(s) ) {  // python2 has bytes already
-      ss = PyObject_Bytes(s);
-    } else {
-      free($2);
-      PyErr_SetString(PyExc_ValueError, "List items must be strings");
-      return NULL;
-   }    
-   $2[i+1] = PyString_AsString(ss);
-   //std::cout << $2[i+1] << " \n";
-  }
-  $1 = $1 + 1;
-}
-
-%typemap(freearg) (int argc, char *argv[]) {
-  if ($2) free($2);
-}
-
-%typemap(typecheck)(int argc, char *argv[]) {
-  $1 = PyList_Check($input) ? 1 : 0;
-}
-  
 %define MakeSolver(PREFIX, TYPE, TYPE_C)
-%inline %{
 
+%exception PREFIX##StrumpackSolver {
+  try {
+     $action
+  } catch (const char* msg) {
+     PyErr_SetString(PyExc_MemoryError, msg);
+     return NULL;
+  }
+}
+
+%inline %{
 class PREFIX##StrumpackSolver : public StrumpackSolverBase
 {
+ private:
+    char ** argv = NULL;
+    int argc;
+    bool success = false;
  public:
-    PREFIX##StrumpackSolver(int argc, char *argv[], bool verbose){
-       STRUMPACK_init_mt(&spss, TYPE, STRUMPACK_MT, argc, argv, verbose);
-       STRUMPACK_set_from_options(spss);
+    PREFIX##StrumpackSolver(PyObject *options, bool verbose){
+      success = proc_options(options);
+      STRUMPACK_init_mt(&spss, TYPE, STRUMPACK_MT, argc, argv, verbose);
+      //STRUMPACK_set_from_options(spss);
     }
 
-    PREFIX##StrumpackSolver(MPI_Comm comm, int argc, char *argv[], bool verbose){
-       STRUMPACK_init(&spss, comm, TYPE, STRUMPACK_MPI_DIST, argc, argv, verbose);
-       STRUMPACK_set_from_options(spss);       
+    PREFIX##StrumpackSolver(MPI_Comm comm, PyObject *options, bool verbose){
+      success = proc_options(options);
+      STRUMPACK_init(&spss, comm, TYPE, STRUMPACK_MPI_DIST, argc, argv, verbose);
+      //STRUMPACK_set_from_options(spss);       
     }
 
     ~PREFIX##StrumpackSolver(){
-       STRUMPACK_destroy(&spss);
+
+      if (argv != NULL){
+          for (int i = 0; i < argc+1; i++) {
+	    if (argv[i] != NULL){
+		free(argv[i]);
+	    }
+	  }
+  	 free(argv);
+      }
+
+      if (success) {
+	STRUMPACK_destroy(&spss);
+      }
     }
+    bool proc_options(PyObject *options){
+       if (!PyList_Check(options)) {
+	 throw "Expecting a list";
+       }
+       argc = PyList_Size(options);	 
+       argv = (char **) calloc((argc+1), sizeof(char *));
+       argv[0] = (char *)malloc(sizeof(char) * 8);
+       strcpy(argv[0], "program");
+       
+       for (int i = 0; i < argc; i++) {
+          PyObject *s = PyList_GetItem(options, i);
+          if ( ! PyUnicode_Check(s)) {
+	    throw "List items must be strings";
+	  }
+          PyObject *ss = PyUnicode_AsUTF8String(s);
+          argv[i+1] = (char *)malloc(sizeof(char) * strlen(PyString_AsString(ss))+1);
+	  strcpy(argv[i+1], PyString_AsString(ss));
+	  //std::cout << argv[i+1] << "\n";
+       }
+       return true;
+    }
+    
+    bool isValid(void){return success;}
+      
     void set_csr_matrix0(int N, int *row_ptr, int *col_ind, TYPE_C *values, int symmetric_pattern){
        STRUMPACK_set_csr_matrix(spss,  &N, (void*) row_ptr,(void*) col_ind,
 				(void*) values, symmetric_pattern);
@@ -170,8 +187,8 @@ class PREFIX##StrumpackSolver : public StrumpackSolverBase
     STRUMPACK_RETURN_CODE solve(TYPE_C *b, TYPE_C *x, int use_initial_guess){
        return STRUMPACK_solve(spss, (const void*) b, (void*) x, use_initial_guess);
     }  
-  
    };
+  
 %}
 %enddef
 

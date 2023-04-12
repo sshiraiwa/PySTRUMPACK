@@ -31,7 +31,7 @@ class StrumpackSolverBase
 
   STRUMPACK_RETURN_CODE factor(void){return STRUMPACK_factor(spss);}
   STRUMPACK_RETURN_CODE reorder(void){return STRUMPACK_reorder(spss);}
-  STRUMPACK_RETURN_CODE reorder_regular(int nx, int ny, int nz){return STRUMPACK_reorder_regular(spss, nx, ny, nz);}
+  STRUMPACK_RETURN_CODE reorder_regular(int nx, int ny, int nz, int components, int width){return STRUMPACK_reorder_regular(spss, nx, ny, nz, components, width);}
 
   void set_from_options(void){return STRUMPACK_set_from_options(spss);}
   //void move_to_gpu(void){return STRUMPACK_move_to_gpu(spss);}

@@ -71,7 +71,7 @@ scientific computing
 sparse solver
 """
 metadata = {'name':'PySTRUMPACK',
-            'version':'5.0.0.0',
+            'version':'7.0.1.0',
             'description'      : __doc__.strip(),
             'long_description' : long_description(),
             'long_description_content_type':"text/markdown",
@@ -339,7 +339,8 @@ class BuildExt(_build_ext):
 
         include_dirs = [x for x in include_dirs if len(x) > 0]
         library_dirs = [x for x in library_dirs if len(x) > 0]
-        libraries = ['strumpack', 'stdc++']
+        #libraries = ['strumpack', 'stdc++']
+        libraries = []
 
         sclpk = os.getenv("SCALAPACKLINK")
         if sclpk is not None:
@@ -413,11 +414,15 @@ def run_setup():
     setup_args = metadata.copy()
 
     base = "STRUMPACK"    
-    modules = ["StrumpackSparseSolver",]    
+    modules = ["StrumpackSparseSolver",]
+
+    extra_link_args = ['-Wl,--whole-archive', '-lstrumpack', '-lslate', , '-lptscotch',
+                       '-lptscotcherr','-lscotch', '-lsbutterflypack','-ldbutterflypack','-lcbutterflypack','-lzbutterflypack', '-Wl,--no-whole-archive', '-lscalapack', '-lopenblas']
+       
     ext_modules = [Extension("STRUMPACK."+"_"+n,
                              [os.path.join('src', base, n  + "_wrap.cxx"), ],
                              extra_compile_args = ['-std=c++11',],
-                             extra_link_args=['-DSWIG_TYPE_TABLE=PySTRUMPACK'],
+                             extra_link_args=['-DSWIG_TYPE_TABLE=PySTRUMPACK'] + extra_link_args,
                              include_dirs=[],                             
                              library_dirs=[],
                              libraries=[])

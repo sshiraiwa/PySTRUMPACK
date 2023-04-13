@@ -416,8 +416,12 @@ def run_setup():
     base = "STRUMPACK"    
     modules = ["StrumpackSparseSolver",]
 
-    extra_link_args = ['-Wl,--whole-archive', '-lstrumpack', '-lslate', , '-lptscotch',
-                       '-lptscotcherr','-lscotch', '-lsbutterflypack','-ldbutterflypack','-lcbutterflypack','-lzbutterflypack', '-Wl,--no-whole-archive', '-lscalapack', '-lopenblas']
+    extra_link_args = ['-Wl,--whole-archive', '-lstrumpack', '-Wl,--no-whole-archive',
+                       '-lparmetis', '-lmetis', '-lslate',  '-llapackpp', '-lblaspp', '-lptscotch',
+                       '-lptscotcherr','-lscotch', '-lzfp',
+                       '-lsbutterflypack','-ldbutterflypack','-lcbutterflypack','-lzbutterflypack',
+                       '-lopenblas',
+                       '-L/usr/local/cuda-12/lib64/', '-lcudart', '-lcublas', '-lcusolver', '-lcusparse', '-lcudadevrt', '-lcudart_static']
        
     ext_modules = [Extension("STRUMPACK."+"_"+n,
                              [os.path.join('src', base, n  + "_wrap.cxx"), ],

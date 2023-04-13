@@ -31,7 +31,7 @@ class StrumpackSolverBase
 
   STRUMPACK_RETURN_CODE factor(void){return STRUMPACK_factor(spss);}
   STRUMPACK_RETURN_CODE reorder(void){return STRUMPACK_reorder(spss);}
-  STRUMPACK_RETURN_CODE reorder_regular(int nx, int ny, int nz, int components, int width){return STRUMPACK_reorder_regular(spss, nx, ny, nz, components, width);}
+  STRUMPACK_RETURN_CODE reorder_regular(int nx, int ny, int nz, int components=1, int width=1){return STRUMPACK_reorder_regular(spss, nx, ny, nz, components, width);}
 
   void set_from_options(void){return STRUMPACK_set_from_options(spss);}
   //void move_to_gpu(void){return STRUMPACK_move_to_gpu(spss);}
@@ -115,7 +115,7 @@ class PREFIX##StrumpackSolver : public StrumpackSolverBase
 {
  private:
     char ** argv = NULL;
-    int argc;
+    int argc=0;
     bool success = false;
  public:
     PREFIX##StrumpackSolver(PyObject *options, bool verbose){
@@ -126,6 +126,18 @@ class PREFIX##StrumpackSolver : public StrumpackSolverBase
 
     PREFIX##StrumpackSolver(MPI_Comm comm, PyObject *options, bool verbose){
       success = proc_options(options);
+      STRUMPACK_init(&spss, comm, TYPE, STRUMPACK_MPI_DIST, argc, argv, verbose);
+      //STRUMPACK_set_from_options(spss);       
+    }
+    
+    PREFIX##StrumpackSolver(bool verbose){
+      //success = proc_options(options);
+      STRUMPACK_init_mt(&spss, TYPE, STRUMPACK_MT, argc, argv, verbose);
+      //STRUMPACK_set_from_options(spss);
+    }
+
+    PREFIX##StrumpackSolver(MPI_Comm comm, bool verbose){
+      //success = proc_options(options);
       STRUMPACK_init(&spss, comm, TYPE, STRUMPACK_MPI_DIST, argc, argv, verbose);
       //STRUMPACK_set_from_options(spss);       
     }

@@ -1,0 +1,4 @@
+{
+  global:  *libstrumpack*;
+  local:   *;
+};

@@ -84,9 +84,13 @@ set(CMP_FLAG ${SHARED_SC_COMPILE_FLAGS}${IFLAG}${STRUMPACK_PREFIX}"/include")
 
 # make target
 add_library(strumpack_solve SHARED strumpack_solve.cpp)
-
 target_compile_features(strumpack_solve PUBLIC cxx_std_14)
 
+target_link_libraries(strumpack_solve PUBLIC
+  ${SHARED_SC_LINK_FLAGS_1}
+  ${STRUMPACK_PREFIX}/lib/libstrumpack.a
+  ${SHARED_SC_LINK_FLAGS_2}
+)  
 if(OpenMP_FOUND)
   # if(OpenMP_C_FOUND)
   #   target_link_libraries(strumpack PRIVATE OpenMP::OpenMP_C)
@@ -165,9 +169,6 @@ if(CombBLAS_FOUND)
 endif()
 
 target_link_libraries(strumpack_solve PUBLIC
-  ${SHARED_SC_LINK_FLAGS_1}
-  ${STRUMPACK_PREFIX}/lib/libstrumpack.a
-  ${SHARED_SC_LINK_FLAGS_2}
   ${SYMBOL_FLAG1}
   ${SYMBOL_FLAG2}			    
 )

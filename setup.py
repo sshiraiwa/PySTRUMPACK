@@ -112,14 +112,15 @@ def make_call(command, target=''):
     if not verbose:
         kwargs['stdout'] = DEVNULL
         kwargs['stderr'] = DEVNULL
-    try:
-        subprocess.check_call(command, **kwargs)
-    except subprocess.CalledProcessError:
+    p = subprocess.Popen(command, **kwargs)
+    p.communicate()
+    if p.returncode != 0:
         if target == '':
             target = " ".join(command)
         print("Failed when calling command: " + target)
-        raise
-
+        raise subprocess.CalledProcessError(p.returncode,
+                                            " ".join(command))
+    
 def chdir(path):
     '''
     change directory
@@ -416,13 +417,7 @@ def run_setup():
     base = "STRUMPACK"    
     modules = ["StrumpackSparseSolver",]
 
-    extra_link_args = ['-Wl,--whole-archive', '-lstrumpack', '-Wl,--no-whole-archive',
-                       '-lparmetis', '-lmetis', '-lslate',  '-llapackpp', '-lblaspp', '-lptscotch',
-                       '-lptscotcherr','-lscotch', '-lzfp',
-                       '-lsbutterflypack','-ldbutterflypack','-lcbutterflypack','-lzbutterflypack',
-                       '-lopenblas',
-                       '-L/usr/local/cuda-12/lib64/', '-lcudart', '-lcublas', '-lcusolver', '-lcusparse', '-lcudadevrt', '-lcudart_static']
-       
+    extra_link_args = ["-lstrumpack_solve"]
     ext_modules = [Extension("STRUMPACK."+"_"+n,
                              [os.path.join('src', base, n  + "_wrap.cxx"), ],
                              extra_compile_args = ['-std=c++11',],

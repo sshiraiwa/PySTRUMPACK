@@ -125,13 +125,12 @@ def make_set_distributed_csr_matrix(mat_type):
     Array object
     */
     libstrumpack_solve::StrumpackSolver<T1, T2> *solver;
-    std::cout << "here" << "\n";
+
     if (!PyList_Check(options)) {
       throw "Expecting a list";
     }
     int argc = PyList_Size(options);
 
-    std::cout << "here" << argc << "\n";
     char **argv;
     argv = (char **) calloc((argc+1), sizeof(char *));
     argv[0] = (char *)malloc(sizeof(char) * 8);

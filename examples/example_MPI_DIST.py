@@ -80,16 +80,16 @@ n = 30
 if len(sys.argv) > 1:
     if sys.argv[1] == 'D':
         dtype = np.float64
-        spss = DStrumpackSolver(MPI.COMM_WORLD)                
+        spss = DStrumpackSolver(MPI.COMM_WORLD, True)                
     elif sys.argv[1] == 'S':
         dtype = np.float32
-        spss = SStrumpackSolver(MPI.COMM_WORLD)                
+        spss = SStrumpackSolver(MPI.COMM_WORLD, True)                
     elif sys.argv[1] == 'C':
         dtype = np.complex64
-        spss = CStrumpackSolver(MPI.COMM_WORLD)
+        spss = CStrumpackSolver(MPI.COMM_WORLD, True)
     elif sys.argv[1] == 'Z':        
         dtype = np.complex128
-        spss = ZStrumpackSolver(MPI.COMM_WORLD)          
+        spss = ZStrumpackSolver(MPI.COMM_WORLD, True)          
     else:
         assert False, "unknown dtype"
         
@@ -97,7 +97,7 @@ if len(sys.argv) > 1:
         n = int(sys.argv[2])
 else:
     dtype = np.float32
-    spss = SStrumpackSolver(MPI.COMM_WORLD)
+    spss = SStrumpackSolver(MPI.COMM_WORLD, True)
     
 spss.set_verbose(1)
 spss.set_reordering_method(STRUMPACK_GEOMETRIC)

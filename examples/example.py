@@ -38,7 +38,7 @@ if len(sys.argv) > 1:
         n = int(sys.argv[2])
 else:
     dtype = np.float32
-    spss = SStrumpackSolver()
+    spss = SStrumpackSolver(True)
     
 spss.set_verbose(1)
 spss.set_reordering_method(STRUMPACK_GEOMETRIC)

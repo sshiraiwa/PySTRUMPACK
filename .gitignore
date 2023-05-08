@@ -10,3 +10,4 @@ setup_local.py
 build
 dist
 *.egg-info
+strumpack_solve/cmbuild

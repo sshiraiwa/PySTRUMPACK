@@ -43,7 +43,7 @@ def make_set_csr_matrix(mat_type, int_type):
   row_ptr = A.indptr.astype(int_type, copy=False)
   col_ind = A.indices.astype(int_type, copy=False)
 	      
-  return self.set_csr_matrix0(int_type(N), row_ptr, col_ind, values, symmetric)
+  return self.set_csr_matrix0(int_type(N), row_ptr, col_ind, values, bool(symmetric))
  return set_csr_matrix
 
 def make_set_distributed_csr_matrix(mat_type, int_type):
@@ -63,7 +63,8 @@ def make_set_distributed_csr_matrix(mat_type, int_type):
 
   from mpi4py import MPI
   dist = np.hstack(([int_type(0)], np.cumsum(MPI.COMM_WORLD.allgather(local_rows)))).astype(int_type, copy=False)
-  return self.set_distributed_csr_matrix0(local_rows, row_ptr, col_ind, values, dist, symmetric)
+  #print(type(local_rows), row_ptr.dtype, col_ind.dtype, values.dtype, dist.dtype, symmetric)
+  return self.set_distributed_csr_matrix0(local_rows, row_ptr, col_ind, values, dist, bool(symmetric))
  return set_distributed_csr_matrix
 %}
 

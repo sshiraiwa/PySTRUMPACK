@@ -261,7 +261,7 @@ class Install(_install):
     def initialize_options(self):
         _install.initialize_options(self)
 
-        self.swig = False
+        self.swig = True
         self.external_libs = ''
         self.CC = ''
         self.CXX = ''
@@ -418,6 +418,7 @@ def run_setup():
     modules = ["StrumpackSparseSolver",]
 
     extra_link_args = ["-lstrumpack_solve"]
+    #extra_link_args = []
     ext_modules = [Extension("STRUMPACK."+"_"+n,
                              [os.path.join('src', base, n  + "_wrap.cxx"), ],
                              extra_compile_args = ['-std=c++11',],

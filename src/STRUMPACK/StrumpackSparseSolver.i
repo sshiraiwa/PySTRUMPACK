@@ -16,6 +16,7 @@
 import_array();
 %}
 
+%include <stdint.i>
 %include mpi4py/mpi4py.i
 %mpi4py_typemap(Comm, MPI_Comm);
 
@@ -64,6 +65,18 @@ def make_set_distributed_csr_matrix(mat_type, int_type):
   dist = np.hstack(([int_type(0)], np.cumsum(MPI.COMM_WORLD.allgather(local_rows)))).astype(int_type, copy=False)
   return self.set_distributed_csr_matrix0(local_rows, row_ptr, col_ind, values, dist, symmetric)
  return set_distributed_csr_matrix
+%}
+
+%inline %{
+  int SIZE_OF_LONG(void){  
+    return (int) sizeof(long)*8;
+  }
+  int SIZE_OF_INT(void){  
+    return (int) sizeof(int)*8;
+  }
+  int SIZE_OF_INT64(void){  
+    return (int) sizeof(int64_t)*8;
+  }
 %}
 
 %include "../../strumpack_solve/strumpack_solve.hpp"
@@ -189,15 +202,15 @@ DStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np
 CStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex64, np.int32)
 ZStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex128, np.int32)
 
-S64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float32, np.int64)
-D64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float64, np.int64)
-C64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex64, np.int64)
-Z64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex128, np.int64)
+S64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float32, int)
+D64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float64, int)
+C64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex64, int)
+Z64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex128, int)
       
-S64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float32, np.int64)
-D64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float64, np.int64)
-C64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex64, np.int64)
-Z64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex128, np.int64)
+S64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float32, int)
+D64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float64, int)
+C64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex64, int)
+Z64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex128, int)
 
 %}
 

@@ -217,7 +217,8 @@ def generate_wrapper(self):
 
     pwd = chdir(os.path.join(rootdir, 'src', 'STRUMPACK'))
 
-    swigflag = '-Wall -c++ -python -fastproxy -olddefs -keyword'.split(' ')
+    #swigflag = '-Wall -c++ -python -fastproxy -DSWIGWORDSIZE32 -olddefs -keyword'.split(' ')
+    swigflag = '-Wall -c++ -python -fastproxy -DSWIGWORDSIZE64 -olddefs -keyword'.split(' ')
 
     stflag = ['-I'+ strumpackincdir]
 
@@ -225,8 +226,8 @@ def generate_wrapper(self):
         stflag.append('-I'+ mpi4py.get_include())
 
     for file in ifiles():
-        if not check_new(file):
-            continue
+        #if not check_new(file):
+        #    continue
         command = [swig_command] + swigflag + stflag + [file]
         make_call(command)
 

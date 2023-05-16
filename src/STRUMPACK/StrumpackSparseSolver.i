@@ -27,7 +27,11 @@ import_array();
 
 %pythoncode %{
 import numpy as np
-def make_set_csr_matrix(mat_type):
+def make_set_csr_matrix(mat_type, int_type):
+ '''
+  mat_type = np.float32, np.float64, np.complex64, np.complex128
+  int_type = np.int32, np.int64
+ '''
  def set_csr_matrix(self, A, symmetric=0, mat_type=mat_type):
   if A.dtype != mat_type:
     assert False, ("input data type is not correct "+str(mat_type) +
@@ -35,13 +39,17 @@ def make_set_csr_matrix(mat_type):
   
   N = A.shape[0]
   values = A.data
-  row_ptr = A.indptr.astype(np.int32, copy=False)
-  col_ind = A.indices.astype(np.int32, copy=False)
+  row_ptr = A.indptr.astype(int_type, copy=False)
+  col_ind = A.indices.astype(int_type, copy=False)
 	      
-  return self.set_csr_matrix0(N, row_ptr, col_ind, values, symmetric)
+  return self.set_csr_matrix0(int_type(N), row_ptr, col_ind, values, symmetric)
  return set_csr_matrix
 
-def make_set_distributed_csr_matrix(mat_type):
+def make_set_distributed_csr_matrix(mat_type, int_type):
+ '''
+  mat_type = np.float32, np.float64, np.complex64, np.complex128
+  int_type = np.int32, np.int64
+ '''
  def set_distributed_csr_matrix(self, A,  symmetric=0, mat_type=mat_type):
   if A.dtype != mat_type:
     assert False, ("input data type is not correct "+str(mat_type) +
@@ -49,11 +57,11 @@ def make_set_distributed_csr_matrix(mat_type):
   
   local_rows = A.shape[0]
   values = A.data
-  row_ptr = A.indptr.astype(np.int32, copy=False)
-  col_ind = A.indices.astype(np.int32, copy=False)
+  row_ptr = A.indptr.astype(int_type, copy=False)
+  col_ind = A.indices.astype(int_type, copy=False)
 
   from mpi4py import MPI
-  dist = np.hstack(([np.int32(0)], np.cumsum(MPI.COMM_WORLD.allgather(local_rows)))).astype(np.int32, copy=False)
+  dist = np.hstack(([int_type(0)], np.cumsum(MPI.COMM_WORLD.allgather(local_rows)))).astype(int_type, copy=False)
   return self.set_distributed_csr_matrix0(local_rows, row_ptr, col_ind, values, dist, symmetric)
  return set_distributed_csr_matrix
 %}
@@ -68,8 +76,8 @@ def make_set_distributed_csr_matrix(mat_type):
     char *argv[1];
     argv[0] = &(name[0]);
 
-    libstrumpack_solve::StrumpackSolver<T1, T2> *solver;
-    solver = new libstrumpack_solve::StrumpackSolver<T1, T2>(argc, argv, verbose);
+    libstrumpack_solve::StrumpackSolver<T1, T2, T3> *solver;
+    solver = new libstrumpack_solve::StrumpackSolver<T1, T2, T3>(argc, argv, verbose);
     return solver;
   }
   libstrumpack_solve::StrumpackSolver(MPI_Comm comm, bool verbose){
@@ -78,8 +86,8 @@ def make_set_distributed_csr_matrix(mat_type):
     char *argv[1];    
     argv[0] = &(name[0]);
     
-    libstrumpack_solve::StrumpackSolver<T1, T2> *solver;
-    solver = new libstrumpack_solve::StrumpackSolver<T1, T2>(comm, argc, argv, verbose);
+    libstrumpack_solve::StrumpackSolver<T1, T2, T3> *solver;
+    solver = new libstrumpack_solve::StrumpackSolver<T1, T2, T3>(comm, argc, argv, verbose);
     return solver;
   }
     
@@ -88,7 +96,7 @@ def make_set_distributed_csr_matrix(mat_type):
     This method is wrapped to recived tuple or list to create
     Array object
     */
-    libstrumpack_solve::StrumpackSolver<T1, T2> *solver;
+    libstrumpack_solve::StrumpackSolver<T1, T2, T3> *solver;
 
     if (!PyList_Check(options)) {
       throw "Expecting a list";
@@ -110,7 +118,7 @@ def make_set_distributed_csr_matrix(mat_type):
       //std::cout << argv[i+1] << "\n";
     }
     
-    solver = new libstrumpack_solve::StrumpackSolver<T1, T2>(argc, argv, verbose);
+    solver = new libstrumpack_solve::StrumpackSolver<T1, T2, T3>(argc, argv, verbose);
     
     //for (int i = 0; i < argc; i++) {
     //  free(argv[i]);
@@ -124,7 +132,7 @@ def make_set_distributed_csr_matrix(mat_type):
     This method is wrapped to recived tuple or list to create
     Array object
     */
-    libstrumpack_solve::StrumpackSolver<T1, T2> *solver;
+    libstrumpack_solve::StrumpackSolver<T1, T2, T3> *solver;
 
     if (!PyList_Check(options)) {
       throw "Expecting a list";
@@ -147,7 +155,7 @@ def make_set_distributed_csr_matrix(mat_type):
       //std::cout << argv[i+1] << "\n";
     }
      
-    solver = new libstrumpack_solve::StrumpackSolver<T1, T2>(comm, argc, argv, verbose);
+    solver = new libstrumpack_solve::StrumpackSolver<T1, T2, T3>(comm, argc, argv, verbose);
     
     //for (int i = 0; i < argc; i++) {
     //  free(argv[i]);
@@ -159,23 +167,37 @@ def make_set_distributed_csr_matrix(mat_type):
 
 
 
-%template(SStrumpackSolver) libstrumpack_solve::StrumpackSolver<STRUMPACK_FLOAT, float>;
-%template(DStrumpackSolver) libstrumpack_solve::StrumpackSolver<STRUMPACK_DOUBLE, double>;
-%template(CStrumpackSolver) libstrumpack_solve::StrumpackSolver<STRUMPACK_FLOATCOMPLEX, std::complex<float>>;
-%template(ZStrumpackSolver) libstrumpack_solve::StrumpackSolver<STRUMPACK_DOUBLECOMPLEX, std::complex<double>>;
+%template(SStrumpackSolver) libstrumpack_solve::StrumpackSolver<STRUMPACK_FLOAT, float, int32_t>;
+%template(DStrumpackSolver) libstrumpack_solve::StrumpackSolver<STRUMPACK_DOUBLE, double, int32_t>;
+%template(CStrumpackSolver) libstrumpack_solve::StrumpackSolver<STRUMPACK_FLOATCOMPLEX, std::complex<float>, int32_t>;
+%template(ZStrumpackSolver) libstrumpack_solve::StrumpackSolver<STRUMPACK_DOUBLECOMPLEX, std::complex<double>, int32_t>;
+%template(S64StrumpackSolver) libstrumpack_solve::StrumpackSolver<STRUMPACK_FLOAT_64, float, int64_t>;
+%template(D64StrumpackSolver) libstrumpack_solve::StrumpackSolver<STRUMPACK_DOUBLE_64, double, int64_t>;
+%template(C64StrumpackSolver) libstrumpack_solve::StrumpackSolver<STRUMPACK_FLOATCOMPLEX_64, std::complex<float>, int64_t>;
+%template(Z64StrumpackSolver) libstrumpack_solve::StrumpackSolver<STRUMPACK_DOUBLECOMPLEX_64, std::complex<double>, int64_t>;
 
 
 
 %pythoncode %{
-SStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float32)
-DStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float64)
-CStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex64)      
-ZStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex128)
+SStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float32, np.int32)
+DStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float64, np.int32)
+CStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex64, np.int32)
+ZStrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex128, np.int32)
       
-SStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float32)
-DStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float64)
-CStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex64)      
-ZStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex128)
+SStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float32, np.int32)
+DStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float64, np.int32)
+CStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex64, np.int32)
+ZStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex128, np.int32)
+
+S64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float32, np.int64)
+D64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float64, np.int64)
+C64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex64, np.int64)
+Z64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex128, np.int64)
+      
+S64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float32, np.int64)
+D64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float64, np.int64)
+C64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex64, np.int64)
+Z64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex128, np.int64)
 
 %}
 

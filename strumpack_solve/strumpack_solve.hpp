@@ -70,7 +70,7 @@ class StrumpackSolverBase
   long factor_memory(void);
 };
 
-template <STRUMPACK_PRECISION T1, typename T2>
+template <STRUMPACK_PRECISION T1, typename T2, typename T3>
 class StrumpackSolver : public StrumpackSolverBase
 {
  private:
@@ -81,13 +81,13 @@ class StrumpackSolver : public StrumpackSolverBase
   ~StrumpackSolver();
   bool isValid(void){return success;}
 
-  void set_csr_matrix0(int N, int *row_ptr, int *col_ind, T2 *values, int symmetric_pattern);
+  void set_csr_matrix0(T3 N, T3 *row_ptr, T3 *col_ind, T2 *values, bool symmetric_pattern);
 
-  void set_distributed_csr_matrix0(int local_rows, const int* row_ptr,
-                                     const int* col_ind, const T2 *values,
-				     const int* dist,   int symmetric_pattern);
+  void set_distributed_csr_matrix0(T3 local_rows, const T3* row_ptr,
+                                     const T3* col_ind, const T2 *values,
+				     const T3* dist,  bool symmetric_pattern);
 
-  STRUMPACK_RETURN_CODE solve(T2 *b, T2 *x, int use_initial_guess);
+  STRUMPACK_RETURN_CODE solve(T2 *b, T2 *x, bool use_initial_guess);
 };
 
 } /* end of namespace */

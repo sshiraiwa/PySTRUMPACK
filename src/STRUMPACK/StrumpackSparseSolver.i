@@ -55,7 +55,7 @@ def make_set_distributed_csr_matrix(mat_type, int_type):
     assert False, ("input data type is not correct "+str(mat_type) +
                    " is expected. " + str(A.dtype) + " is given")
   
-  local_rows = A.shape[0]
+  local_rows = int_type(A.shape[0])
   values = A.data
   row_ptr = A.indptr.astype(int_type, copy=False)
   col_ind = A.indices.astype(int_type, copy=False)

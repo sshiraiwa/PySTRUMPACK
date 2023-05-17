@@ -25,6 +25,7 @@ import_array();
 //%ignore  use_HSS;
 
 %import "common_interface/pointer_array.i"
+%import "common_interface/numpy_int_typemaps.i"
 
 %pythoncode %{
 import numpy as np
@@ -203,15 +204,15 @@ DStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np
 CStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex64, np.int32)
 ZStrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex128, np.int32)
 
-S64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float32, int)
-D64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float64, int)
-C64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex64, int)
-Z64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex128, int)
+S64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float32, np.int64)
+D64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.float64, np.int64)
+C64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex64, np.int64)
+Z64StrumpackSolver.set_csr_matrix = make_set_csr_matrix(np.complex128, np.int64)
       
-S64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float32, int)
-D64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float64, int)
-C64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex64, int)
-Z64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex128, int)
+S64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float32, np.int64)
+D64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.float64, np.int64)
+C64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex64, np.int64)
+Z64StrumpackSolver.set_distributed_csr_matrix = make_set_distributed_csr_matrix(np.complex128, np.int64)
 
 %}
 

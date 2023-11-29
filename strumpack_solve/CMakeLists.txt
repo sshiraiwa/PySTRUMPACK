@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20.0)
+cmake_minimum_required(VERSION 3.21.0)
 
 project(STRUMPACK LANGUAGES CXX C Fortran)
 
@@ -17,6 +17,8 @@ endif()
 
 list(APPEND CMAKE_PREFIX_PATH "${STRUMPACK_PREFIX}")
 list(APPEND CMAKE_MODULE_PATH "${STRUMPACK_PREFIX}/lib/cmake/STRUMPACK")
+
+include(FortranCInterface)
 
 if(USE_MPI)
   find_package(MPI)

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20.0)
 
 project(STRUMPACK LANGUAGES CXX C)
 
-
+option(USE_MPI     "Build with MPI support" ON)
 option(USE_OPENMP  "Use OpenMP for on-node threading tasking" ON)
 option(USE_CUDA    "Use CUDA for NVIDIA GPU acceleration" ON)
 option(USE_PARMETIS    "Use Parmetis" ON)

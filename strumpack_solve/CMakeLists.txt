@@ -18,28 +18,43 @@ endif()
 list(APPEND CMAKE_PREFIX_PATH "${STRUMPACK_PREFIX}")
 list(APPEND CMAKE_MODULE_PATH "${STRUMPACK_PREFIX}/lib/cmake/STRUMPACK")
 
-find_package(BLAS)
-if(NOT BLAS_FOUND)
-  message(WARNING
-    "Could not find a BLAS library.\n"
-    "This causes problem if BLAS is implicity linked by the compiler(wrapper)")
-endif()
-
-find_package(LAPACK)
-if(NOT LAPACK_FOUND)
-  message(WARNING
-    "Could not find a LAPACK library.\n"
-    "This causes problem if LAPACK is implicity linked by the compiler(wrapper)")
-endif()
-
-find_package(SCALAPACK)
-if(NOT SCALAPACK_FOUND)
-  message(WARNING
-    "Could not find a SCALAPACK library.\n"
-    "This causes problem if SCALAPACK is implicity linked by the compiler(wrapper)")
+if(DEFINED TPL_BLAS_LIBRARIES)
+    set(BLAS_LIBRARIES ${TPL_BLAS_LIBRARIES})
+    set(BLAS_FOUND TRUE)
 else()
-  set(SCALAPACK_LIBRARIES scalapack)
+   find_package(BLAS)
+   if(NOT BLAS_FOUND)
+      message(WARNING
+        "Could not find a BLAS library.\n"
+        "This causes problem if BLAS is implicity linked by the compiler(wrapper)")
+   endif()
 endif()
+
+if(DEFINED TPL_LAPACK_LIBRARIES)
+    set(LAPACK_LIBRARIES ${TPL_LAPACK_LIBRARIES})
+    set(LAPACK_FOUND TRUE)
+else()
+  find_package(LAPACK)
+  if(NOT LAPACK_FOUND)
+     message(WARNING
+        "Could not find a LAPACK library.\n"
+        "This causes problem if LAPACK is implicity linked by the compiler(wrapper)")
+  endif()
+endif()
+
+if(DEFINED TPL_SCALAPACK_LIBRARIES)
+  set(SCALAPACK_FOUND TRUE)
+  set(SCALAPACK_LIBRARIES ${TPL_SCALAPACK_LIBRARIES})
+else()
+  find_package(SCALAPACK)
+  if(NOT SCALAPACK_FOUND)
+     message(WARNING
+       "Could not find a SCALAPACK library.\n"
+       "This causes problem if SCALAPACK is implicity linked by the compiler(wrapper)")
+  else()
+     set(SCALAPACK_LIBRARIES scalapack)
+  endif()
+endif()   
 find_package(STRUMPACK)
 
 message(STATUS OpenMP_FOUND ":" ${OpenMP_FOUND})

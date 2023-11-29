@@ -18,6 +18,14 @@ endif()
 list(APPEND CMAKE_PREFIX_PATH "${STRUMPACK_PREFIX}")
 list(APPEND CMAKE_MODULE_PATH "${STRUMPACK_PREFIX}/lib/cmake/STRUMPACK")
 
+if(USE_MPI)
+  find_package(MPI)
+  if(NOT MPI_FOUND)
+    set(USE_MPI OFF)
+    message(WARNING "Configuring without MPI support.")
+  endif()
+endif()
+
 if(DEFINED TPL_BLAS_LIBRARIES)
     set(BLAS_LIBRARIES ${TPL_BLAS_LIBRARIES})
     set(BLAS_FOUND TRUE)
@@ -105,7 +113,14 @@ target_link_libraries(strumpack_solve PUBLIC
   ${SHARED_SC_LINK_FLAGS_1}
   ${STRUMPACK_PREFIX}/lib/libstrumpack.a
   ${SHARED_SC_LINK_FLAGS_2}
-)  
+  )
+
+if(USE_MPI)
+  target_link_libraries(strumpack PUBLIC
+    MPI::MPI_CXX MPI::MPI_C ${MPI_Fortran_LIBRARIES})
+  ## adding the MPI::MPI_Fortran target risks adding unwanted compile flags
+endif()
+
 if(OpenMP_FOUND)
   # if(OpenMP_C_FOUND)
   #   target_link_libraries(strumpack PRIVATE OpenMP::OpenMP_C)

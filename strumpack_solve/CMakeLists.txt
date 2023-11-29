@@ -66,7 +66,7 @@ endif()
 find_package(STRUMPACK)
 
 message(STATUS OpenMP_FOUND ":" ${OpenMP_FOUND})
-message(STATUS MPI_FOUND ":" ${MPI_FOUND})
+message(STATUS MPI_FOUND ":" ${MPI_FOUND} ${MPI_Fortran_LIBRARIES})
 message(STATUS CUDAToolkitFOUND ":" ${CUDAToolkit_FOUND})
 
 message(STATUS BLAS_FOUND ":" ${BLAS_LIBRARIES})

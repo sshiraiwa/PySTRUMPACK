@@ -18,6 +18,8 @@ endif()
 list(APPEND CMAKE_PREFIX_PATH "${STRUMPACK_PREFIX}")
 list(APPEND CMAKE_MODULE_PATH "${STRUMPACK_PREFIX}/lib/cmake/STRUMPACK")
 
+include(FortranCInterface)
+
 if(USE_MPI)
   find_package(MPI)
   if(NOT MPI_FOUND)

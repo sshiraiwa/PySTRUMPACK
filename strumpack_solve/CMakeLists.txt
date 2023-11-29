@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20.0)
 
-project(STRUMPACK LANGUAGES CXX C)
+project(STRUMPACK LANGUAGES CXX C Fortran)
 
 option(USE_MPI     "Build with MPI support" ON)
 option(USE_OPENMP  "Use OpenMP for on-node threading tasking" ON)
@@ -17,8 +17,6 @@ endif()
 
 list(APPEND CMAKE_PREFIX_PATH "${STRUMPACK_PREFIX}")
 list(APPEND CMAKE_MODULE_PATH "${STRUMPACK_PREFIX}/lib/cmake/STRUMPACK")
-
-include(FortranCInterface)
 
 if(USE_MPI)
   find_package(MPI)

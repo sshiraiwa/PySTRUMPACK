@@ -116,7 +116,7 @@ target_link_libraries(strumpack_solve PUBLIC
   )
 
 if(USE_MPI)
-  target_link_libraries(strumpack PUBLIC
+  target_link_libraries(strumpack_solve PUBLIC
     MPI::MPI_CXX MPI::MPI_C ${MPI_Fortran_LIBRARIES})
   ## adding the MPI::MPI_Fortran target risks adding unwanted compile flags
 endif()

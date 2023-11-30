@@ -19,10 +19,11 @@ from setuptools.command.install_egg_info import install_egg_info as _install_egg
 from setuptools.command.install_scripts import install_scripts as _install_scripts
 from setuptools.command.install_lib import install_lib as _install_lib
 
-try:
-    from setuptools._distutils.command.clean import clean as _clean
-except ImportError:
-    from distutils.command.clean import clean as _clean
+# this stops working after setuptools (56)
+#try:
+#    from setuptools._distutils.command.clean import clean as _clean
+#except ImportError:
+from distutils.command.clean import clean as _clean
 
 import numpy
 

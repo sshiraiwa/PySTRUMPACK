@@ -71,7 +71,7 @@ scientific computing
 sparse solver
 """
 metadata = {'name':'PySTRUMPACK',
-            'version':'7.1.2.0',
+            'version':'7.2.0.0',
             'description'      : __doc__.strip(),
             'long_description' : long_description(),
             'long_description_content_type':"text/markdown",

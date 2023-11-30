@@ -4,7 +4,6 @@ project(STRUMPACK LANGUAGES CXX C Fortran)
 
 option(USE_MPI     "Build with MPI support" ON)
 option(USE_OPENMP  "Use OpenMP for on-node threading tasking" ON)
-option(USE_CUDA    "Use CUDA for NVIDIA GPU acceleration" ON)
 option(USE_PARMETIS    "Use Parmetis" ON)
 option(USE_PTSCOTCH    "Use PT-Scotch" ON)
 option(USE_SLATE    "Use SLATE" ON)
@@ -205,10 +204,11 @@ target_link_libraries(strumpack_solve PUBLIC
   ${SYMBOL_FLAG2}			    
 )
   
-set_target_properties(strumpack_solve PROPERTIES 
+set_target_properties(strumpack_solve PROPERTIES
+                      CXX_EXTENSIONS OFF
                       COMPILE_FLAGS ${CMP_FLAG}
                       LINK_FLAGS ${LINK_FLAGS}
-		      LINKER_LANGUAGE CXX
+		      LINKER_LANGUAGE Fortran
                       OUTPUT_NAME strumpack_solve )
 
 install(TARGETS strumpack_solve

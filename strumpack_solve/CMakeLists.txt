@@ -1,10 +1,9 @@
-cmake_minimum_required(VERSION 3.20.0)
+cmake_minimum_required(VERSION 3.21.0)
 
-project(STRUMPACK LANGUAGES CXX C)
+project(STRUMPACK LANGUAGES CXX C Fortran)
 
-
+option(USE_MPI     "Build with MPI support" ON)
 option(USE_OPENMP  "Use OpenMP for on-node threading tasking" ON)
-option(USE_CUDA    "Use CUDA for NVIDIA GPU acceleration" ON)
 option(USE_PARMETIS    "Use Parmetis" ON)
 option(USE_PTSCOTCH    "Use PT-Scotch" ON)
 option(USE_SLATE    "Use SLATE" ON)
@@ -18,32 +17,57 @@ endif()
 list(APPEND CMAKE_PREFIX_PATH "${STRUMPACK_PREFIX}")
 list(APPEND CMAKE_MODULE_PATH "${STRUMPACK_PREFIX}/lib/cmake/STRUMPACK")
 
-find_package(BLAS)
-if(NOT BLAS_FOUND)
-  message(WARNING
-    "Could not find a BLAS library.\n"
-    "This causes problem if BLAS is implicity linked by the compiler(wrapper)")
+include(FortranCInterface)
+
+if(USE_MPI)
+  find_package(MPI)
+  if(NOT MPI_FOUND)
+    set(USE_MPI OFF)
+    message(WARNING "Configuring without MPI support.")
+  endif()
 endif()
 
-find_package(LAPACK)
-if(NOT LAPACK_FOUND)
-  message(WARNING
-    "Could not find a LAPACK library.\n"
-    "This causes problem if LAPACK is implicity linked by the compiler(wrapper)")
-endif()
-
-find_package(SCALAPACK)
-if(NOT SCALAPACK_FOUND)
-  message(WARNING
-    "Could not find a SCALAPACK library.\n"
-    "This causes problem if SCALAPACK is implicity linked by the compiler(wrapper)")
+if(DEFINED TPL_BLAS_LIBRARIES)
+    set(BLAS_LIBRARIES ${TPL_BLAS_LIBRARIES})
+    set(BLAS_FOUND TRUE)
 else()
-  set(SCALAPACK_LIBRARIES scalapack)
+   find_package(BLAS)
+   if(NOT BLAS_FOUND)
+      message(WARNING
+        "Could not find a BLAS library.\n"
+        "This causes problem if BLAS is implicity linked by the compiler(wrapper)")
+   endif()
 endif()
+
+if(DEFINED TPL_LAPACK_LIBRARIES)
+    set(LAPACK_LIBRARIES ${TPL_LAPACK_LIBRARIES})
+    set(LAPACK_FOUND TRUE)
+else()
+  find_package(LAPACK)
+  if(NOT LAPACK_FOUND)
+     message(WARNING
+        "Could not find a LAPACK library.\n"
+        "This causes problem if LAPACK is implicity linked by the compiler(wrapper)")
+  endif()
+endif()
+
+if(DEFINED TPL_SCALAPACK_LIBRARIES)
+  set(SCALAPACK_FOUND TRUE)
+  set(SCALAPACK_LIBRARIES ${TPL_SCALAPACK_LIBRARIES})
+else()
+  find_package(SCALAPACK)
+  if(NOT SCALAPACK_FOUND)
+     message(WARNING
+       "Could not find a SCALAPACK library.\n"
+       "This causes problem if SCALAPACK is implicity linked by the compiler(wrapper)")
+  else()
+     set(SCALAPACK_LIBRARIES scalapack)
+  endif()
+endif()   
 find_package(STRUMPACK)
 
 message(STATUS OpenMP_FOUND ":" ${OpenMP_FOUND})
-message(STATUS MPI_FOUND ":" ${MPI_FOUND})
+message(STATUS MPI_FOUND ":" ${MPI_FOUND} ${MPI_Fortran_LIBRARIES})
 message(STATUS CUDAToolkitFOUND ":" ${CUDAToolkit_FOUND})
 
 message(STATUS BLAS_FOUND ":" ${BLAS_LIBRARIES})
@@ -90,7 +114,14 @@ target_link_libraries(strumpack_solve PUBLIC
   ${SHARED_SC_LINK_FLAGS_1}
   ${STRUMPACK_PREFIX}/lib/libstrumpack.a
   ${SHARED_SC_LINK_FLAGS_2}
-)  
+  )
+
+if(USE_MPI)
+  target_link_libraries(strumpack_solve PUBLIC
+    MPI::MPI_CXX MPI::MPI_C ${MPI_Fortran_LIBRARIES})
+  ## adding the MPI::MPI_Fortran target risks adding unwanted compile flags
+endif()
+
 if(OpenMP_FOUND)
   # if(OpenMP_C_FOUND)
   #   target_link_libraries(strumpack PRIVATE OpenMP::OpenMP_C)
@@ -173,10 +204,11 @@ target_link_libraries(strumpack_solve PUBLIC
   ${SYMBOL_FLAG2}			    
 )
   
-set_target_properties(strumpack_solve PROPERTIES 
+set_target_properties(strumpack_solve PROPERTIES
+                      CXX_EXTENSIONS OFF
                       COMPILE_FLAGS ${CMP_FLAG}
                       LINK_FLAGS ${LINK_FLAGS}
-		      LINKER_LANGUAGE CXX
+		      LINKER_LANGUAGE Fortran
                       OUTPUT_NAME strumpack_solve )
 
 install(TARGETS strumpack_solve

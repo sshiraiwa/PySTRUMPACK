@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#include <cmath>    
-#include <complex> 
+#include <cmath>
+#include <complex>
 #include "StrumpackSparseSolver.h"
 #include "StrumpackConfig.hpp"
 
@@ -13,6 +13,8 @@ class StrumpackSolverBase
 {
  protected:
   STRUMPACK_SparseSolver *spss;
+  int    opt_count=0;
+  char **opt_strings=nullptr;
  public:
   StrumpackSolverBase(){}
   STRUMPACK_RETURN_CODE factor(void);
@@ -23,7 +25,7 @@ class StrumpackSolverBase
   //void move_to_gpu(void){return STRUMPACK_move_to_gpu(spss);}
   //void remove_from_gpu(void){return STRUMPACK_remove_from_gpu(spss);}
   //void delete_factors(void){return STRUMPACK_delete_factors(spss);}
-  
+
   void set_verbose(int v);
   void set_maxit(int  maxit);
   void set_gmres_restart(int m);
@@ -43,7 +45,7 @@ class StrumpackSolverBase
   void set_compression_rel_tol(double rctol);
   void set_compression_abs_tol(double actol);
   void set_compression_butterfly_levels(int l);
-  
+
   int  get_verbose(void);
   int  get_maxit(void);
   //int gmres_restart(void){return STRUMPACK_get_gmres_restart(spss);}
@@ -68,9 +70,19 @@ class StrumpackSolverBase
   int rank(void);
   long factor_nonzeros(void);
   long factor_memory(void);
+  void set_option_parameters(int argc, char *argv[]){
+    opt_count = argc;
+    opt_strings= argv;
+  }
+  ~StrumpackSolverBase(){
+    for (int i = 0; i < opt_count; i++) {
+      free(opt_strings[i]);
+    }
+    free(opt_strings);
+  }
 };
 
-template <STRUMPACK_PRECISION T1, typename T2>
+template <STRUMPACK_PRECISION T1, typename T2, typename T3>
 class StrumpackSolver : public StrumpackSolverBase
 {
  private:
@@ -81,13 +93,13 @@ class StrumpackSolver : public StrumpackSolverBase
   ~StrumpackSolver();
   bool isValid(void){return success;}
 
-  void set_csr_matrix0(int N, int *row_ptr, int *col_ind, T2 *values, int symmetric_pattern);
+  void set_csr_matrix0(T3 N, T3 *row_ptr, T3 *col_ind, T2 *values, bool symmetric_pattern);
 
-  void set_distributed_csr_matrix0(int local_rows, const int* row_ptr,
-                                     const int* col_ind, const T2 *values,
-				     const int* dist,   int symmetric_pattern);
+  void set_distributed_csr_matrix0(T3 local_rows, const T3* row_ptr,
+                                     const T3* col_ind, const T2 *values,
+				     const T3* dist,  bool symmetric_pattern);
 
-  STRUMPACK_RETURN_CODE solve(T2 *b, T2 *x, int use_initial_guess);
+  STRUMPACK_RETURN_CODE solve(T2 *b, T2 *x, bool use_initial_guess);
 };
 
 } /* end of namespace */

@@ -19,10 +19,11 @@ from setuptools.command.install_egg_info import install_egg_info as _install_egg
 from setuptools.command.install_scripts import install_scripts as _install_scripts
 from setuptools.command.install_lib import install_lib as _install_lib
 
-try:
-    from setuptools._distutils.command.clean import clean as _clean
-except ImportError:
-    from distutils.command.clean import clean as _clean
+# this stops working after setuptools (56)
+#try:
+#    from setuptools._distutils.command.clean import clean as _clean
+#except ImportError:
+from distutils.command.clean import clean as _clean
 
 import numpy
 
@@ -71,7 +72,7 @@ scientific computing
 sparse solver
 """
 metadata = {'name':'PySTRUMPACK',
-            'version':'7.0.1.0',
+            'version':'7.2.0.1',
             'description'      : __doc__.strip(),
             'long_description' : long_description(),
             'long_description_content_type':"text/markdown",
@@ -217,7 +218,8 @@ def generate_wrapper(self):
 
     pwd = chdir(os.path.join(rootdir, 'src', 'STRUMPACK'))
 
-    swigflag = '-Wall -c++ -python -fastproxy -olddefs -keyword'.split(' ')
+    #swigflag = '-Wall -c++ -python -fastproxy -DSWIGWORDSIZE32 -olddefs -keyword'.split(' ')
+    swigflag = '-Wall -c++ -python -fastproxy -DSWIGWORDSIZE64 -olddefs -keyword'.split(' ')
 
     stflag = ['-I'+ strumpackincdir]
 
@@ -225,8 +227,8 @@ def generate_wrapper(self):
         stflag.append('-I'+ mpi4py.get_include())
 
     for file in ifiles():
-        if not check_new(file):
-            continue
+        #if not check_new(file):
+        #    continue
         command = [swig_command] + swigflag + stflag + [file]
         make_call(command)
 
@@ -261,7 +263,7 @@ class Install(_install):
     def initialize_options(self):
         _install.initialize_options(self)
 
-        self.swig = True
+        self.swig = False
         self.external_libs = ''
         self.CC = ''
         self.CXX = ''

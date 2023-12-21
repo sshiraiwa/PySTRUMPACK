@@ -72,7 +72,7 @@ scientific computing
 sparse solver
 """
 metadata = {'name':'PySTRUMPACK',
-            'version':'7.2.0.0',
+            'version':'7.2.0.1',
             'description'      : __doc__.strip(),
             'long_description' : long_description(),
             'long_description_content_type':"text/markdown",
@@ -263,7 +263,7 @@ class Install(_install):
     def initialize_options(self):
         _install.initialize_options(self)
 
-        self.swig = True
+        self.swig = False
         self.external_libs = ''
         self.CC = ''
         self.CXX = ''

@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#include <cmath>    
-#include <complex> 
+#include <cmath>
+#include <complex>
 #include "StrumpackSparseSolver.h"
 #include "StrumpackConfig.hpp"
 
@@ -13,6 +13,8 @@ class StrumpackSolverBase
 {
  protected:
   STRUMPACK_SparseSolver *spss;
+  int    opt_count=0;
+  char **opt_strings=nullptr;
  public:
   StrumpackSolverBase(){}
   STRUMPACK_RETURN_CODE factor(void);
@@ -23,7 +25,7 @@ class StrumpackSolverBase
   //void move_to_gpu(void){return STRUMPACK_move_to_gpu(spss);}
   //void remove_from_gpu(void){return STRUMPACK_remove_from_gpu(spss);}
   //void delete_factors(void){return STRUMPACK_delete_factors(spss);}
-  
+
   void set_verbose(int v);
   void set_maxit(int  maxit);
   void set_gmres_restart(int m);
@@ -43,7 +45,7 @@ class StrumpackSolverBase
   void set_compression_rel_tol(double rctol);
   void set_compression_abs_tol(double actol);
   void set_compression_butterfly_levels(int l);
-  
+
   int  get_verbose(void);
   int  get_maxit(void);
   //int gmres_restart(void){return STRUMPACK_get_gmres_restart(spss);}
@@ -68,6 +70,16 @@ class StrumpackSolverBase
   int rank(void);
   long factor_nonzeros(void);
   long factor_memory(void);
+  void set_option_parameters(int argc, char *argv[]){
+    opt_count = argc;
+    opt_strings= argv;
+  }
+  ~StrumpackSolverBase(){
+    for (int i = 0; i < opt_count; i++) {
+      free(opt_strings[i]);
+    }
+    free(opt_strings);
+  }
 };
 
 template <STRUMPACK_PRECISION T1, typename T2, typename T3>
